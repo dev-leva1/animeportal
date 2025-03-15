@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useApp } from '../context/ThemeContext';
+import { animeService } from '../services/animeService';
 
 const HeaderContainer = styled.header`
   background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
@@ -44,6 +45,28 @@ const NavLink = styled(Link)`
   
   &:hover {
     color: #ff5f5f;
+  }
+`;
+
+const RandomAnimeButton = styled.button`
+  text-decoration: none;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    color: #ff5f5f;
+  }
+  
+  &::before {
+    content: '🎲';
+    margin-right: 0.25rem;
   }
 `;
 
@@ -134,12 +157,27 @@ function Header() {
   const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/anime?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+  
+  const handleRandomAnime = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await animeService.getRandomAnime();
+      navigate(`/anime/${response.data.id}`);
+    } catch (error) {
+      console.error('Error fetching random anime:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -161,7 +199,15 @@ function Header() {
           <NavLinks isOpen={isMenuOpen} theme={theme}>
             <NavLink to="/" theme={theme}>{t('header.home')}</NavLink>
             <NavLink to="/anime" theme={theme}>{t('header.catalog')}</NavLink>
+            <NavLink to="/manga" theme={theme}>{t('header.manga')}</NavLink>
             <NavLink to="/favorites" theme={theme}>{t('header.favorites')}</NavLink>
+            <RandomAnimeButton 
+              onClick={handleRandomAnime} 
+              theme={theme}
+              disabled={isLoading}
+            >
+              {t('header.random_anime')}
+            </RandomAnimeButton>
           </NavLinks>
           
           <form onSubmit={handleSearch}>

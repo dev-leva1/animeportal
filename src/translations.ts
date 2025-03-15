@@ -23,6 +23,14 @@ export const translations: Translations = {
     ru: 'Поиск аниме...',
     en: 'Search anime...'
   },
+  'header.manga': {
+    ru: 'Манга',
+    en: 'Manga'
+  },
+  'header.random_anime': {
+    ru: 'Случайное аниме',
+    en: 'Random anime'
+  },
   
   // HomePage
   'home.welcome': {
@@ -85,6 +93,10 @@ export const translations: Translations = {
   },
   
   // Genres
+  'genre.all_genres': {
+    ru: 'Все жанры',
+    en: 'All genres'
+  },
   'genre.action': {
     ru: 'Экшен',
     en: 'Action'
@@ -136,6 +148,80 @@ export const translations: Translations = {
     en: 'You don\'t have any favorite anime yet. Add anime to favorites by clicking the heart icon on the anime card.'
   },
   
+  // MangaPage
+  'manga.catalog': {
+    ru: 'Каталог манги',
+    en: 'Manga catalog'
+  },
+  'manga.search_results': {
+    ru: 'Результаты поиска',
+    en: 'Search results'
+  },
+  'manga.genre': {
+    ru: 'Манга жанра',
+    en: 'Manga genre'
+  },
+  'manga.search': {
+    ru: 'Найти',
+    en: 'Search'
+  },
+  'manga.no_results': {
+    ru: 'Ничего не найдено. Попробуйте изменить параметры поиска.',
+    en: 'No results found. Try changing your search parameters.'
+  },
+  'manga.chapters': {
+    ru: 'Главы',
+    en: 'Chapters'
+  },
+  'manga.volumes': {
+    ru: 'Тома',
+    en: 'Volumes'
+  },
+  'manga.status': {
+    ru: 'Статус',
+    en: 'Status'
+  },
+  'manga.published': {
+    ru: 'Выпущено',
+    en: 'Published'
+  },
+  'manga.type': {
+    ru: 'Тип',
+    en: 'Type'
+  },
+  'manga.authors': {
+    ru: 'Авторы',
+    en: 'Authors'
+  },
+  'manga.genres': {
+    ru: 'Жанры',
+    en: 'Genres'
+  },
+  'manga.synopsis': {
+    ru: 'Описание',
+    en: 'Synopsis'
+  },
+  'manga.add_to_favorites': {
+    ru: 'Добавить в избранное',
+    en: 'Add to favorites'
+  },
+  'manga.remove_from_favorites': {
+    ru: 'Удалить из избранного',
+    en: 'Remove from favorites'
+  },
+  'manga.back_to_catalog': {
+    ru: 'Вернуться к каталогу манги',
+    en: 'Back to manga catalog'
+  },
+  'manga.unknown': {
+    ru: 'Неизвестно',
+    en: 'Unknown'
+  },
+  'manga.ongoing': {
+    ru: 'Онгоинг',
+    en: 'Ongoing'
+  },
+  
   // AnimeDetailsPage
   'details.episodes': {
     ru: 'Эпизоды',
@@ -184,6 +270,62 @@ export const translations: Translations = {
   'details.remove_from_favorites': {
     ru: 'Удалить из избранного',
     en: 'Remove from favorites'
+  },
+  'details.characters': {
+    ru: 'Персонажи',
+    en: 'Characters'
+  },
+  'details.staff': {
+    ru: 'Персонал',
+    en: 'Staff'
+  },
+  'details.reviews': {
+    ru: 'Обзоры',
+    en: 'Reviews'
+  },
+  'details.voice_actors': {
+    ru: 'Актеры озвучки',
+    en: 'Voice actors'
+  },
+  'details.character_role': {
+    ru: 'Роль',
+    en: 'Role'
+  },
+  'details.staff_positions': {
+    ru: 'Должности',
+    en: 'Positions'
+  },
+  'details.review_score': {
+    ru: 'Оценка',
+    en: 'Score'
+  },
+  'details.review_date': {
+    ru: 'Дата',
+    en: 'Date'
+  },
+  'details.show_more': {
+    ru: 'Показать больше',
+    en: 'Show more'
+  },
+  'details.show_less': {
+    ru: 'Показать меньше',
+    en: 'Show less'
+  },
+  'details.no_reviews': {
+    ru: 'Нет обзоров',
+    en: 'No reviews'
+  },
+  'details.no_characters': {
+    ru: 'Нет информации о персонажах',
+    en: 'No character information'
+  },
+  'details.no_staff': {
+    ru: 'Нет информации о персонале',
+    en: 'No staff information'
+  },
+  'details.load_more_reviews': {
+    ru: 'Загрузить еще обзоры',
+    en: 'Load more reviews'
   },
   
   // NotFoundPage
@@ -248,5 +390,13 @@ export const translations: Translations = {
   'footer.data_source': {
     ru: 'Данные предоставлены API Jikan (неофициальное API MyAnimeList).',
     en: 'Data provided by Jikan API (unofficial MyAnimeList API).'
+  },
+  'footer.github': {
+    ru: 'GitHub',
+    en: 'GitHub'
+  },
+  'anime.back_to_catalog': {
+    ru: 'Вернуться к каталогу аниме',
+    en: 'Back to anime catalog'
   }
 }; 

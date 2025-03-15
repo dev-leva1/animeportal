@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AnimeResponse, AnimeDetailsResponse, Anime } from '../types/anime';
+import { AnimeResponse, AnimeDetailsResponse, Anime, CharactersResponse, StaffResponse, ReviewsResponse, Character, StaffMember, Review } from '../types/anime';
 
 const API_BASE_URL = 'https://api.jikan.moe/v4';
 
@@ -46,6 +46,43 @@ const mapAnimeData = (apiData: any): Anime => {
     rating: apiData.rating || '',
     duration: apiData.duration || '',
     trailer_url: apiData.trailer?.embed_url || ''
+  };
+};
+
+const mapCharacterData = (apiData: any): Character => {
+  return {
+    id: apiData.character.mal_id,
+    name: apiData.character.name,
+    image_url: apiData.character.images?.jpg?.image_url || '',
+    role: apiData.role,
+    voice_actors: apiData.voice_actors?.map((va: any) => ({
+      id: va.person.mal_id,
+      name: va.person.name,
+      image_url: va.person.images?.jpg?.image_url || '',
+      language: va.language
+    })) || []
+  };
+};
+
+const mapStaffData = (apiData: any): StaffMember => {
+  return {
+    id: apiData.person.mal_id,
+    name: apiData.person.name,
+    image_url: apiData.person.images?.jpg?.image_url || '',
+    positions: apiData.positions || []
+  };
+};
+
+const mapReviewData = (apiData: any): Review => {
+  return {
+    id: apiData.mal_id,
+    user: {
+      username: apiData.user.username,
+      image_url: apiData.user.images?.jpg?.image_url || ''
+    },
+    content: apiData.review,
+    score: apiData.score,
+    date: apiData.date
   };
 };
 
@@ -220,6 +257,80 @@ export const animeService = {
       });
     } catch (error) {
       console.error('Error fetching recommended anime:', error);
+      throw error;
+    }
+  },
+
+  async getRandomAnime(): Promise<AnimeDetailsResponse> {
+    try {
+      await delay(500);
+      
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/random/anime`);
+        
+        return {
+          data: mapAnimeData(response.data.data)
+        };
+      });
+    } catch (error) {
+      console.error('Error fetching random anime:', error);
+      throw error;
+    }
+  },
+
+  async getAnimeCharacters(animeId: number): Promise<CharactersResponse> {
+    try {
+      await delay(1000);
+      
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime/${animeId}/characters`);
+        
+        return {
+          data: response.data.data.map(mapCharacterData)
+        };
+      });
+    } catch (error) {
+      console.error(`Error fetching characters for anime ${animeId}:`, error);
+      throw error;
+    }
+  },
+
+  async getAnimeStaff(animeId: number): Promise<StaffResponse> {
+    try {
+      await delay(1000);
+      
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime/${animeId}/staff`);
+        
+        return {
+          data: response.data.data.map(mapStaffData)
+        };
+      });
+    } catch (error) {
+      console.error(`Error fetching staff for anime ${animeId}:`, error);
+      throw error;
+    }
+  },
+
+  async getAnimeReviews(animeId: number, page: number = 1): Promise<ReviewsResponse> {
+    try {
+      await delay(1500);
+      
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime/${animeId}/reviews`, {
+          params: {
+            page,
+            limit: 10
+          }
+        });
+        
+        return {
+          data: response.data.data.map(mapReviewData),
+          pagination: response.data.pagination
+        };
+      });
+    } catch (error) {
+      console.error(`Error fetching reviews for anime ${animeId}:`, error);
       throw error;
     }
   }

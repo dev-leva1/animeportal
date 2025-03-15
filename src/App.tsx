@@ -6,6 +6,8 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AnimePage from './pages/AnimePage';
 import AnimeDetailsPage from './pages/AnimeDetailsPage';
+import MangaPage from './pages/MangaPage';
+import MangaDetailsPage from './pages/MangaDetailsPage';
 import FavoritesPage from './pages/FavoritesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { AppProvider } from './context/ThemeContext';
@@ -64,6 +66,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/anime" element={<AnimePage />} />
               <Route path="/anime/:id" element={<AnimeDetailsPage />} />
+              <Route path="/manga" element={<MangaPage />} />
+              <Route path="/manga/:id" element={<MangaDetailsPage />} />
               <Route path="/favorites" element={<FavoritesPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
