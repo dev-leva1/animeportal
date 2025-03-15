@@ -1,25 +1,28 @@
 import { createContext, useContext, ReactNode } from 'react';
 
-interface ThemeContextType {
+interface AppContextType {
   theme: string;
   toggleTheme: () => void;
+  language: string;
+  toggleLanguage: () => void;
+  t: (key: string) => string;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export function useTheme() {
-  const context = useContext(ThemeContext);
+export function useApp() {
+  const context = useContext(AppContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useApp must be used within an AppProvider');
   }
   return context;
 }
 
-interface ThemeProviderProps {
+interface AppProviderProps {
   children: ReactNode;
-  value: ThemeContextType;
+  value: AppContextType;
 }
 
-export function ThemeProvider({ children, value }: ThemeProviderProps) {
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+export function AppProvider({ children, value }: AppProviderProps) {
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 } 

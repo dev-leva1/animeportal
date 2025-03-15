@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 package-lock.json
-
+todo.md
 
 # Editor directories and files
 .vscode/*

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 
 const FooterContainer = styled.footer`
   background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
@@ -53,25 +53,26 @@ const Divider = styled.hr`
 `;
 
 function Footer() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   
   return (
     <FooterContainer theme={theme}>
       <FooterContent>
         <FooterLinks>
-          <FooterLink href="#" theme={theme}>О проекте</FooterLink>
-          <FooterLink href="#" theme={theme}>Правила использования</FooterLink>
-          <FooterLink href="#" theme={theme}>Политика конфиденциальности</FooterLink>
-          <FooterLink href="#" theme={theme}>Контакты</FooterLink>
+          <FooterLink href="#" theme={theme}>{t('footer.about')}</FooterLink>
+          <FooterLink href="#" theme={theme}>{t('footer.terms')}</FooterLink>
+          <FooterLink href="#" theme={theme}>{t('footer.privacy')}</FooterLink>
+          <FooterLink href="#" theme={theme}>{t('footer.contacts')}</FooterLink>
+          <FooterLink href="https://github.com/dev-leva1/animeportal" target="_blank" rel="noopener noreferrer" theme={theme}>GitHub</FooterLink>
         </FooterLinks>
         
         <Divider theme={theme} />
         
         <FooterText theme={theme}>
-          &copy; {new Date().getFullYear()} АнимеПортал. Все права защищены.
+          &copy; {new Date().getFullYear()} {t('site.name')}. {t('footer.copyright')}
         </FooterText>
         <FooterText theme={theme} style={{ marginTop: '0.5rem' }}>
-          Данные предоставлены API Jikan (неофициальное API MyAnimeList).
+          {t('footer.data_source')}
         </FooterText>
       </FooterContent>
     </FooterContainer>

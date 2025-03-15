@@ -37,7 +37,7 @@ const mapAnimeData = (apiData: any): Anime => {
     image_url: apiData.images?.jpg?.image_url || apiData.images?.webp?.image_url || '',
     synopsis: apiData.synopsis || '',
     episodes: apiData.episodes || 0,
-    score: apiData.score || 0,
+    score: apiData.score || null,
     aired: apiData.aired,
     status: apiData.status || '',
     genres: apiData.genres || [],
@@ -52,20 +52,24 @@ const mapAnimeData = (apiData: any): Anime => {
 export const animeService = {
   async getAnimeList(page: number = 1, limit: number = 20): Promise<AnimeResponse> {
     try {
-      const response = await axios.get(`${API_BASE_URL}/anime`, {
-        params: {
-          page,
-          limit,
-          order_by: 'score',
-          sort: 'desc',
-          status: 'complete'
-        }
-      });
+      await delay(1000);
       
-      return {
-        data: response.data.data.map(mapAnimeData),
-        pagination: response.data.pagination
-      };
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime`, {
+          params: {
+            page,
+            limit,
+            order_by: 'score',
+            sort: 'desc',
+            status: 'complete'
+          }
+        });
+        
+        return {
+          data: response.data.data.map(mapAnimeData),
+          pagination: response.data.pagination
+        };
+      });
     } catch (error) {
       console.error('Error fetching anime list:', error);
       throw error;
@@ -74,18 +78,22 @@ export const animeService = {
 
   async searchAnime(query: string, page: number = 1): Promise<AnimeResponse> {
     try {
-      const response = await axios.get(`${API_BASE_URL}/anime`, {
-        params: {
-          q: query,
-          page,
-          limit: 20
-        }
-      });
+      await delay(1500);
       
-      return {
-        data: response.data.data.map(mapAnimeData),
-        pagination: response.data.pagination
-      };
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime`, {
+          params: {
+            q: query,
+            page,
+            limit: 20
+          }
+        });
+        
+        return {
+          data: response.data.data.map(mapAnimeData),
+          pagination: response.data.pagination
+        };
+      });
     } catch (error) {
       console.error('Error searching anime:', error);
       throw error;
@@ -95,11 +103,14 @@ export const animeService = {
   async getAnimeById(id: number): Promise<AnimeDetailsResponse> {
     try {
       await delay(500);
-      const response = await axios.get(`${API_BASE_URL}/anime/${id}`);
       
-      return {
-        data: mapAnimeData(response.data.data)
-      };
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime/${id}`);
+        
+        return {
+          data: mapAnimeData(response.data.data)
+        };
+      });
     } catch (error) {
       console.error(`Error fetching anime with id ${id}:`, error);
       throw error;
@@ -129,18 +140,22 @@ export const animeService = {
 
   async getAnimeByGenre(genreId: number, page: number = 1): Promise<AnimeResponse> {
     try {
-      const response = await axios.get(`${API_BASE_URL}/anime`, {
-        params: {
-          genres: genreId,
-          page,
-          limit: 20
-        }
-      });
+      await delay(1200);
       
-      return {
-        data: response.data.data.map(mapAnimeData),
-        pagination: response.data.pagination
-      };
+      return await retryWithBackoff(async () => {
+        const response = await axios.get(`${API_BASE_URL}/anime`, {
+          params: {
+            genres: genreId,
+            page,
+            limit: 20
+          }
+        });
+        
+        return {
+          data: response.data.data.map(mapAnimeData),
+          pagination: response.data.pagination
+        };
+      });
     } catch (error) {
       console.error(`Error fetching anime by genre ${genreId}:`, error);
       throw error;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { favoritesService } from '../services/favoritesService';
 import { Anime } from '../types/anime';
@@ -216,7 +216,7 @@ const TrailerContainer = styled.div`
 `;
 
 function AnimeDetailsPage() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   const { id } = useParams<{ id: string }>();
   const [anime, setAnime] = useState<Anime | null>(null);
   const [loading, setLoading] = useState(true);
@@ -280,7 +280,7 @@ function AnimeDetailsPage() {
   
   return (
     <Container>
-      <BackLink to="/anime" theme={theme}>Вернуться к каталогу</BackLink>
+      <BackLink to="/anime" theme={theme}>{t('home.go_to_catalog')}</BackLink>
       
       {loading ? (
         <Loading />
@@ -296,7 +296,7 @@ function AnimeDetailsPage() {
                 isFavorite={isFavorite}
                 theme={theme}
               >
-                {isFavorite ? '♥ В избранном' : '♡ Добавить в избранное'}
+                {isFavorite ? t('details.remove_from_favorites') : t('details.add_to_favorites')}
               </FavoriteButton>
             </ImageContainer>
             
@@ -307,22 +307,22 @@ function AnimeDetailsPage() {
               )}
               
               <Score theme={theme}>
-                <ScoreValue theme={theme}>{anime.score.toFixed(1)}</ScoreValue>
+                <ScoreValue theme={theme}>{anime.score ? anime.score.toFixed(1) : 'N/A'}</ScoreValue>
               </Score>
               
               <InfoItem>
-                <InfoLabel theme={theme}>Эпизоды:</InfoLabel>
+                <InfoLabel theme={theme}>{t('details.episodes')}:</InfoLabel>
                 <InfoValue theme={theme}>{anime.episodes}</InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>Статус:</InfoLabel>
+                <InfoLabel theme={theme}>{t('details.status')}:</InfoLabel>
                 <InfoValue theme={theme}>{anime.status}</InfoValue>
               </InfoItem>
               
               {anime.aired && (
                 <InfoItem>
-                  <InfoLabel theme={theme}>Период выхода:</InfoLabel>
+                  <InfoLabel theme={theme}>{t('details.aired')}:</InfoLabel>
                   <InfoValue theme={theme}>
                     {new Date(anime.aired.from).toLocaleDateString()} 
                     {anime.aired.to && ` - ${new Date(anime.aired.to).toLocaleDateString()}`}
@@ -331,24 +331,24 @@ function AnimeDetailsPage() {
               )}
               
               <InfoItem>
-                <InfoLabel theme={theme}>Источник:</InfoLabel>
+                <InfoLabel theme={theme}>{t('details.source')}:</InfoLabel>
                 <InfoValue theme={theme}>{anime.source}</InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>Студии:</InfoLabel>
+                <InfoLabel theme={theme}>{t('details.studios')}:</InfoLabel>
                 <InfoValue theme={theme}>
                   {anime.studios.map(studio => studio.name).join(', ')}
                 </InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>Рейтинг:</InfoLabel>
+                <InfoLabel theme={theme}>{t('details.rating')}:</InfoLabel>
                 <InfoValue theme={theme}>{anime.rating}</InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>Длительность:</InfoLabel>
+                <InfoLabel theme={theme}>{t('details.duration')}:</InfoLabel>
                 <InfoValue theme={theme}>{anime.duration}</InfoValue>
               </InfoItem>
               
@@ -363,17 +363,17 @@ function AnimeDetailsPage() {
           </AnimeHeader>
           
           <Synopsis>
-            <SynopsisTitle theme={theme}>Описание</SynopsisTitle>
+            <SynopsisTitle theme={theme}>{t('details.synopsis')}</SynopsisTitle>
             <SynopsisText theme={theme}>{anime.synopsis}</SynopsisText>
           </Synopsis>
           
           {anime.trailer_url && (
             <TrailerSection>
-              <TrailerTitle theme={theme}>Трейлер</TrailerTitle>
+              <TrailerTitle theme={theme}>{t('details.trailer')}</TrailerTitle>
               <TrailerContainer>
                 <iframe 
                   src={anime.trailer_url} 
-                  title={`${anime.title} трейлер`}
+                  title={`${anime.title} ${t('details.trailer')}`}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

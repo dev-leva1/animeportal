@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 
 interface PaginationProps {
   currentPage: number;
@@ -49,7 +49,7 @@ const PageEllipsis = styled.span`
 `;
 
 function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  const { theme } = useTheme();
+  const { theme } = useApp();
   
   const getPageNumbers = () => {
     const pageNumbers = [];

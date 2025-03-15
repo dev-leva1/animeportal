@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 
 const HeaderContainer = styled.header`
   background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
@@ -82,6 +82,23 @@ const ThemeToggle = styled.button`
   }
 `;
 
+const LanguageToggle = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    color: #ff5f5f;
+  }
+`;
+
 const MobileMenuButton = styled.button`
   display: none;
   background: none;
@@ -114,14 +131,15 @@ const NavLinks = styled.div<{ isOpen: boolean; theme: string }>`
 `;
 
 function Header() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/anime?search=${encodeURIComponent(searchQuery)}`;
+      navigate(`/anime?search=${encodeURIComponent(searchQuery)}`);
     }
   };
   
@@ -129,7 +147,7 @@ function Header() {
     <HeaderContainer theme={theme}>
       <NavContainer>
         <Logo>
-          <Link to="/">АнимеПортал</Link>
+          <Link to="/">{t('site.name')}</Link>
         </Logo>
         
         <MobileMenuButton 
@@ -141,22 +159,28 @@ function Header() {
         
         <Nav>
           <NavLinks isOpen={isMenuOpen} theme={theme}>
-            <NavLink to="/" theme={theme}>Главная</NavLink>
-            <NavLink to="/anime" theme={theme}>Каталог</NavLink>
-            <NavLink to="/favorites" theme={theme}>Избранное</NavLink>
+            <NavLink to="/" theme={theme}>{t('header.home')}</NavLink>
+            <NavLink to="/anime" theme={theme}>{t('header.catalog')}</NavLink>
+            <NavLink to="/favorites" theme={theme}>{t('header.favorites')}</NavLink>
           </NavLinks>
           
           <form onSubmit={handleSearch}>
             <SearchContainer>
               <SearchInput 
                 type="text" 
-                placeholder="Поиск аниме..." 
+                placeholder={t('header.search')} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 theme={theme}
               />
             </SearchContainer>
           </form>
+          
+          <LanguageToggle onClick={toggleLanguage} theme={theme} aria-label="Change language">
+            <span role="img" aria-label={language === 'ru' ? 'Russian' : 'English'}>
+              {language === 'ru' ? '🇷🇺' : '🇬🇧'}
+            </span>
+          </LanguageToggle>
           
           <ThemeToggle onClick={toggleTheme} theme={theme}>
             {theme === 'dark' ? '☀️' : '🌙'}

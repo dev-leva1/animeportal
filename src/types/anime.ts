@@ -5,7 +5,7 @@ export interface Anime {
   image_url: string;
   synopsis: string;
   episodes: number;
-  score: number;
+  score: number | null;
   aired?: {
     from: string;
     to: string | null;

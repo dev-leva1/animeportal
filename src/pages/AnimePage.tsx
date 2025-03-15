@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { Anime } from '../types/anime';
 import AnimeCard from '../components/AnimeCard';
@@ -92,20 +92,20 @@ const NoResults = styled.div`
 `;
 
 const genres = [
-  { id: 1, name: 'Экшен' },
-  { id: 2, name: 'Приключения' },
-  { id: 4, name: 'Комедия' },
-  { id: 8, name: 'Драма' },
-  { id: 10, name: 'Фэнтези' },
-  { id: 7, name: 'Мистика' },
-  { id: 22, name: 'Романтика' },
-  { id: 24, name: 'Научная фантастика' },
-  { id: 36, name: 'Повседневность' },
-  { id: 30, name: 'Спорт' }
+  { id: 1, name: 'genre.action' },
+  { id: 2, name: 'genre.adventure' },
+  { id: 4, name: 'genre.comedy' },
+  { id: 8, name: 'genre.drama' },
+  { id: 10, name: 'genre.fantasy' },
+  { id: 7, name: 'genre.mystery' },
+  { id: 22, name: 'genre.romance' },
+  { id: 24, name: 'genre.sci_fi' },
+  { id: 36, name: 'genre.slice_of_life' },
+  { id: 30, name: 'genre.sports' }
 ];
 
 function AnimePage() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialSearchQuery = queryParams.get('search') || '';
@@ -136,8 +136,12 @@ function AnimePage() {
         setAnimeList(response.data);
         setTotalPages(response.pagination.last_visible_page);
         setError(null);
-      } catch (err) {
-        setError('Не удалось загрузить список аниме. Пожалуйста, попробуйте позже.');
+      } catch (err: any) {
+        if (err.response && err.response.status === 429) {
+          setError('Превышен лимит запросов к API. Пожалуйста, подождите несколько секунд и попробуйте снова.');
+        } else {
+          setError('Не удалось загрузить список аниме. Пожалуйста, попробуйте позже.');
+        }
         console.error('Error fetching anime:', err);
       } finally {
         setLoading(false);
@@ -171,37 +175,43 @@ function AnimePage() {
     setError(null);
     setLoading(true);
     
-    let fetchPromise;
-    if (searchQuery) {
-      fetchPromise = animeService.searchAnime(searchQuery, currentPage);
-    } else if (selectedGenre) {
-      fetchPromise = animeService.getAnimeByGenre(selectedGenre, currentPage);
-    } else {
-      fetchPromise = animeService.getAnimeList(currentPage);
-    }
-    
-    fetchPromise
-      .then(response => {
-        setAnimeList(response.data);
-        setTotalPages(response.pagination.last_visible_page);
-      })
-      .catch(err => {
-        setError('Не удалось загрузить список аниме. Пожалуйста, попробуйте позже.');
-        console.error('Error retrying anime fetch:', err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    setTimeout(() => {
+      let fetchPromise;
+      if (searchQuery) {
+        fetchPromise = animeService.searchAnime(searchQuery, currentPage);
+      } else if (selectedGenre) {
+        fetchPromise = animeService.getAnimeByGenre(selectedGenre, currentPage);
+      } else {
+        fetchPromise = animeService.getAnimeList(currentPage);
+      }
+      
+      fetchPromise
+        .then(response => {
+          setAnimeList(response.data);
+          setTotalPages(response.pagination.last_visible_page);
+        })
+        .catch(err => {
+          if (err.response && err.response.status === 429) {
+            setError('Превышен лимит запросов к API. Пожалуйста, подождите несколько секунд и попробуйте снова.');
+          } else {
+            setError('Не удалось загрузить список аниме. Пожалуйста, попробуйте позже.');
+          }
+          console.error('Error retrying anime fetch:', err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 2000);
   };
   
   const getPageTitle = () => {
     if (searchQuery) {
-      return `Результаты поиска: ${searchQuery}`;
+      return `${t('anime.search_results')}: ${searchQuery}`;
     } else if (selectedGenre) {
       const genre = genres.find(g => g.id === selectedGenre);
-      return `Аниме жанра: ${genre?.name || 'Выбранный жанр'}`;
+      return `${t('anime.genre')}: ${genre ? t(genre.name) : ''}`;
     } else {
-      return 'Каталог аниме';
+      return t('anime.catalog');
     }
   };
   
@@ -213,12 +223,12 @@ function AnimePage() {
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem', flex: 1 }}>
           <SearchInput 
             type="text" 
-            placeholder="Поиск аниме..." 
+            placeholder={t('header.search')} 
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             theme={theme}
           />
-          <FilterButton type="submit">Найти</FilterButton>
+          <FilterButton type="submit">{t('anime.search')}</FilterButton>
         </form>
         
         <SelectFilter 
@@ -226,10 +236,10 @@ function AnimePage() {
           onChange={handleGenreChange}
           theme={theme}
         >
-          <option value="">Все жанры</option>
+          <option value="">{t('anime.all_genres')}</option>
           {genres.map(genre => (
             <option key={genre.id} value={genre.id}>
-              {genre.name}
+              {t(genre.name)}
             </option>
           ))}
         </SelectFilter>
@@ -241,7 +251,7 @@ function AnimePage() {
         <ErrorMessage message={error} onRetry={handleRetry} />
       ) : animeList.length === 0 ? (
         <NoResults theme={theme}>
-          Ничего не найдено. Попробуйте изменить параметры поиска.
+          {t('anime.no_results')}
         </NoResults>
       ) : (
         <>

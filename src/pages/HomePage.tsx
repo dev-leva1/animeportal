@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { Anime } from '../types/anime';
 import AnimeCard from '../components/AnimeCard';
@@ -73,6 +73,13 @@ const SectionTitle = styled.h2`
   }
 `;
 
+const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
 const AnimeGrid = styled.div`
   display: flex;
   overflow-x: auto;
@@ -141,9 +148,6 @@ const SectionContainer = styled.div`
 `;
 
 const ViewAllLink = styled(Link)`
-  display: block;
-  text-align: right;
-  margin-top: 1rem;
   color: #ff5f5f;
   text-decoration: none;
   font-weight: 500;
@@ -156,7 +160,7 @@ const ViewAllLink = styled(Link)`
 `;
 
 function HomePage() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   const [topAnime, setTopAnime] = useState<Anime[]>([]);
   const [seasonalAnime, setSeasonalAnime] = useState<Anime[]>([]);
   const [recommendedAnime, setRecommendedAnime] = useState<Anime[]>([]);
@@ -295,14 +299,17 @@ function HomePage() {
   return (
     <div>
       <HeroSection>
-        <HeroTitle>Добро пожаловать на АнимеПортал</HeroTitle>
+        <HeroTitle>{t('home.welcome')}</HeroTitle>
         <HeroSubtitle>
-          Исследуйте мир аниме, находите новые сериалы и фильмы, добавляйте их в избранное и следите за своими любимыми тайтлами.
+          {t('home.subtitle')}
         </HeroSubtitle>
-        <HeroButton to="/anime">Перейти к каталогу</HeroButton>
+        <HeroButton to="/anime">{t('home.go_to_catalog')}</HeroButton>
       </HeroSection>
       
-      <SectionTitle theme={theme}>Популярные аниме</SectionTitle>
+      <SectionHeader>
+        <SectionTitle theme={theme}>{t('home.popular_anime')}</SectionTitle>
+        <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
+      </SectionHeader>
       
       {loading.top ? (
         <Loading />
@@ -315,8 +322,8 @@ function HomePage() {
             onClick={() => scroll(topAnimeRef, 'left')}
           />
           <AnimeGrid ref={topAnimeRef}>
-            {topAnime.map(anime => (
-              <AnimeCardWrapper key={anime.id}>
+            {topAnime.map((anime, index) => (
+              <AnimeCardWrapper key={`top-${anime.id}-${index}`}>
                 <AnimeCard anime={anime} />
               </AnimeCardWrapper>
             ))}
@@ -325,11 +332,13 @@ function HomePage() {
             direction="right" 
             onClick={() => scroll(topAnimeRef, 'right')}
           />
-          <ViewAllLink to="/anime">Смотреть все &rarr;</ViewAllLink>
         </SectionContainer>
       )}
 
-      <SectionTitle theme={theme}>Сезонное аниме</SectionTitle>
+      <SectionHeader>
+        <SectionTitle theme={theme}>{t('home.seasonal_anime')}</SectionTitle>
+        <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
+      </SectionHeader>
       
       {loading.seasonal ? (
         <Loading />
@@ -342,8 +351,8 @@ function HomePage() {
             onClick={() => scroll(seasonalAnimeRef, 'left')}
           />
           <AnimeGrid ref={seasonalAnimeRef}>
-            {seasonalAnime.map(anime => (
-              <AnimeCardWrapper key={anime.id}>
+            {seasonalAnime.map((anime, index) => (
+              <AnimeCardWrapper key={`seasonal-${anime.id}-${index}`}>
                 <AnimeCard anime={anime} />
               </AnimeCardWrapper>
             ))}
@@ -352,11 +361,13 @@ function HomePage() {
             direction="right" 
             onClick={() => scroll(seasonalAnimeRef, 'right')}
           />
-          <ViewAllLink to="/anime">Смотреть все &rarr;</ViewAllLink>
         </SectionContainer>
       )}
 
-      <SectionTitle theme={theme}>Рекомендованное аниме</SectionTitle>
+      <SectionHeader>
+        <SectionTitle theme={theme}>{t('home.recommended_anime')}</SectionTitle>
+        <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
+      </SectionHeader>
       
       {loading.recommended ? (
         <Loading />
@@ -369,8 +380,8 @@ function HomePage() {
             onClick={() => scroll(recommendedAnimeRef, 'left')}
           />
           <AnimeGrid ref={recommendedAnimeRef}>
-            {recommendedAnime.map(anime => (
-              <AnimeCardWrapper key={anime.id}>
+            {recommendedAnime.map((anime, index) => (
+              <AnimeCardWrapper key={`recommended-${anime.id}-${index}`}>
                 <AnimeCard anime={anime} />
               </AnimeCardWrapper>
             ))}
@@ -379,7 +390,6 @@ function HomePage() {
             direction="right" 
             onClick={() => scroll(recommendedAnimeRef, 'right')}
           />
-          <ViewAllLink to="/anime">Смотреть все &rarr;</ViewAllLink>
         </SectionContainer>
       )}
     </div>

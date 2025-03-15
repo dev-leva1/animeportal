@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 import { favoritesService } from '../services/favoritesService';
 import { Anime } from '../types/anime';
 import AnimeCard from '../components/AnimeCard';
@@ -58,7 +58,7 @@ const EmptyStateLink = styled.a`
 `;
 
 function FavoritesPage() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   const [favorites, setFavorites] = useState<Anime[]>([]);
   
   useEffect(() => {
@@ -82,19 +82,15 @@ function FavoritesPage() {
     };
   }, []);
   
-  const handleFavoritesChange = () => {
-    setFavorites(favoritesService.getFavorites());
-  };
-  
   return (
     <div>
-      <PageTitle theme={theme}>Избранные аниме</PageTitle>
+      <PageTitle theme={theme}>{t('favorites.title')}</PageTitle>
       
       {favorites.length === 0 ? (
         <EmptyState theme={theme}>
           <EmptyStateIcon>🤔</EmptyStateIcon>
-          <EmptyStateText>У вас пока нет избранных аниме</EmptyStateText>
-          <EmptyStateLink href="/anime">Перейти к каталогу</EmptyStateLink>
+          <EmptyStateText>{t('favorites.empty')}</EmptyStateText>
+          <EmptyStateLink href="/anime">{t('home.go_to_catalog')}</EmptyStateLink>
         </EmptyState>
       ) : (
         <AnimeGrid>

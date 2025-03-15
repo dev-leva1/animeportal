@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 
 interface ErrorMessageProps {
   message: string;
@@ -48,7 +48,7 @@ const RetryButton = styled.button`
 `;
 
 function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   
   return (
     <ErrorContainer theme={theme}>
@@ -56,7 +56,7 @@ function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
       <ErrorText theme={theme}>{message}</ErrorText>
       {onRetry && (
         <RetryButton onClick={onRetry}>
-          Попробовать снова
+          {t('error.retry')}
         </RetryButton>
       )}
     </ErrorContainer>

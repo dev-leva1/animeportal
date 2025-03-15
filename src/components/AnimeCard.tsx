@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { Anime } from '../types/anime';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 import { favoritesService } from '../services/favoritesService';
 import { useState } from 'react';
 
@@ -119,7 +119,7 @@ const FavoriteButton = styled.button<FavoriteButtonProps>`
 `;
 
 function AnimeCard({ anime }: AnimeCardProps) {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   const [isFavorite, setIsFavorite] = useState(favoritesService.isFavorite(anime.id));
   
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -143,7 +143,7 @@ function AnimeCard({ anime }: AnimeCardProps) {
           <FavoriteButton 
             onClick={handleFavoriteClick} 
             isFavorite={isFavorite}
-            aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
+            aria-label={isFavorite ? t('details.remove_from_favorites') : t('details.add_to_favorites')}
           >
             {isFavorite ? '♥' : '♡'}
           </FavoriteButton>
@@ -151,8 +151,8 @@ function AnimeCard({ anime }: AnimeCardProps) {
         <CardContent>
           <Title theme={theme}>{anime.title}</Title>
           <Info>
-            <Score theme={theme}>{anime.score.toFixed(1)}</Score>
-            <Episodes theme={theme}>{anime.episodes} эп.</Episodes>
+            <Score theme={theme}>{anime.score ? anime.score.toFixed(1) : 'N/A'}</Score>
+            <Episodes theme={theme}>{anime.episodes} {t('anime.episodes')}</Episodes>
           </Info>
         </CardContent>
       </Card>

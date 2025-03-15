@@ -1,5 +1,5 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -8,7 +8,8 @@ import AnimePage from './pages/AnimePage';
 import AnimeDetailsPage from './pages/AnimeDetailsPage';
 import FavoritesPage from './pages/FavoritesPage';
 import NotFoundPage from './pages/NotFoundPage';
-import { ThemeProvider } from './context/ThemeContext';
+import { AppProvider } from './context/ThemeContext';
+import { translations } from './translations';
 import './App.css';
 
 const AppContainer = styled.div`
@@ -29,13 +30,32 @@ const MainContent = styled.main`
 
 function App() {
   const [theme, setTheme] = useState('dark');
+  const [language, setLanguage] = useState('ru');
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
   };
 
+  const toggleLanguage = () => {
+    setLanguage(prevLanguage => prevLanguage === 'ru' ? 'en' : 'ru');
+  };
+  
+  const t = useCallback((key: string): string => {
+    if (key in translations) {
+      return translations[key][language as 'ru' | 'en'];
+    }
+    return key;
+  }, [language]);
+  
+  useEffect(() => {
+    const pageTitle = document.getElementById('page-title');
+    if (pageTitle) {
+      pageTitle.textContent = t('page.title');
+    }
+  }, [language, t]);
+
   return (
-    <ThemeProvider value={{ theme, toggleTheme }}>
+    <AppProvider value={{ theme, toggleTheme, language, toggleLanguage, t }}>
       <AppContainer theme={theme}>
         <Router>
           <Header />
@@ -51,7 +71,7 @@ function App() {
           <Footer />
         </Router>
       </AppContainer>
-    </ThemeProvider>
+    </AppProvider>
   );
 }
 

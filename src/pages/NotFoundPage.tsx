@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 
 const Container = styled.div`
   display: flex;
@@ -71,17 +71,17 @@ const Illustration = styled.div`
 `;
 
 function NotFoundPage() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   
   return (
     <Container>
       <Illustration>🤷‍♂️</Illustration>
       <ErrorCode>404</ErrorCode>
-      <Title theme={theme}>Страница не найдена</Title>
+      <Title theme={theme}>{t('notfound.title')}</Title>
       <Description theme={theme}>
-        Кажется, вы заблудились в мире аниме. Страница, которую вы ищете, не существует или была перемещена.
+        {t('notfound.message')}
       </Description>
-      <HomeButton to="/">Вернуться на главную</HomeButton>
+      <HomeButton to="/">{t('notfound.back_home')}</HomeButton>
     </Container>
   );
 }

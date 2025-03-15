@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/ThemeContext';
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -33,12 +33,12 @@ const LoadingText = styled.p`
 `;
 
 function Loading() {
-  const { theme } = useTheme();
+  const { theme, t } = useApp();
   
   return (
     <LoadingContainer>
       <Spinner theme={theme} />
-      <LoadingText theme={theme}>Загрузка...</LoadingText>
+      <LoadingText theme={theme}>{t('loading')}</LoadingText>
     </LoadingContainer>
   );
 }
