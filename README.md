@@ -1,57 +1,91 @@
-# АнимеПортал
+# Anime Portal
 
-АнимеПортал - это веб-приложение для просмотра аниме, созданное с использованием Vite, React и TypeScript. Приложение позволяет пользователям исследовать мир аниме, находить новые сериалы и фильмы, добавлять их в избранное и следить за своими любимыми тайтлами.
+A modern web application for exploring anime and manga, built with React, TypeScript, and Vite.
 
-## Установка
+[README.ru.md](https://github.com/dev-leva1/animeportal/blob/main/README.ru.md)
 
-1. Клонируйте репозиторий:
+## Features
 
+- **Anime Catalog**: Browse through a vast collection of anime titles
+- **Manga Catalog**: Explore manga with filtering and search capabilities
+- **Detailed Information**: View comprehensive details about anime and manga titles
+- **Character Information**: Explore characters from your favorite anime
+- **Staff Details**: Learn about the creators behind the anime
+- **Reviews**: Read and browse user reviews
+- **Search Functionality**: Find specific anime or manga titles
+- **Favorites System**: Save your favorite anime and manga for quick access
+- **Random Anime**: Discover new anime with the random anime feature
+- **Responsive Design**: Enjoy a seamless experience on any device
+- **Dark/Light Theme**: Choose your preferred visual theme
+- **Multilingual Support**: Switch between English and Russian languages
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14.0.0 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
    ```bash
    git clone https://github.com/dev-leva1/animeportal.git
-   ```
-
-2. Перейдите в директорию проекта:
-
-   ```bash
    cd animeportal
    ```
 
-3. Установите зависимости:
-
+2. Install dependencies:
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-## Запуск
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-Для запуска приложения в режиме разработки используйте команду:
+4. Open your browser and navigate to `http://localhost:5173`
 
-```bash
-npm run dev
+## Project Structure
+
+```
+animeportal/
+├── src/
+│   ├── assets/         # Static assets (images, icons)
+│   ├── components/     # Reusable UI components
+│   ├── context/        # React context providers
+│   ├── pages/          # Application pages
+│   ├── services/       # API services
+│   ├── types/          # TypeScript type definitions
+│   ├── App.tsx         # Main application component
+│   ├── main.tsx        # Application entry point
+│   └── translations.ts # Language translations
+├── public/             # Public assets
+├── index.html          # HTML entry point
+├── package.json        # Project dependencies and scripts
+├── tsconfig.json       # TypeScript configuration
+└── vite.config.ts      # Vite configuration
 ```
 
-Приложение будет доступно по адресу [http://localhost:3000](http://localhost:3000).
+## Technologies Used
 
-## Используемые технологии
+- **React**: UI library
+- **TypeScript**: Type-safe JavaScript
+- **Vite**: Build tool and development server
+- **Emotion**: CSS-in-JS styling
+- **React Router**: Client-side routing
+- **Jikan API**: Anime and manga data source
 
-- **Vite** - современный инструмент сборки для разработки приложений на JavaScript.
-- **React** - библиотека для создания пользовательских интерфейсов.
-- **TypeScript** - язык программирования, который является надстройкой над JavaScript и добавляет статическую типизацию.
-- **Axios** - библиотека для выполнения HTTP-запросов.
-- **Emotion** - библиотека для стилизации компонентов.
+## License
 
-## Функциональность
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-- Просмотр популярных аниме.
-- Просмотр сезонного аниме.
-- Просмотр рекомендованного аниме.
-- Возможность добавления аниме в избранное.
-- Интуитивно понятный интерфейс с возможностью горизонтальной прокрутки для списков аниме.
+## Acknowledgments
 
-## Вклад
-
-Если вы хотите внести свой вклад в проект, пожалуйста, создайте форк репозитория и отправьте пулл-запрос с вашими изменениями.
-
-## Лицензия
-
-Этот проект лицензирован под MIT License - подробности смотрите в файле [LICENSE](LICENSE).
+- [Jikan API](https://jikan.moe/) for providing anime and manga data
+- [MyAnimeList](https://myanimelist.net/) as the original data source
+- All the contributors and open-source libraries that made this project possibles
