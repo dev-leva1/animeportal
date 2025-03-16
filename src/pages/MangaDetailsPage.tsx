@@ -202,12 +202,43 @@ function MangaDetailsPage() {
       favoritesService.removeFromFavorites(manga.id);
     } else {
       favoritesService.addToFavorites({
-        ...manga,
+        mal_id: manga.id,
+        id: manga.id,
+        title: manga.title,
+        title_japanese: manga.title_japanese,
+        image_url: manga.image_url,
+        images: {
+          jpg: {
+            image_url: manga.image_url,
+            small_image_url: manga.image_url,
+            large_image_url: manga.image_url
+          },
+          webp: {
+            image_url: manga.image_url,
+            small_image_url: manga.image_url,
+            large_image_url: manga.image_url
+          }
+        },
+        synopsis: manga.synopsis,
         episodes: 0,
+        score: manga.score,
+        aired: {
+          from: manga.published?.from || '',
+          to: manga.published?.to || null,
+          string: `${manga.published?.from || ''} to ${manga.published?.to || 'now'}`
+        },
+        status: manga.status,
+        genres: manga.genres.map(genre => ({
+          mal_id: genre.id,
+          name: genre.name,
+          type: 'manga',
+          url: ''
+        })),
         studios: [],
         source: manga.type,
         rating: 'Unknown',
-        duration: 'N/A'
+        duration: 'N/A',
+        type: manga.type
       });
     }
     
