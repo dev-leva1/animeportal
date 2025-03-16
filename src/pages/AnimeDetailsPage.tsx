@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
+//import { useAuth } from '../context/AuthContext';
 import { animeService } from '../services/animeService';
 import { favoritesService } from '../services/favoritesService';
 import { Anime, Character, StaffMember, Review } from '../types/anime';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import AnimePlayer from '../components/AnimePlayer';
 
 const Container = styled.div`
   display: flex;
@@ -58,30 +60,114 @@ const AnimeImage = styled.img`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
+const ActionButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+`;
+
+const FavoriteButton = styled.button<{ isFavorite: boolean }>`
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: none;
+  background-color: ${props => props.isFavorite ? '#ff5f5f' : '#333'};
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: ${props => props.isFavorite ? '#ff4545' : '#444'};
+  }
+`;
+
+const WatchButton = styled.button`
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  background-color: transparent;
+  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  font-weight: 500;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
 const AnimeInfo = styled.div`
   flex: 1;
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  margin: 0 0 0.5rem;
   font-size: 2rem;
+  margin: 0 0 0.5rem;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
 `;
 
-const JapaneseTitle = styled.h2`
+const EnglishTitle = styled.h2`
   color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
   margin: 0 0 1.5rem;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: normal;
 `;
 
+const ScoreContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+`;
+
+const Score = styled.div`
+  background-color: #ff5f5f;
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+`;
+
+const ScoreLabel = styled.span`
+  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f5f5f5'};
+  padding: 1rem;
+  border-radius: 8px;
+`;
+
 const InfoItem = styled.div`
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background-color: ${props => props.theme === 'dark' ? '#333' : '#ffffff'};
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+`;
+
+const InfoLabelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const InfoIcon = styled.span`
+  font-size: 1rem;
+  color: #ff5f5f;
 `;
 
 const InfoLabel = styled.span`
+  font-weight: 600;
   color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
-  margin-right: 0.5rem;
+  font-size: 0.875rem;
 `;
 
 const InfoValue = styled.span`
@@ -89,74 +175,34 @@ const InfoValue = styled.span`
   font-weight: 500;
 `;
 
-const Score = styled.div`
-  display: inline-flex;
-  align-items: center;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  margin: 1rem 0;
-  
-  &::before {
-    content: '★';
-    color: #ffc107;
-    margin-right: 0.5rem;
-    font-size: 1.2rem;
-  }
-`;
-
-const GenresList = styled.div`
+const GenreList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 1rem 0;
+  margin-bottom: 1.5rem;
 `;
 
 const GenreTag = styled.span`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 `;
 
-const FavoriteButton = styled.button<{ isFavorite: boolean; theme: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: ${props => props.isFavorite ? '#ff5f5f' : 'transparent'};
-  color: ${props => props.isFavorite 
-    ? '#ffffff' 
-    : props.theme === 'dark' ? '#ffffff' : '#121212'};
-  border: 2px solid ${props => props.isFavorite ? '#ff5f5f' : '#ff5f5f'};
-  border-radius: 4px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  
-  &:hover {
-    background-color: ${props => props.isFavorite ? '#ff4040' : 'rgba(255, 95, 95, 0.1)'};
-  }
+const Synopsis = styled.div`
+  margin-top: 1.5rem;
 `;
 
-const TrailerContainer = styled.div`
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  overflow: hidden;
-  border-radius: 8px;
-  
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
+const SynopsisTitle = styled.h3`
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+`;
+
+const SynopsisText = styled.p`
+  line-height: 1.6;
+  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
 `;
 
 const Section = styled.section`
@@ -164,35 +210,25 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  margin: 0 0 1rem;
   font-size: 1.5rem;
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#333' : '#eee'};
+  margin-bottom: 1rem;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
   padding-bottom: 0.5rem;
+  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#333' : '#eee'};
 `;
 
-const Synopsis = styled.div`
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
-  line-height: 1.6;
-  white-space: pre-line;
-`;
-
-const CharactersGrid = styled.div`
+const CharacterGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
 `;
 
 const CharacterCard = styled.div`
   display: flex;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const CharacterImage = styled.img`
@@ -206,54 +242,29 @@ const CharacterInfo = styled.div`
   flex: 1;
 `;
 
-const CharacterName = styled.h3`
+const CharacterName = styled.div`
+  font-weight: 500;
+  margin-bottom: 0.25rem;
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
 `;
 
 const CharacterRole = styled.div`
+  font-size: 0.875rem;
   color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-`;
-
-const VoiceActors = styled.div`
-  font-size: 0.85rem;
-`;
-
-const VoiceActor = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 0.25rem;
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
-`;
-
-const VoiceActorName = styled.span`
-  margin-right: 0.5rem;
-`;
-
-const VoiceActorLanguage = styled.span`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
-  font-size: 0.8rem;
 `;
 
 const StaffGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
 `;
 
 const StaffCard = styled.div`
   display: flex;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const StaffImage = styled.img`
@@ -267,101 +278,71 @@ const StaffInfo = styled.div`
   flex: 1;
 `;
 
-const StaffName = styled.h3`
+const StaffName = styled.div`
+  font-weight: 500;
+  margin-bottom: 0.25rem;
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
 `;
 
-const StaffPositions = styled.div`
+const StaffPosition = styled.div`
+  font-size: 0.875rem;
   color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
-  font-size: 0.9rem;
 `;
 
-const ReviewsList = styled.div`
+const ReviewList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 `;
 
 const ReviewCard = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
   border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const ReviewHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
-`;
-
-const ReviewUser = styled.div`
-  display: flex;
   align-items: center;
+  margin-bottom: 0.75rem;
 `;
 
-const ReviewUserImage = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 0.75rem;
-`;
+const ReviewerInfo = styled.div``;
 
-const ReviewUserName = styled.span`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+const ReviewerName = styled.div`
   font-weight: 500;
-`;
-
-const ReviewScore = styled.div`
-  display: flex;
-  align-items: center;
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  
-  &::before {
-    content: '★';
-    color: #ffc107;
-    margin-right: 0.25rem;
-  }
 `;
 
 const ReviewDate = styled.div`
+  font-size: 0.75rem;
   color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
 `;
 
-const ReviewContent = styled.div<{ expanded: boolean }>`
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+const ReviewScore = styled.div`
+  background-color: #ff5f5f;
+  color: white;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+`;
+
+const ReviewContent = styled.div`
   line-height: 1.6;
-  overflow: hidden;
-  max-height: ${props => props.expanded ? 'none' : '200px'};
-  position: relative;
-  
-  &::after {
-    content: '';
-    display: ${props => props.expanded ? 'none' : 'block'};
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'}
-    );
-  }
+  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  margin-bottom: 0.75rem;
 `;
 
-const ShowMoreButton = styled.button`
+const ExpandButton = styled.button`
   background: none;
   border: none;
   color: #ff5f5f;
   cursor: pointer;
-  padding: 0.5rem 0;
-  font-weight: 500;
+  padding: 0;
+  font-size: 0.875rem;
   
   &:hover {
     text-decoration: underline;
@@ -369,18 +350,18 @@ const ShowMoreButton = styled.button`
 `;
 
 const LoadMoreButton = styled.button`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  border: none;
+  padding: 0.75rem;
   border-radius: 4px;
-  padding: 0.75rem 1.5rem;
+  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  background-color: transparent;
+  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
   font-weight: 500;
   cursor: pointer;
   margin-top: 1rem;
-  transition: background-color 0.3s ease;
+  width: 100%;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#e0e0e0'};
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
   }
   
   &:disabled {
@@ -389,124 +370,118 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-const NoContent = styled.div`
-  text-align: center;
-  padding: 2rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+const ToggleButton = styled.button`
+  background: none;
+  border: none;
+  color: #ff5f5f;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  display: block;
+  margin: 1rem auto;
+  font-weight: 500;
+  
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 function AnimeDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const { theme, t } = useApp();
+//  const { isAuthenticated } = useAuth();
   const [anime, setAnime] = useState<Anime | null>(null);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [charactersLoading, setCharactersLoading] = useState(false);
-  const [staffLoading, setStaffLoading] = useState(false);
-  const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState(false);
-  const [expandedReviews, setExpandedReviews] = useState<Record<number, boolean>>({});
   const [reviewsPage, setReviewsPage] = useState(1);
-  const [hasMoreReviews, setHasMoreReviews] = useState(false);
+  const [hasMoreReviews, setHasMoreReviews] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [showPlayer, setShowPlayer] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<{
+    characters: boolean;
+    staff: boolean;
+    reviews: boolean;
+  }>({
+    characters: false,
+    staff: false,
+    reviews: false
+  });
   
   useEffect(() => {
-    const fetchAnimeDetails = async () => {
-      if (!id) return;
-      
-      setLoading(true);
-      setError(null);
-      
-      try {
-        const response = await animeService.getAnimeById(parseInt(id));
-        setAnime(response.data);
-        document.title = `${response.data.title} - ${t('site.name')}`;
-        
-        // Check if anime is in favorites
-        const favorites = favoritesService.getFavorites();
-        setIsFavorite(favorites.some(fav => fav.id === parseInt(id)));
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchAnimeDetails();
-  }, [id, t]);
-  
-  useEffect(() => {
-    const fetchCharacters = async () => {
-      if (!id) return;
-      
-      setCharactersLoading(true);
-      
-      try {
-        const response = await animeService.getAnimeCharacters(parseInt(id));
-        setCharacters(response.data);
-      } catch (error) {
-        console.error('Error fetching characters:', error);
-      } finally {
-        setCharactersLoading(false);
-      }
-    };
-    
-    if (anime) {
+    if (id) {
+      fetchAnimeDetails();
       fetchCharacters();
-    }
-  }, [id, anime]);
-  
-  useEffect(() => {
-    const fetchStaff = async () => {
-      if (!id) return;
-      
-      setStaffLoading(true);
-      
-      try {
-        const response = await animeService.getAnimeStaff(parseInt(id));
-        setStaff(response.data);
-      } catch (error) {
-        console.error('Error fetching staff:', error);
-      } finally {
-        setStaffLoading(false);
-      }
-    };
-    
-    if (anime) {
       fetchStaff();
-    }
-  }, [id, anime]);
-  
-  useEffect(() => {
-    const fetchReviews = async () => {
-      if (!id) return;
-      
-      setReviewsLoading(true);
-      
-      try {
-        const response = await animeService.getAnimeReviews(parseInt(id), 1);
-        setReviews(response.data);
-        setHasMoreReviews(response.pagination.has_next_page);
-        setReviewsPage(1);
-      } catch (error) {
-        console.error('Error fetching reviews:', error);
-      } finally {
-        setReviewsLoading(false);
-      }
-    };
-    
-    if (anime) {
       fetchReviews();
+      
+      if (favoritesService.isFavorite(Number(id))) {
+        setIsFavorite(true);
+      }
     }
-  }, [id, anime]);
+  }, [id]);
+  
+  const fetchAnimeDetails = async () => {
+    if (!id) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await animeService.getAnimeById(Number(id));
+      setAnime(response.data);
+    } catch (err) {
+      console.error('Error fetching anime details:', err);
+      setError(t('anime.error_loading'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const fetchCharacters = async () => {
+    if (!id) return;
+    
+    try {
+      const response = await animeService.getAnimeCharacters(Number(id));
+      setCharacters(response.data);
+    } catch (error) {
+      console.error('Error fetching characters:', error);
+    }
+  };
+  
+  const fetchStaff = async () => {
+    if (!id) return;
+    
+    try {
+      const response = await animeService.getAnimeStaff(Number(id));
+      setStaff(response.data);
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+    }
+  };
+  
+  const fetchReviews = async () => {
+    if (!id) return;
+    
+    try {
+      const response = await animeService.getAnimeReviews(Number(id), 1);
+      setReviews(response.data);
+      setHasMoreReviews(response.pagination.has_next_page);
+      setReviewsPage(2);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  };
   
   const handleFavoriteToggle = () => {
     if (!anime) return;
     
     if (isFavorite) {
-      favoritesService.removeFromFavorites(anime.id);
+      favoritesService.removeFromFavorites(anime.mal_id);
     } else {
       favoritesService.addToFavorites(anime);
     }
@@ -515,281 +490,378 @@ function AnimeDetailsPage() {
   };
   
   const handleRetry = () => {
-    if (!id) return;
     fetchAnimeDetails();
   };
   
-  const fetchAnimeDetails = async () => {
-    if (!id) return;
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await animeService.getAnimeById(parseInt(id));
-      setAnime(response.data);
-      document.title = `${response.data.title} - ${t('site.name')}`;
-      
-      // Check if anime is in favorites
-      const favorites = favoritesService.getFavorites();
-      setIsFavorite(favorites.some(fav => fav.id === parseInt(id)));
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
   const toggleReviewExpansion = (reviewId: number) => {
-    setExpandedReviews(prev => ({
-      ...prev,
-      [reviewId]: !prev[reviewId]
-    }));
+    setExpandedReviews(prev => {
+      if (prev.includes(reviewId)) {
+        return prev.filter(id => id !== reviewId);
+      } else {
+        return [...prev, reviewId];
+      }
+    });
   };
   
   const loadMoreReviews = async () => {
-    if (!id || reviewsLoading) return;
+    if (!id || isLoadingMore) return;
     
-    setReviewsLoading(true);
+    setIsLoadingMore(true);
     
     try {
-      const nextPage = reviewsPage + 1;
-      const response = await animeService.getAnimeReviews(parseInt(id), nextPage);
-      
+      const response = await animeService.getAnimeReviews(Number(id), reviewsPage);
       setReviews(prev => [...prev, ...response.data]);
-      setReviewsPage(nextPage);
       setHasMoreReviews(response.pagination.has_next_page);
+      setReviewsPage(prev => prev + 1);
     } catch (error) {
       console.error('Error loading more reviews:', error);
     } finally {
-      setReviewsLoading(false);
+      setIsLoadingMore(false);
     }
+  };
+  
+  const toggleSection = (section: 'characters' | 'staff' | 'reviews') => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
   };
   
   return (
     <Container>
-      <BackLink to="/anime" theme={theme}>{t('anime.back_to_catalog')}</BackLink>
+      <BackLink to="/anime" theme={theme}>
+        {t('anime.back_to_catalog')}
+      </BackLink>
       
-      {loading ? (
+      {isLoading ? (
         <Loading />
       ) : error ? (
-        <ErrorMessage message={error.message} onRetry={handleRetry} />
+        <ErrorMessage message={error} onRetry={handleRetry} />
       ) : anime ? (
         <>
           <AnimeHeader>
             <ImageContainer>
-              <AnimeImage src={anime.image_url} alt={anime.title} />
+              <AnimeImage 
+                src={anime.images?.jpg?.large_image_url || anime.image_url} 
+                alt={anime.title} 
+              />
+              <ActionButtons>
+                <FavoriteButton 
+                  onClick={handleFavoriteToggle}
+                  isFavorite={isFavorite}
+                >
+                  {isFavorite ? t('anime.remove_from_favorites') : t('anime.add_to_favorites')}
+                </FavoriteButton>
+                
+                <WatchButton 
+                  onClick={() => setShowPlayer(!showPlayer)}
+                  theme={theme}
+                >
+                  {showPlayer ? t('anime.hide_player') : t('anime.watch_online')}
+                </WatchButton>
+              </ActionButtons>
             </ImageContainer>
             
             <AnimeInfo>
               <Title theme={theme}>{anime.title}</Title>
-              {anime.title_japanese && (
-                <JapaneseTitle theme={theme}>{anime.title_japanese}</JapaneseTitle>
+              {anime.title_english && anime.title_english !== anime.title && (
+                <EnglishTitle theme={theme}>{anime.title_english}</EnglishTitle>
               )}
               
-              {anime.score && (
-                <Score theme={theme}>{anime.score.toFixed(1)}</Score>
-              )}
+              <ScoreContainer>
+                <Score>{anime.score || 'N/A'}</Score>
+                <ScoreLabel theme={theme}>{t('anime.score')}</ScoreLabel>
+              </ScoreContainer>
               
-              <InfoItem>
-                <InfoLabel theme={theme}>{t('details.episodes')}:</InfoLabel>
-                <InfoValue theme={theme}>
-                  {anime.episodes > 0 ? anime.episodes : '?'}
-                </InfoValue>
-              </InfoItem>
-              
-              <InfoItem>
-                <InfoLabel theme={theme}>{t('details.status')}:</InfoLabel>
-                <InfoValue theme={theme}>{anime.status}</InfoValue>
-              </InfoItem>
-              
-              <InfoItem>
-                <InfoLabel theme={theme}>{t('details.aired')}:</InfoLabel>
-                <InfoValue theme={theme}>
-                  {anime.aired?.from ? new Date(anime.aired.from).toLocaleDateString() : '?'} 
-                  {' - '} 
-                  {anime.aired?.to ? new Date(anime.aired.to).toLocaleDateString() : '?'}
-                </InfoValue>
-              </InfoItem>
-              
-              {anime.studios && anime.studios.length > 0 && (
-                <InfoItem>
-                  <InfoLabel theme={theme}>{t('details.studios')}:</InfoLabel>
-                  <InfoValue theme={theme}>
-                    {anime.studios.map(studio => studio.name).join(', ')}
+              <InfoGrid theme={theme}>
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>📺</InfoIcon>
+                    <InfoLabel>{t('anime.type')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>{anime.type}</InfoValue>
+                </InfoItem>
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>🎬</InfoIcon>
+                    <InfoLabel>{t('anime.episodes')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>{anime.episodes || t('anime.unknown')}</InfoValue>
+                </InfoItem>
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>📊</InfoIcon>
+                    <InfoLabel>{t('anime.status')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>{anime.status}</InfoValue>
+                </InfoItem>
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>📅</InfoIcon>
+                    <InfoLabel>{t('anime.aired')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>
+                    {anime.aired?.string || `${anime.aired?.from || ''} - ${anime.aired?.to || ''}`}
                   </InfoValue>
                 </InfoItem>
-              )}
-              
-              <InfoItem>
-                <InfoLabel theme={theme}>{t('details.source')}:</InfoLabel>
-                <InfoValue theme={theme}>{anime.source}</InfoValue>
-              </InfoItem>
-              
-              <InfoItem>
-                <InfoLabel theme={theme}>{t('details.rating')}:</InfoLabel>
-                <InfoValue theme={theme}>{anime.rating}</InfoValue>
-              </InfoItem>
-              
-              <InfoItem>
-                <InfoLabel theme={theme}>{t('details.duration')}:</InfoLabel>
-                <InfoValue theme={theme}>{anime.duration}</InfoValue>
-              </InfoItem>
-              
-              {anime.genres && anime.genres.length > 0 && (
-                <InfoItem>
-                  <InfoLabel theme={theme}>{t('details.genres')}:</InfoLabel>
-                  <GenresList>
-                    {anime.genres.map(genre => (
-                      <GenreTag key={genre.id} theme={theme}>
-                        {genre.name}
-                      </GenreTag>
-                    ))}
-                  </GenresList>
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>🍂</InfoIcon>
+                    <InfoLabel>{t('anime.season')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>
+                    {anime.season ? `${anime.season} ${anime.year}` : t('anime.unknown')}
+                  </InfoValue>
                 </InfoItem>
-              )}
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>⏱️</InfoIcon>
+                    <InfoLabel>{t('anime.duration')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>{anime.duration}</InfoValue>
+                </InfoItem>
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>🔞</InfoIcon>
+                    <InfoLabel>{t('anime.rating')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>{anime.rating || t('anime.unknown')}</InfoValue>
+                </InfoItem>
+                
+                <InfoItem theme={theme}>
+                  <InfoLabelContainer>
+                    <InfoIcon>🏢</InfoIcon>
+                    <InfoLabel>{t('anime.studios')}</InfoLabel>
+                  </InfoLabelContainer>
+                  <InfoValue>
+                    {anime.studios.length > 0 
+                      ? anime.studios.map(studio => studio.name).join(', ') 
+                      : t('anime.unknown')}
+                  </InfoValue>
+                </InfoItem>
+              </InfoGrid>
               
-              <FavoriteButton 
-                onClick={handleFavoriteToggle} 
-                isFavorite={isFavorite} 
-                theme={theme}
-              >
-                {isFavorite ? t('details.remove_from_favorites') : t('details.add_to_favorites')}
-              </FavoriteButton>
+              <GenreList>
+                {anime.genres.map(genre => (
+                  <GenreTag key={genre.mal_id || genre.name} theme={theme}>
+                    {genre.name}
+                  </GenreTag>
+                ))}
+              </GenreList>
+              
+              <Synopsis theme={theme}>
+                <SynopsisTitle>{t('anime.synopsis')}</SynopsisTitle>
+                <SynopsisText>{anime.synopsis || t('anime.no_synopsis')}</SynopsisText>
+              </Synopsis>
             </AnimeInfo>
           </AnimeHeader>
           
-          <Section>
-            <SectionTitle theme={theme}>{t('details.synopsis')}</SectionTitle>
-            <Synopsis theme={theme}>{anime.synopsis}</Synopsis>
-          </Section>
-          
-          {anime.trailer_url && (
+          {showPlayer && (
             <Section>
-              <SectionTitle theme={theme}>{t('details.trailer')}</SectionTitle>
-              <TrailerContainer>
-                <iframe 
-                  src={anime.trailer_url} 
-                  title={`${anime.title} trailer`}
-                  width="100%" 
-                  height="100%" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                ></iframe>
-              </TrailerContainer>
+              <SectionTitle theme={theme}>{t('anime.watch_online')}</SectionTitle>
+              <AnimePlayer 
+                animeId={anime.mal_id} 
+                title={anime.title} 
+                image={anime.images?.jpg?.large_image_url || anime.image_url || ''} 
+              />
             </Section>
           )}
           
-          <Section>
-            <SectionTitle theme={theme}>{t('details.characters')}</SectionTitle>
-            {charactersLoading ? (
-              <Loading />
-            ) : characters.length > 0 ? (
-              <CharactersGrid>
-                {characters.slice(0, 12).map(character => (
-                  <CharacterCard key={character.id} theme={theme}>
-                    <CharacterImage src={character.image_url} alt={character.name} />
-                    <CharacterInfo>
-                      <CharacterName theme={theme}>{character.name}</CharacterName>
-                      <CharacterRole theme={theme}>
-                        {character.role}
-                      </CharacterRole>
-                      {character.voice_actors.length > 0 && (
-                        <VoiceActors>
-                          {character.voice_actors.slice(0, 1).map(va => (
-                            <VoiceActor key={va.id} theme={theme}>
-                              <VoiceActorName>{va.name}</VoiceActorName>
-                              <VoiceActorLanguage theme={theme}>
-                                ({va.language})
-                              </VoiceActorLanguage>
-                            </VoiceActor>
-                          ))}
-                        </VoiceActors>
-                      )}
-                    </CharacterInfo>
-                  </CharacterCard>
-                ))}
-              </CharactersGrid>
-            ) : (
-              <NoContent theme={theme}>{t('details.no_characters')}</NoContent>
-            )}
-          </Section>
+          {characters.length > 0 && (
+            <Section>
+              <SectionTitle 
+                theme={theme} 
+                onClick={() => toggleSection('characters')}
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                {t('anime.characters')}
+                <span>{expandedSections.characters ? '▲' : '▼'}</span>
+              </SectionTitle>
+              {expandedSections.characters ? (
+                <CharacterGrid>
+                  {characters.map(character => (
+                    <CharacterCard key={character.character.mal_id} theme={theme}>
+                      <CharacterImage 
+                        src={character.character.images?.jpg?.image_url} 
+                        alt={character.character.name} 
+                      />
+                      <CharacterInfo>
+                        <CharacterName theme={theme}>{character.character.name}</CharacterName>
+                        <CharacterRole theme={theme}>{character.role}</CharacterRole>
+                      </CharacterInfo>
+                    </CharacterCard>
+                  ))}
+                </CharacterGrid>
+              ) : (
+                <>
+                  <CharacterGrid>
+                    {characters.slice(0, 2).map(character => (
+                      <CharacterCard key={character.character.mal_id} theme={theme}>
+                        <CharacterImage 
+                          src={character.character.images?.jpg?.image_url} 
+                          alt={character.character.name} 
+                        />
+                        <CharacterInfo>
+                          <CharacterName theme={theme}>{character.character.name}</CharacterName>
+                          <CharacterRole theme={theme}>{character.role}</CharacterRole>
+                        </CharacterInfo>
+                      </CharacterCard>
+                    ))}
+                  </CharacterGrid>
+                  <ToggleButton onClick={() => toggleSection('characters')}>
+                    {t('anime.show_more')} ({characters.length})
+                  </ToggleButton>
+                </>
+              )}
+            </Section>
+          )}
           
-          <Section>
-            <SectionTitle theme={theme}>{t('details.staff')}</SectionTitle>
-            {staffLoading ? (
-              <Loading />
-            ) : staff.length > 0 ? (
-              <StaffGrid>
-                {staff.slice(0, 12).map(member => (
-                  <StaffCard key={member.id} theme={theme}>
-                    <StaffImage src={member.image_url} alt={member.name} />
-                    <StaffInfo>
-                      <StaffName theme={theme}>{member.name}</StaffName>
-                      <StaffPositions theme={theme}>
-                        {member.positions.join(', ')}
-                      </StaffPositions>
-                    </StaffInfo>
-                  </StaffCard>
-                ))}
-              </StaffGrid>
-            ) : (
-              <NoContent theme={theme}>{t('details.no_staff')}</NoContent>
-            )}
-          </Section>
+          {staff.length > 0 && (
+            <Section>
+              <SectionTitle 
+                theme={theme} 
+                onClick={() => toggleSection('staff')}
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                {t('anime.staff')}
+                <span>{expandedSections.staff ? '▲' : '▼'}</span>
+              </SectionTitle>
+              {expandedSections.staff ? (
+                <StaffGrid>
+                  {staff.map(member => (
+                    <StaffCard key={`${member.person.mal_id}-${member.positions[0]}`} theme={theme}>
+                      <StaffImage 
+                        src={member.person.images?.jpg?.image_url} 
+                        alt={member.person.name} 
+                      />
+                      <StaffInfo>
+                        <StaffName theme={theme}>{member.person.name}</StaffName>
+                        <StaffPosition theme={theme}>
+                          {member.positions.join(', ')}
+                        </StaffPosition>
+                      </StaffInfo>
+                    </StaffCard>
+                  ))}
+                </StaffGrid>
+              ) : (
+                <>
+                  <StaffGrid>
+                    {staff.slice(0, 2).map(member => (
+                      <StaffCard key={`${member.person.mal_id}-${member.positions[0]}`} theme={theme}>
+                        <StaffImage 
+                          src={member.person.images?.jpg?.image_url} 
+                          alt={member.person.name} 
+                        />
+                        <StaffInfo>
+                          <StaffName theme={theme}>{member.person.name}</StaffName>
+                          <StaffPosition theme={theme}>
+                            {member.positions.join(', ')}
+                          </StaffPosition>
+                        </StaffInfo>
+                      </StaffCard>
+                    ))}
+                  </StaffGrid>
+                  <ToggleButton onClick={() => toggleSection('staff')}>
+                    {t('anime.show_more')} ({staff.length})
+                  </ToggleButton>
+                </>
+              )}
+            </Section>
+          )}
           
-          <Section>
-            <SectionTitle theme={theme}>{t('details.reviews')}</SectionTitle>
-            {reviewsLoading && reviews.length === 0 ? (
-              <Loading />
-            ) : reviews.length > 0 ? (
-              <>
-                <ReviewsList>
-                  {reviews.map(review => (
-                    <ReviewCard key={review.id} theme={theme}>
-                      <ReviewHeader>
-                        <ReviewUser>
-                          <ReviewUserImage 
-                            src={review.user.image_url || 'https://via.placeholder.com/40'} 
-                            alt={review.user.username} 
-                          />
-                          <div>
-                            <ReviewUserName theme={theme}>{review.user.username}</ReviewUserName>
+          {reviews.length > 0 && (
+            <Section>
+              <SectionTitle 
+                theme={theme} 
+                onClick={() => toggleSection('reviews')}
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                {t('anime.reviews')}
+                <span>{expandedSections.reviews ? '▲' : '▼'}</span>
+              </SectionTitle>
+              {expandedSections.reviews ? (
+                <>
+                  <ReviewList>
+                    {reviews.map(review => (
+                      <ReviewCard key={review.mal_id} theme={theme}>
+                        <ReviewHeader>
+                          <ReviewerInfo>
+                            <ReviewerName theme={theme}>{review.user.username}</ReviewerName>
                             <ReviewDate theme={theme}>
                               {new Date(review.date).toLocaleDateString()}
                             </ReviewDate>
-                          </div>
-                        </ReviewUser>
-                        <ReviewScore theme={theme}>{review.score}</ReviewScore>
-                      </ReviewHeader>
-                      <ReviewContent 
-                        theme={theme} 
-                        expanded={!!expandedReviews[review.id]}
-                      >
-                        {review.content}
-                      </ReviewContent>
-                      <ShowMoreButton onClick={() => toggleReviewExpansion(review.id)}>
-                        {expandedReviews[review.id] ? t('details.show_less') : t('details.show_more')}
-                      </ShowMoreButton>
-                    </ReviewCard>
-                  ))}
-                </ReviewsList>
-                
-                {hasMoreReviews && (
-                  <LoadMoreButton 
-                    onClick={loadMoreReviews} 
-                    disabled={reviewsLoading}
-                    theme={theme}
-                  >
-                    {reviewsLoading ? t('loading') : t('details.load_more_reviews')}
-                  </LoadMoreButton>
-                )}
-              </>
-            ) : (
-              <NoContent theme={theme}>{t('details.no_reviews')}</NoContent>
-            )}
-          </Section>
+                          </ReviewerInfo>
+                          <ReviewScore theme={theme}>
+                            {review.score} / 10
+                          </ReviewScore>
+                        </ReviewHeader>
+                        
+                        <ReviewContent>
+                          {expandedReviews.includes(review.mal_id) 
+                            ? review.review 
+                            : `${review.review.substring(0, 300)}...`}
+                        </ReviewContent>
+                        
+                        {review.review.length > 300 && (
+                          <ExpandButton 
+                            onClick={() => toggleReviewExpansion(review.mal_id)}
+                            theme={theme}
+                          >
+                            {expandedReviews.includes(review.mal_id) 
+                              ? t('anime.show_less') 
+                              : t('anime.read_more')}
+                          </ExpandButton>
+                        )}
+                      </ReviewCard>
+                    ))}
+                  </ReviewList>
+                  
+                  {hasMoreReviews && (
+                    <LoadMoreButton 
+                      onClick={loadMoreReviews} 
+                      disabled={isLoadingMore}
+                      theme={theme}
+                    >
+                      {isLoadingMore ? t('anime.loading') : t('anime.load_more_reviews')}
+                    </LoadMoreButton>
+                  )}
+                </>
+              ) : (
+                <>
+                  <ReviewList>
+                    {reviews.slice(0, 1).map(review => (
+                      <ReviewCard key={review.mal_id} theme={theme}>
+                        <ReviewHeader>
+                          <ReviewerInfo>
+                            <ReviewerName theme={theme}>{review.user.username}</ReviewerName>
+                            <ReviewDate theme={theme}>
+                              {new Date(review.date).toLocaleDateString()}
+                            </ReviewDate>
+                          </ReviewerInfo>
+                          <ReviewScore theme={theme}>
+                            {review.score} / 10
+                          </ReviewScore>
+                        </ReviewHeader>
+                        
+                        <ReviewContent>
+                          {`${review.review.substring(0, 150)}...`}
+                        </ReviewContent>
+                      </ReviewCard>
+                    ))}
+                  </ReviewList>
+                  <ToggleButton onClick={() => toggleSection('reviews')}>
+                    {t('anime.show_more')} ({reviews.length})
+                  </ToggleButton>
+                </>
+              )}
+            </Section>
+          )}
         </>
       ) : null}
     </Container>

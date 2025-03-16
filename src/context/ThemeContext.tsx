@@ -1,4 +1,5 @@
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, ComponentType } from 'react';
+import { AppContextProps } from '../types/context';
 
 interface AppContextType {
   theme: string;
@@ -25,4 +26,11 @@ interface AppProviderProps {
 
 export function AppProvider({ children, value }: AppProviderProps) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+export function withApp<P extends AppContextProps>(Component: ComponentType<P>) {
+  return function WithApp(props: Omit<P, keyof AppContextProps>) {
+    const appContext = useApp();
+    return <Component {...props as P} {...appContext} />;
+  };
 } 

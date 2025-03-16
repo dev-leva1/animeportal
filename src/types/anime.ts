@@ -1,38 +1,77 @@
 export interface Anime {
-  id: number;
+  mal_id: number;
+  id?: number;
   title: string;
+  title_english?: string;
   title_japanese?: string;
-  image_url: string;
+  image_url?: string;
+  images: {
+    jpg: {
+      image_url: string;
+      small_image_url: string;
+      large_image_url: string;
+    },
+    webp: {
+      image_url: string;
+      small_image_url: string;
+      large_image_url: string;
+    }
+  };
   synopsis: string;
   episodes: number;
   score: number | null;
-  aired?: {
+  aired: {
     from: string;
     to: string | null;
+    string: string;
   };
   status: string;
-  genres: Genre[];
-  studios: Studio[];
+  genres: {
+    mal_id: number;
+    name: string;
+    type: string;
+    url: string;
+  }[];
+  studios: {
+    mal_id: number;
+    name: string;
+    type: string;
+    url: string;
+  }[];
   source: string;
   rating: string;
   duration: string;
   trailer_url?: string;
+  season?: string;
+  year?: number;
+  type: string;
 }
 
 export interface Genre {
   id: number;
+  mal_id?: number;
   name: string;
 }
 
 export interface Studio {
   id: number;
+  mal_id?: number;
   name: string;
 }
 
 export interface Character {
-  id: number;
-  name: string;
-  image_url: string;
+  character: {
+    mal_id: number;
+    name: string;
+    images: {
+      jpg: {
+        image_url: string;
+      },
+      webp: {
+        image_url: string;
+      }
+    };
+  };
   role: string;
   voice_actors: VoiceActor[];
 }
@@ -45,19 +84,30 @@ export interface VoiceActor {
 }
 
 export interface StaffMember {
-  id: number;
-  name: string;
-  image_url: string;
+  person: {
+    mal_id: number;
+    name: string;
+    images: {
+      jpg: {
+        image_url: string;
+      }
+    };
+  };
   positions: string[];
 }
 
 export interface Review {
-  id: number;
+  mal_id: number;
   user: {
     username: string;
-    image_url: string;
+    url: string;
+    images: {
+      jpg: {
+        image_url: string;
+      }
+    };
   };
-  content: string;
+  review: string;
   score: number;
   date: string;
 }

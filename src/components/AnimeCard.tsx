@@ -120,14 +120,14 @@ const FavoriteButton = styled.button<FavoriteButtonProps>`
 
 function AnimeCard({ anime }: AnimeCardProps) {
   const { theme, t } = useApp();
-  const [isFavorite, setIsFavorite] = useState(favoritesService.isFavorite(anime.id));
+  const [isFavorite, setIsFavorite] = useState(favoritesService.isFavorite(anime.mal_id));
   
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (isFavorite) {
-      favoritesService.removeFromFavorites(anime.id);
+      favoritesService.removeFromFavorites(anime.mal_id);
     } else {
       favoritesService.addToFavorites(anime);
     }
@@ -136,7 +136,7 @@ function AnimeCard({ anime }: AnimeCardProps) {
   };
   
   return (
-    <Link to={`/anime/${anime.id}`} style={{ textDecoration: 'none' }}>
+    <Link to={`/anime/${anime.mal_id}`} style={{ textDecoration: 'none' }}>
       <Card theme={theme}>
         <ImageContainer>
           <AnimeImage src={anime.image_url} alt={anime.title} />

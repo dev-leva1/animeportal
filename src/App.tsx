@@ -9,10 +9,14 @@ import AnimeDetailsPage from './pages/AnimeDetailsPage';
 import MangaPage from './pages/MangaPage';
 import MangaDetailsPage from './pages/MangaDetailsPage';
 import FavoritesPage from './pages/FavoritesPage';
+import AuthPage from './pages/AuthPage';
+import ProfilePage from './pages/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
 import { AppProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import { translations } from './translations';
 import './App.css';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -58,23 +62,29 @@ function App() {
 
   return (
     <AppProvider value={{ theme, toggleTheme, language, toggleLanguage, t }}>
-      <AppContainer theme={theme}>
-        <Router>
-          <Header />
-          <MainContent>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/anime" element={<AnimePage />} />
-              <Route path="/anime/:id" element={<AnimeDetailsPage />} />
-              <Route path="/manga" element={<MangaPage />} />
-              <Route path="/manga/:id" element={<MangaDetailsPage />} />
-              <Route path="/favorites" element={<FavoritesPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </MainContent>
-          <Footer />
-        </Router>
-      </AppContainer>
+      <AuthProvider>
+        <ErrorBoundary>
+          <AppContainer theme={theme}>
+            <Router>
+              <Header />
+              <MainContent>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/anime" element={<AnimePage />} />
+                  <Route path="/anime/:id" element={<AnimeDetailsPage />} />
+                  <Route path="/manga" element={<MangaPage />} />
+                  <Route path="/manga/:id" element={<MangaDetailsPage />} />
+                  <Route path="/favorites" element={<FavoritesPage />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </MainContent>
+              <Footer />
+            </Router>
+          </AppContainer>
+        </ErrorBoundary>
+      </AuthProvider>
     </AppProvider>
   );
 }

@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useApp } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { animeService } from '../services/animeService';
 
 const HeaderContainer = styled.header`
@@ -23,6 +24,7 @@ const Logo = styled.div`
   font-size: 1.8rem;
   font-weight: bold;
   color: #ff5f5f;
+  margin-right: 2rem;
   
   a {
     text-decoration: none;
@@ -32,7 +34,7 @@ const Logo = styled.div`
 
 const Nav = styled.nav`
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
 `;
 
@@ -40,7 +42,54 @@ const NavLink = styled(Link)`
   text-decoration: none;
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
   font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: #ff5f5f;
+  }
+`;
+
+const AuthButton = styled(Link)`
+  text-decoration: none;
+  background-color: #ff5f5f;
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #ff4545;
+  }
+`;
+
+const ProfileButton = styled(Link)`
+  text-decoration: none;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
   padding: 0.5rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    color: #ff5f5f;
+  }
+  
+  &::before {
+    content: '👤';
+    margin-right: 0.25rem;
+  }
+`;
+
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  padding: 0.5rem;
+  cursor: pointer;
   transition: color 0.3s ease;
   
   &:hover {
@@ -72,7 +121,7 @@ const RandomAnimeButton = styled.button`
 
 const SearchContainer = styled.div`
   position: relative;
-  margin-right: 1rem;
+  margin: 0 1rem;
 `;
 
 const SearchInput = styled.input`
@@ -155,6 +204,7 @@ const NavLinks = styled.div<{ isOpen: boolean; theme: string }>`
 
 function Header() {
   const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
+  const { /*user,*/ isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -179,6 +229,11 @@ function Header() {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
   
   return (
@@ -222,15 +277,32 @@ function Header() {
             </SearchContainer>
           </form>
           
-          <LanguageToggle onClick={toggleLanguage} theme={theme} aria-label="Change language">
-            <span role="img" aria-label={language === 'ru' ? 'Russian' : 'English'}>
-              {language === 'ru' ? '🇷🇺' : '🇬🇧'}
-            </span>
-          </LanguageToggle>
-          
-          <ThemeToggle onClick={toggleTheme} theme={theme}>
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </ThemeToggle>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            {isAuthenticated ? (
+              <>
+                <ProfileButton to="/profile" theme={theme}>
+                  {t('header.profile')}
+                </ProfileButton>
+                <LogoutButton onClick={handleLogout} theme={theme}>
+                  {t('header.logout')}
+                </LogoutButton>
+              </>
+            ) : (
+              <AuthButton to="/auth">
+                {t('header.login')}
+              </AuthButton>
+            )}
+            
+            <LanguageToggle onClick={toggleLanguage} theme={theme} aria-label="Change language">
+              <span role="img" aria-label={language === 'ru' ? 'Russian' : 'English'}>
+                {language === 'ru' ? '🇷🇺' : '🇬🇧'}
+              </span>
+            </LanguageToggle>
+            
+            <ThemeToggle onClick={toggleTheme} theme={theme}>
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </ThemeToggle>
+          </div>
         </Nav>
       </NavContainer>
     </HeaderContainer>

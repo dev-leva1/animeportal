@@ -31,56 +31,89 @@ const retryWithBackoff = async <T>(
 
 const mapAnimeData = (apiData: any): Anime => {
   return {
+    mal_id: apiData.mal_id,
     id: apiData.mal_id,
     title: apiData.title,
+    title_english: apiData.title_english,
     title_japanese: apiData.title_japanese,
     image_url: apiData.images?.jpg?.image_url || apiData.images?.webp?.image_url || '',
+    images: apiData.images || {
+      jpg: {
+        image_url: '',
+        small_image_url: '',
+        large_image_url: ''
+      },
+      webp: {
+        image_url: '',
+        small_image_url: '',
+        large_image_url: ''
+      }
+    },
     synopsis: apiData.synopsis || '',
     episodes: apiData.episodes || 0,
     score: apiData.score || null,
-    aired: apiData.aired,
+    aired: apiData.aired || {
+      from: '',
+      to: null,
+      string: ''
+    },
     status: apiData.status || '',
     genres: apiData.genres || [],
     studios: apiData.studios || [],
     source: apiData.source || '',
     rating: apiData.rating || '',
     duration: apiData.duration || '',
-    trailer_url: apiData.trailer?.embed_url || ''
+    trailer_url: apiData.trailer?.embed_url || '',
+    season: apiData.season || '',
+    year: apiData.year || null,
+    type: apiData.type || ''
   };
 };
 
 const mapCharacterData = (apiData: any): Character => {
   return {
-    id: apiData.character.mal_id,
-    name: apiData.character.name,
-    image_url: apiData.character.images?.jpg?.image_url || '',
-    role: apiData.role,
+    character: {
+      mal_id: apiData.character.mal_id,
+      name: apiData.character.name,
+      images: apiData.character.images || {
+        jpg: { image_url: '' },
+        webp: { image_url: '' }
+      }
+    },
+    role: apiData.role || '',
     voice_actors: apiData.voice_actors?.map((va: any) => ({
-      id: va.person.mal_id,
-      name: va.person.name,
-      image_url: va.person.images?.jpg?.image_url || '',
-      language: va.language
+      id: va.person?.mal_id,
+      name: va.person?.name || '',
+      image_url: va.person?.images?.jpg?.image_url || '',
+      language: va.language || ''
     })) || []
   };
 };
 
 const mapStaffData = (apiData: any): StaffMember => {
   return {
-    id: apiData.person.mal_id,
-    name: apiData.person.name,
-    image_url: apiData.person.images?.jpg?.image_url || '',
+    person: {
+      mal_id: apiData.person.mal_id,
+      name: apiData.person.name,
+      images: apiData.person.images || {
+        jpg: { image_url: '' }
+      }
+    },
     positions: apiData.positions || []
   };
 };
 
 const mapReviewData = (apiData: any): Review => {
   return {
-    id: apiData.mal_id,
+    mal_id: apiData.mal_id,
     user: {
       username: apiData.user.username,
-      image_url: apiData.user.images?.jpg?.image_url || ''
+      url: apiData.user.url,
+      images: apiData.user.images || {
+        jpg: { image_url: '' }
+      }
     },
-    content: apiData.review,
+    review: apiData.review,
     score: apiData.score,
     date: apiData.date
   };

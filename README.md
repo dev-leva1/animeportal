@@ -18,6 +18,9 @@ A modern web application for exploring anime and manga, built with React, TypeSc
 - **Responsive Design**: Enjoy a seamless experience on any device
 - **Dark/Light Theme**: Choose your preferred visual theme
 - **Multilingual Support**: Switch between English and Russian languages
+- **Collapsible Sections**: Expand or collapse character, staff, and review sections for better navigation
+- **Error Handling**: Robust error boundary system to prevent application crashes
+- **Enhanced UI**: Improved visual presentation with icons and better spacing
 
 ## Getting Started
 
@@ -88,4 +91,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [Jikan API](https://jikan.moe/) for providing anime and manga data
 - [MyAnimeList](https://myanimelist.net/) as the original data source
-- All the contributors and open-source libraries that made this project possibles
