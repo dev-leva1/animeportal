@@ -155,17 +155,6 @@ function FavoritesPage() {
     }
   };
   
-  const getStatusIcon = (status: WatchStatus | 'all') => {
-    switch(status) {
-      case 'watching': return <FaEye />;
-      case 'planned': return <FaClock />;
-      case 'completed': return <FaCheck />;
-      case 'on_hold': return <FaPause />;
-      case 'dropped': return <FaTimesCircle />;
-      case 'all': return null;
-      default: return null;
-    }
-  };
   
   return (
     <div>

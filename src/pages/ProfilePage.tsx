@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
-import { User, WatchHistory, PasswordChangeData, UserComment, UserReply } from '../types/user';
+import { User, WatchHistory, PasswordChangeData, UserComment } from '../types/user';
 import { FaUser, FaEdit, FaKey, FaSave, FaTimes, FaTrash, FaHistory, FaCheck, FaExclamationTriangle, FaChartBar, FaCalendarAlt, FaComment, FaPlus, FaHeart, FaReply } from 'react-icons/fa';
 
 const ProfileContainer = styled.div`
@@ -729,9 +729,6 @@ function ProfilePage() {
     );
   }
   
-  const getInitials = (name: string) => {
-    return name.charAt(0).toUpperCase();
-  };
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

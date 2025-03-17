@@ -4,8 +4,6 @@ import { favoritesService } from './favoritesService';
 // const API_URL = 'https://api.example.com'; // Замените на реальный URL API
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
-const WATCH_HISTORY_KEY = 'watch_history';
-const USER_COMMENTS_KEY = 'user_comments';
 
 // Имитация базы данных пользователей
 let users: User[] = [
@@ -343,12 +341,6 @@ const deleteReply = (commentId: string, replyId: string): UserComment | null => 
   updateUser(user);
   
   return comment;
-};
-
-// Избранное
-const getFavorites = (): { id: string; type: 'anime' | 'manga' }[] => {
-  const favoritesJson = localStorage.getItem('favorites');
-  return favoritesJson ? JSON.parse(favoritesJson) : [];
 };
 
 // Для демонстрации

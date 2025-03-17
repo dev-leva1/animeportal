@@ -67,9 +67,6 @@ const SearchButton = styled.button`
   }
 `;
 
-const GenreFilter = styled.div`
-  margin-bottom: 2rem;
-`;
 
 const GenreSelect = styled.select`
   padding: 0.5rem 1rem;

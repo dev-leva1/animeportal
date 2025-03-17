@@ -457,21 +457,6 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-const ToggleButton = styled.button`
-  background: none;
-  border: none;
-  color: #ff5f5f;
-  cursor: pointer;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  display: block;
-  margin: 1rem auto;
-  font-weight: 500;
-  
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 function AnimeDetailsPage() {
   const { id } = useParams<{ id: string }>();
