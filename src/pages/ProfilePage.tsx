@@ -629,6 +629,10 @@ function ProfilePage() {
     if (newComment.trim() && user) {
       const addedComment = authService.addUserComment(newComment);
       setComments(prev => [addedComment, ...prev]);
+      if (user) {
+        user.comments = [addedComment, ...(user.comments || [])];
+        updateUser(user);
+      }
       setNewComment('');
     }
   };
@@ -642,8 +646,10 @@ function ProfilePage() {
     e.preventDefault();
     if (editingCommentId && editingCommentText.trim()) {
       const updatedComment = authService.updateUserComment(editingCommentId, editingCommentText);
-      if (updatedComment) {
+      if (updatedComment && user) {
         setComments(prev => prev.map(c => c.id === editingCommentId ? updatedComment : c));
+        user.comments = user.comments?.map(c => c.id === editingCommentId ? updatedComment : c);
+        updateUser(user);
       }
       setEditingCommentId(null);
       setEditingCommentText('');
@@ -653,16 +659,20 @@ function ProfilePage() {
   const handleDeleteComment = (id: string) => {
     if (window.confirm(t('profile.confirm_delete_comment'))) {
       const success = authService.deleteUserComment(id);
-      if (success) {
+      if (success && user) {
         setComments(prev => prev.filter(c => c.id !== id));
+        user.comments = user.comments?.filter(c => c.id !== id);
+        updateUser(user);
       }
     }
   };
   
   const handleLikeComment = (commentId: string) => {
     const updatedComment = authService.likeUserComment(commentId);
-    if (updatedComment) {
+    if (updatedComment && user) {
       setComments(prev => prev.map(c => c.id === commentId ? updatedComment : c));
+      user.comments = user.comments?.map(c => c.id === commentId ? updatedComment : c);
+      updateUser(user);
     }
   };
   
@@ -682,6 +692,8 @@ function ProfilePage() {
       
       if (updatedComment) {
         setComments(prev => prev.map(c => c.id === replyingToCommentId ? updatedComment : c));
+        user.comments = user.comments?.map(c => c.id === replyingToCommentId ? updatedComment : c);
+        updateUser(user);
         setReplyingToCommentId(null);
         setReplyText('');
       }
