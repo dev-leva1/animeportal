@@ -5,10 +5,11 @@ import { useApp } from '../context/ThemeContext';
 //import { useAuth } from '../context/AuthContext';
 import { animeService } from '../services/animeService';
 import { favoritesService } from '../services/favoritesService';
-import { Anime, Character, StaffMember, Review } from '../types/anime';
+import { Anime, Character, StaffMember, Review, WatchStatus } from '../types/anime';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
 import AnimePlayer from '../components/AnimePlayer';
+import { FaArrowLeft, FaHeart, FaRegHeart, FaPlay, FaTimes, FaTv, FaFilm, FaChartLine, FaCalendarAlt, FaLeaf, FaClock, FaShieldAlt, FaBuilding, FaChevronUp, FaChevronDown, FaEye, FaCheck, FaPause, FaTimesCircle } from 'react-icons/fa';
 
 const Container = styled.div`
   display: flex;
@@ -26,11 +27,6 @@ const BackLink = styled(Link)`
   
   &:hover {
     color: #ff5f5f;
-  }
-  
-  &::before {
-    content: '←';
-    margin-right: 0.5rem;
   }
 `;
 
@@ -67,32 +63,122 @@ const ActionButtons = styled.div`
   margin-top: 1rem;
 `;
 
-const FavoriteButton = styled.button<{ isFavorite: boolean }>`
-  padding: 0.75rem;
+interface FavoriteButtonProps {
+  isFavorite: boolean;
+  theme?: string;
+}
+
+interface StatusBadgeProps {
+  status: WatchStatus;
+  theme?: string;
+}
+
+const FavoriteButton = styled.button<FavoriteButtonProps>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: ${props => props.isFavorite ? '#ff5f5f' : 'transparent'};
+  color: ${props => props.isFavorite ? 'white' : props.theme === 'dark' ? 'white' : '#333'};
+  border: 2px solid ${props => props.isFavorite ? '#ff5f5f' : props.theme === 'dark' ? 'white' : '#333'};
   border-radius: 4px;
-  border: none;
-  background-color: ${props => props.isFavorite ? '#ff5f5f' : '#333'};
-  color: white;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   
   &:hover {
-    background-color: ${props => props.isFavorite ? '#ff4545' : '#444'};
+    background-color: ${props => props.isFavorite ? '#ff4040' : props.theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
   }
+`;
+
+const StatusButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: ${props => props.theme === 'dark' ? 'white' : '#333'};
+  border: 2px solid ${props => props.theme === 'dark' ? 'white' : '#333'};
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+  }
+`;
+
+const StatusMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  margin-top: 0.5rem;
+  overflow: hidden;
+`;
+
+const StatusMenuItem = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#333'};
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
+const StatusBadge = styled.div<StatusBadgeProps>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-left: 1rem;
+  background-color: ${props => {
+    switch(props.status) {
+      case 'watching': return '#4caf50';
+      case 'planned': return '#2196f3';
+      case 'completed': return '#9c27b0';
+      case 'on_hold': return '#ff9800';
+      case 'dropped': return '#f44336';
+      default: return '#757575';
+    }
+  }};
+  color: white;
 `;
 
 const WatchButton = styled.button`
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: transparent;
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: none;
+  background-color: ${props => props.theme === 'dark' ? '#4a90e2' : '#4a90e2'};
+  color: white;
   font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme === 'dark' ? '#3a80d2' : '#3a80d2'};
   }
 `;
 
@@ -160,8 +246,9 @@ const InfoLabelContainer = styled.div`
 `;
 
 const InfoIcon = styled.span`
-  font-size: 1rem;
-  color: #ff5f5f;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
 `;
 
 const InfoLabel = styled.span`
@@ -398,6 +485,8 @@ function AnimeDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [watchStatus, setWatchStatus] = useState<WatchStatus>(null);
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [reviewsPage, setReviewsPage] = useState(1);
   const [hasMoreReviews, setHasMoreReviews] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -421,6 +510,7 @@ function AnimeDetailsPage() {
       
       if (favoritesService.isFavorite(Number(id))) {
         setIsFavorite(true);
+        setWatchStatus(favoritesService.getWatchStatus(Number(id)));
       }
     }
   }, [id]);
@@ -477,16 +567,51 @@ function AnimeDetailsPage() {
     }
   };
   
-  const handleFavoriteToggle = () => {
-    if (!anime) return;
-    
-    if (isFavorite) {
-      favoritesService.removeFromFavorites(anime.mal_id);
-    } else {
-      favoritesService.addToFavorites(anime);
+  const handleFavoriteClick = () => {
+    if (anime) {
+      if (isFavorite) {
+        favoritesService.removeFromFavorites(anime.mal_id);
+        setIsFavorite(false);
+        setWatchStatus(null);
+      } else {
+        favoritesService.addToFavorites(anime);
+        setIsFavorite(true);
+      }
     }
+  };
+  
+  const handleStatusClick = () => {
+    setShowStatusMenu(!showStatusMenu);
+  };
+  
+  const handleStatusChange = (status: WatchStatus) => {
+    if (anime) {
+      if (!isFavorite) {
+        favoritesService.addToFavorites(anime, status);
+        setIsFavorite(true);
+      } else {
+        favoritesService.updateWatchStatus(anime.mal_id, status);
+      }
+      setWatchStatus(status);
+      setShowStatusMenu(false);
+    }
+  };
+  
+  const getStatusIcon = (status: WatchStatus) => {
+    switch(status) {
+      case 'watching': return <FaEye />;
+      case 'planned': return <FaClock />;
+      case 'completed': return <FaCheck />;
+      case 'on_hold': return <FaPause />;
+      case 'dropped': return <FaTimesCircle />;
+      default: return null;
+    }
+  };
+  
+  const getStatusText = (status: WatchStatus) => {
+    if (!status) return t('favorites.set_status');
     
-    setIsFavorite(!isFavorite);
+    return t(`favorites.status.${status}`);
   };
   
   const handleRetry = () => {
@@ -530,6 +655,7 @@ function AnimeDetailsPage() {
   return (
     <Container>
       <BackLink to="/anime" theme={theme}>
+        <FaArrowLeft style={{ marginRight: '0.5rem' }} />
         {t('anime.back_to_catalog')}
       </BackLink>
       
@@ -547,16 +673,82 @@ function AnimeDetailsPage() {
               />
               <ActionButtons>
                 <FavoriteButton 
-                  onClick={handleFavoriteToggle}
+                  onClick={handleFavoriteClick} 
                   isFavorite={isFavorite}
+                  theme={theme}
                 >
-                  {isFavorite ? t('anime.remove_from_favorites') : t('anime.add_to_favorites')}
+                  {isFavorite ? <FaHeart /> : <FaRegHeart />}
+                  {isFavorite ? t('details.remove_from_favorites') : t('details.add_to_favorites')}
                 </FavoriteButton>
+                
+                {isFavorite && watchStatus && (
+                  <StatusBadge status={watchStatus} theme={theme}>
+                    {getStatusIcon(watchStatus)}
+                    {getStatusText(watchStatus)}
+                  </StatusBadge>
+                )}
+                
+                <StatusButton 
+                  onClick={handleStatusClick}
+                  theme={theme}
+                >
+                  {watchStatus ? getStatusIcon(watchStatus) : null}
+                  {getStatusText(watchStatus)}
+                  
+                  {showStatusMenu && (
+                    <StatusMenu theme={theme}>
+                      <StatusMenuItem 
+                        theme={theme} 
+                        onClick={() => handleStatusChange('watching')}
+                      >
+                        <FaEye color="#4caf50" />
+                        {t('favorites.status.watching')}
+                      </StatusMenuItem>
+                      <StatusMenuItem 
+                        theme={theme} 
+                        onClick={() => handleStatusChange('planned')}
+                      >
+                        <FaClock color="#2196f3" />
+                        {t('favorites.status.planned')}
+                      </StatusMenuItem>
+                      <StatusMenuItem 
+                        theme={theme} 
+                        onClick={() => handleStatusChange('completed')}
+                      >
+                        <FaCheck color="#9c27b0" />
+                        {t('favorites.status.completed')}
+                      </StatusMenuItem>
+                      <StatusMenuItem 
+                        theme={theme} 
+                        onClick={() => handleStatusChange('on_hold')}
+                      >
+                        <FaPause color="#ff9800" />
+                        {t('favorites.status.on_hold')}
+                      </StatusMenuItem>
+                      <StatusMenuItem 
+                        theme={theme} 
+                        onClick={() => handleStatusChange('dropped')}
+                      >
+                        <FaTimesCircle color="#f44336" />
+                        {t('favorites.status.dropped')}
+                      </StatusMenuItem>
+                      {watchStatus && (
+                        <StatusMenuItem 
+                          theme={theme} 
+                          onClick={() => handleStatusChange(null)}
+                        >
+                          {t('favorites.no_status')}
+                        </StatusMenuItem>
+                      )}
+                    </StatusMenu>
+                  )}
+                </StatusButton>
                 
                 <WatchButton 
                   onClick={() => setShowPlayer(!showPlayer)}
                   theme={theme}
                 >
+                  {showPlayer ? <FaTimes /> : <FaPlay />}
                   {showPlayer ? t('anime.hide_player') : t('anime.watch_online')}
                 </WatchButton>
               </ActionButtons>
@@ -576,7 +768,9 @@ function AnimeDetailsPage() {
               <InfoGrid theme={theme}>
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>📺</InfoIcon>
+                    <InfoIcon>
+                      <FaTv />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.type')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>{anime.type}</InfoValue>
@@ -584,7 +778,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>🎬</InfoIcon>
+                    <InfoIcon>
+                      <FaFilm />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.episodes')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>{anime.episodes || t('anime.unknown')}</InfoValue>
@@ -592,7 +788,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>📊</InfoIcon>
+                    <InfoIcon>
+                      <FaChartLine />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.status')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>{anime.status}</InfoValue>
@@ -600,7 +798,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>📅</InfoIcon>
+                    <InfoIcon>
+                      <FaCalendarAlt />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.aired')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>
@@ -610,7 +810,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>🍂</InfoIcon>
+                    <InfoIcon>
+                      <FaLeaf />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.season')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>
@@ -620,7 +822,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>⏱️</InfoIcon>
+                    <InfoIcon>
+                      <FaClock />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.duration')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>{anime.duration}</InfoValue>
@@ -628,7 +832,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>🔞</InfoIcon>
+                    <InfoIcon>
+                      <FaShieldAlt />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.rating')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>{anime.rating || t('anime.unknown')}</InfoValue>
@@ -636,7 +842,9 @@ function AnimeDetailsPage() {
                 
                 <InfoItem theme={theme}>
                   <InfoLabelContainer>
-                    <InfoIcon>🏢</InfoIcon>
+                    <InfoIcon>
+                      <FaBuilding />
+                    </InfoIcon>
                     <InfoLabel>{t('anime.studios')}</InfoLabel>
                   </InfoLabelContainer>
                   <InfoValue>
@@ -681,16 +889,14 @@ function AnimeDetailsPage() {
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
                 {t('anime.characters')}
-                <span>{expandedSections.characters ? '▲' : '▼'}</span>
+                <span>{expandedSections.characters ? <FaChevronUp /> : <FaChevronDown />}</span>
               </SectionTitle>
-              {expandedSections.characters ? (
+              
+              {expandedSections.characters && (
                 <CharacterGrid>
                   {characters.map(character => (
                     <CharacterCard key={character.character.mal_id} theme={theme}>
-                      <CharacterImage 
-                        src={character.character.images?.jpg?.image_url} 
-                        alt={character.character.name} 
-                      />
+                      <CharacterImage src={character.character.images?.jpg?.image_url} alt={character.character.name} />
                       <CharacterInfo>
                         <CharacterName theme={theme}>{character.character.name}</CharacterName>
                         <CharacterRole theme={theme}>{character.role}</CharacterRole>
@@ -698,26 +904,6 @@ function AnimeDetailsPage() {
                     </CharacterCard>
                   ))}
                 </CharacterGrid>
-              ) : (
-                <>
-                  <CharacterGrid>
-                    {characters.slice(0, 2).map(character => (
-                      <CharacterCard key={character.character.mal_id} theme={theme}>
-                        <CharacterImage 
-                          src={character.character.images?.jpg?.image_url} 
-                          alt={character.character.name} 
-                        />
-                        <CharacterInfo>
-                          <CharacterName theme={theme}>{character.character.name}</CharacterName>
-                          <CharacterRole theme={theme}>{character.role}</CharacterRole>
-                        </CharacterInfo>
-                      </CharacterCard>
-                    ))}
-                  </CharacterGrid>
-                  <ToggleButton onClick={() => toggleSection('characters')}>
-                    {t('anime.show_more')} ({characters.length})
-                  </ToggleButton>
-                </>
               )}
             </Section>
           )}
@@ -730,47 +916,21 @@ function AnimeDetailsPage() {
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
                 {t('anime.staff')}
-                <span>{expandedSections.staff ? '▲' : '▼'}</span>
+                <span>{expandedSections.staff ? <FaChevronUp /> : <FaChevronDown />}</span>
               </SectionTitle>
-              {expandedSections.staff ? (
+              
+              {expandedSections.staff && (
                 <StaffGrid>
-                  {staff.map(member => (
-                    <StaffCard key={`${member.person.mal_id}-${member.positions[0]}`} theme={theme}>
-                      <StaffImage 
-                        src={member.person.images?.jpg?.image_url} 
-                        alt={member.person.name} 
-                      />
+                  {staff.map(person => (
+                    <StaffCard key={person.person.mal_id} theme={theme}>
+                      <StaffImage src={person.person.images?.jpg?.image_url} alt={person.person.name} />
                       <StaffInfo>
-                        <StaffName theme={theme}>{member.person.name}</StaffName>
-                        <StaffPosition theme={theme}>
-                          {member.positions.join(', ')}
-                        </StaffPosition>
+                        <StaffName theme={theme}>{person.person.name}</StaffName>
+                        <StaffPosition theme={theme}>{person.positions.join(', ')}</StaffPosition>
                       </StaffInfo>
                     </StaffCard>
                   ))}
                 </StaffGrid>
-              ) : (
-                <>
-                  <StaffGrid>
-                    {staff.slice(0, 2).map(member => (
-                      <StaffCard key={`${member.person.mal_id}-${member.positions[0]}`} theme={theme}>
-                        <StaffImage 
-                          src={member.person.images?.jpg?.image_url} 
-                          alt={member.person.name} 
-                        />
-                        <StaffInfo>
-                          <StaffName theme={theme}>{member.person.name}</StaffName>
-                          <StaffPosition theme={theme}>
-                            {member.positions.join(', ')}
-                          </StaffPosition>
-                        </StaffInfo>
-                      </StaffCard>
-                    ))}
-                  </StaffGrid>
-                  <ToggleButton onClick={() => toggleSection('staff')}>
-                    {t('anime.show_more')} ({staff.length})
-                  </ToggleButton>
-                </>
               )}
             </Section>
           )}
@@ -783,82 +943,57 @@ function AnimeDetailsPage() {
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
                 {t('anime.reviews')}
-                <span>{expandedSections.reviews ? '▲' : '▼'}</span>
+                <span>{expandedSections.reviews ? <FaChevronUp /> : <FaChevronDown />}</span>
               </SectionTitle>
-              {expandedSections.reviews ? (
-                <>
-                  <ReviewList>
-                    {reviews.map(review => (
-                      <ReviewCard key={review.mal_id} theme={theme}>
-                        <ReviewHeader>
-                          <ReviewerInfo>
-                            <ReviewerName theme={theme}>{review.user.username}</ReviewerName>
-                            <ReviewDate theme={theme}>
-                              {new Date(review.date).toLocaleDateString()}
-                            </ReviewDate>
-                          </ReviewerInfo>
-                          <ReviewScore theme={theme}>
-                            {review.score} / 10
-                          </ReviewScore>
-                        </ReviewHeader>
-                        
-                        <ReviewContent>
-                          {expandedReviews.includes(review.mal_id) 
-                            ? review.review 
-                            : `${review.review.substring(0, 300)}...`}
-                        </ReviewContent>
-                        
-                        {review.review.length > 300 && (
-                          <ExpandButton 
-                            onClick={() => toggleReviewExpansion(review.mal_id)}
-                            theme={theme}
-                          >
-                            {expandedReviews.includes(review.mal_id) 
-                              ? t('anime.show_less') 
-                              : t('anime.read_more')}
-                          </ExpandButton>
+              
+              {expandedSections.reviews && (
+                <ReviewList>
+                  {reviews.map(review => (
+                    <ReviewCard key={review.mal_id} theme={theme}>
+                      <ReviewHeader>
+                        <ReviewerInfo>
+                          <ReviewerName theme={theme}>{review.user.username}</ReviewerName>
+                          <ReviewDate theme={theme}>{new Date(review.date).toLocaleDateString()}</ReviewDate>
+                        </ReviewerInfo>
+                        <ReviewScore theme={theme}>{review.score} / 10</ReviewScore>
+                      </ReviewHeader>
+                      <ReviewContent theme={theme}>
+                        {review.review.length > 300 && !expandedReviews.includes(review.mal_id) ? (
+                          <>
+                            {review.review.substring(0, 300)}...
+                            <ExpandButton 
+                              onClick={() => toggleReviewExpansion(review.mal_id)}
+                              theme={theme}
+                            >
+                              {t('anime.read_more')}
+                            </ExpandButton>
+                          </>
+                        ) : (
+                          <>
+                            {review.review}
+                            {review.review.length > 300 && (
+                              <ExpandButton 
+                                onClick={() => toggleReviewExpansion(review.mal_id)}
+                                theme={theme}
+                              >
+                                {t('anime.show_less')}
+                              </ExpandButton>
+                            )}
+                          </>
                         )}
-                      </ReviewCard>
-                    ))}
-                  </ReviewList>
+                      </ReviewContent>
+                    </ReviewCard>
+                  ))}
                   
                   {hasMoreReviews && (
                     <LoadMoreButton 
-                      onClick={loadMoreReviews} 
-                      disabled={isLoadingMore}
+                      onClick={loadMoreReviews}
                       theme={theme}
                     >
-                      {isLoadingMore ? t('anime.loading') : t('anime.load_more_reviews')}
+                      {t('anime.load_more_reviews')}
                     </LoadMoreButton>
                   )}
-                </>
-              ) : (
-                <>
-                  <ReviewList>
-                    {reviews.slice(0, 1).map(review => (
-                      <ReviewCard key={review.mal_id} theme={theme}>
-                        <ReviewHeader>
-                          <ReviewerInfo>
-                            <ReviewerName theme={theme}>{review.user.username}</ReviewerName>
-                            <ReviewDate theme={theme}>
-                              {new Date(review.date).toLocaleDateString()}
-                            </ReviewDate>
-                          </ReviewerInfo>
-                          <ReviewScore theme={theme}>
-                            {review.score} / 10
-                          </ReviewScore>
-                        </ReviewHeader>
-                        
-                        <ReviewContent>
-                          {`${review.review.substring(0, 150)}...`}
-                        </ReviewContent>
-                      </ReviewCard>
-                    ))}
-                  </ReviewList>
-                  <ToggleButton onClick={() => toggleSection('reviews')}>
-                    {t('anime.show_more')} ({reviews.length})
-                  </ToggleButton>
-                </>
+                </ReviewList>
               )}
             </Section>
           )}

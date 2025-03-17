@@ -7,6 +7,7 @@ import { favoritesService } from '../services/favoritesService';
 import { Manga } from '../types/anime';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import { FaArrowLeft, FaHeart, FaRegHeart, FaBook, FaBookOpen, FaChartLine, FaCalendarAlt, FaLayerGroup, FaUser } from 'react-icons/fa';
 
 const Container = styled.div`
   display: flex;
@@ -24,11 +25,6 @@ const BackLink = styled(Link)`
   
   &:hover {
     color: #ff5f5f;
-  }
-  
-  &::before {
-    content: '←';
-    margin-right: 0.5rem;
   }
 `;
 
@@ -132,15 +128,10 @@ const FavoriteButton = styled.button<{ isFavorite: boolean; theme: string }>`
   cursor: pointer;
   margin-top: 1.5rem;
   transition: background-color 0.3s ease;
+  gap: 0.5rem;
   
   &:hover {
     background-color: ${props => props.isFavorite ? '#ff4545' : props.theme === 'dark' ? '#333' : '#e0e0e0'};
-  }
-  
-  &::before {
-    content: ${props => props.isFavorite ? '"♥"' : '"♡"'};
-    margin-right: 0.5rem;
-    font-size: 1.2rem;
   }
 `;
 
@@ -273,7 +264,10 @@ function MangaDetailsPage() {
   
   return (
     <Container>
-      <BackLink to="/manga" theme={theme}>{t('manga.back_to_catalog')}</BackLink>
+      <BackLink to="/manga" theme={theme}>
+        <FaArrowLeft style={{ marginRight: '0.5rem' }} />
+        {t('manga.back_to_catalog')}
+      </BackLink>
       
       {loading ? (
         <Loading />
@@ -297,26 +291,38 @@ function MangaDetailsPage() {
               )}
               
               <InfoItem>
-                <InfoLabel theme={theme}>{t('manga.chapters')}:</InfoLabel>
+                <InfoLabel theme={theme}>
+                  <FaBook style={{ marginRight: '0.5rem' }} />
+                  {t('manga.chapters')}:
+                </InfoLabel>
                 <InfoValue theme={theme}>
                   {manga.chapters > 0 ? manga.chapters : t('manga.unknown')}
                 </InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>{t('manga.volumes')}:</InfoLabel>
+                <InfoLabel theme={theme}>
+                  <FaBookOpen style={{ marginRight: '0.5rem' }} />
+                  {t('manga.volumes')}:
+                </InfoLabel>
                 <InfoValue theme={theme}>
                   {manga.volumes > 0 ? manga.volumes : t('manga.unknown')}
                 </InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>{t('manga.status')}:</InfoLabel>
+                <InfoLabel theme={theme}>
+                  <FaChartLine style={{ marginRight: '0.5rem' }} />
+                  {t('manga.status')}:
+                </InfoLabel>
                 <InfoValue theme={theme}>{manga.status}</InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>{t('manga.published')}:</InfoLabel>
+                <InfoLabel theme={theme}>
+                  <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
+                  {t('manga.published')}:
+                </InfoLabel>
                 <InfoValue theme={theme}>
                   {manga.published?.from ? new Date(manga.published.from).toLocaleDateString() : '?'} 
                   {' - '} 
@@ -325,13 +331,19 @@ function MangaDetailsPage() {
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>{t('manga.type')}:</InfoLabel>
+                <InfoLabel theme={theme}>
+                  <FaLayerGroup style={{ marginRight: '0.5rem' }} />
+                  {t('manga.type')}:
+                </InfoLabel>
                 <InfoValue theme={theme}>{manga.type}</InfoValue>
               </InfoItem>
               
               {manga.authors && manga.authors.length > 0 && (
                 <InfoItem>
-                  <InfoLabel theme={theme}>{t('manga.authors')}:</InfoLabel>
+                  <InfoLabel theme={theme}>
+                    <FaUser style={{ marginRight: '0.5rem' }} />
+                    {t('manga.authors')}:
+                  </InfoLabel>
                   <InfoValue theme={theme}>
                     {manga.authors.map(author => author.name).join(', ')}
                   </InfoValue>
@@ -356,6 +368,7 @@ function MangaDetailsPage() {
                 isFavorite={isFavorite} 
                 theme={theme}
               >
+                {isFavorite ? <FaHeart /> : <FaRegHeart />}
                 {isFavorite ? t('manga.remove_from_favorites') : t('manga.add_to_favorites')}
               </FavoriteButton>
             </MangaInfo>

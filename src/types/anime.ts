@@ -45,6 +45,7 @@ export interface Anime {
   season?: string;
   year?: number;
   type: string;
+  watchStatus?: WatchStatus;
 }
 
 export interface Genre {
@@ -192,4 +193,6 @@ export interface ReviewsResponse {
       per_page: number;
     };
   };
-} 
+}
+
+export type WatchStatus = 'watching' | 'planned' | 'completed' | 'on_hold' | 'dropped' | null; 

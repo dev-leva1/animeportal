@@ -119,6 +119,22 @@ const mapReviewData = (apiData: any): Review => {
   };
 };
 
+export interface AnimeSearchParams {
+  query?: string;
+  genres?: number[];
+  year?: number;
+  season?: string;
+  status?: string;
+  rating?: string;
+  minScore?: number;
+  maxScore?: number;
+  type?: string;
+  orderBy?: string;
+  sort?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+}
+
 export const animeService = {
   async getAnimeList(page: number = 1, limit: number = 20): Promise<AnimeResponse> {
     try {
@@ -146,17 +162,40 @@ export const animeService = {
     }
   },
 
-  async searchAnime(query: string, page: number = 1): Promise<AnimeResponse> {
+  async searchAnime(params: string | AnimeSearchParams, page: number = 1): Promise<AnimeResponse> {
     try {
       await delay(1500);
       
       return await retryWithBackoff(async () => {
-        const response = await axios.get(`${API_BASE_URL}/anime`, {
-          params: {
-            q: query,
+        let queryParams: any = {};
+        
+        if (typeof params === 'string') {
+          queryParams = {
+            q: params,
             page,
             limit: 20
-          }
+          };
+        } else {
+          queryParams = {
+            page: params.page || page,
+            limit: params.limit || 20
+          };
+          
+          if (params.query) queryParams.q = params.query;
+          if (params.genres && params.genres.length > 0) queryParams.genres = params.genres.join(',');
+          if (params.year) queryParams.start_date = `${params.year}`;
+          if (params.season) queryParams.season = params.season;
+          if (params.status) queryParams.status = params.status;
+          if (params.rating) queryParams.rating = params.rating;
+          if (params.minScore) queryParams.min_score = params.minScore;
+          if (params.maxScore) queryParams.max_score = params.maxScore;
+          if (params.type) queryParams.type = params.type;
+          if (params.orderBy) queryParams.order_by = params.orderBy;
+          if (params.sort) queryParams.sort = params.sort;
+        }
+        
+        const response = await axios.get(`${API_BASE_URL}/anime`, {
+          params: queryParams
         });
         
         return {

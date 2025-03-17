@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useApp } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { animeService } from '../services/animeService';
+import { FaUser, FaSignOutAlt, FaDice, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
+import { MdLanguage } from 'react-icons/md';
 
 const HeaderContainer = styled.header`
   background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
@@ -72,14 +74,10 @@ const ProfileButton = styled(Link)`
   transition: color 0.3s ease;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   
   &:hover {
     color: #ff5f5f;
-  }
-  
-  &::before {
-    content: '👤';
-    margin-right: 0.25rem;
   }
 `;
 
@@ -91,6 +89,9 @@ const LogoutButton = styled.button`
   padding: 0.5rem;
   cursor: pointer;
   transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   
   &:hover {
     color: #ff5f5f;
@@ -108,14 +109,10 @@ const RandomAnimeButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   
   &:hover {
     color: #ff5f5f;
-  }
-  
-  &::before {
-    content: '🎲';
-    margin-right: 0.25rem;
   }
 `;
 
@@ -148,6 +145,9 @@ const ThemeToggle = styled.button`
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
   padding: 0.5rem;
   transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &:hover {
     color: #ff5f5f;
@@ -247,7 +247,7 @@ function Header() {
           theme={theme} 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          {isMenuOpen ? '✕' : '☰'}
+          {isMenuOpen ? <FaTimes /> : <FaBars />}
         </MobileMenuButton>
         
         <Nav>
@@ -261,6 +261,7 @@ function Header() {
               theme={theme}
               disabled={isLoading}
             >
+              <FaDice />
               {t('header.random_anime')}
             </RandomAnimeButton>
           </NavLinks>
@@ -281,9 +282,11 @@ function Header() {
             {isAuthenticated ? (
               <>
                 <ProfileButton to="/profile" theme={theme}>
+                  <FaUser />
                   {t('header.profile')}
                 </ProfileButton>
                 <LogoutButton onClick={handleLogout} theme={theme}>
+                  <FaSignOutAlt />
                   {t('header.logout')}
                 </LogoutButton>
               </>
@@ -294,13 +297,14 @@ function Header() {
             )}
             
             <LanguageToggle onClick={toggleLanguage} theme={theme} aria-label="Change language">
-              <span role="img" aria-label={language === 'ru' ? 'Russian' : 'English'}>
-                {language === 'ru' ? '🇷🇺' : '🇬🇧'}
+              <MdLanguage />
+              <span style={{ marginLeft: '0.25rem' }}>
+                {language === 'ru' ? 'RU' : 'EN'}
               </span>
             </LanguageToggle>
             
             <ThemeToggle onClick={toggleTheme} theme={theme}>
-              {theme === 'dark' ? '☀️' : '🌙'}
+              {theme === 'dark' ? <FaSun /> : <FaMoon />}
             </ThemeToggle>
           </div>
         </Nav>

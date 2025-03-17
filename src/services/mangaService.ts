@@ -50,6 +50,20 @@ const mapMangaData = (apiData: any): Manga => {
   };
 };
 
+export interface MangaSearchParams {
+  query?: string;
+  genres?: number[];
+  year?: number;
+  status?: string;
+  minScore?: number;
+  maxScore?: number;
+  type?: string;
+  orderBy?: string;
+  sort?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+}
+
 export const mangaService = {
   async getMangaList(page: number = 1, limit: number = 20): Promise<MangaResponse> {
     try {
@@ -76,17 +90,38 @@ export const mangaService = {
     }
   },
 
-  async searchManga(query: string, page: number = 1): Promise<MangaResponse> {
+  async searchManga(params: string | MangaSearchParams, page: number = 1): Promise<MangaResponse> {
     try {
       await delay(1500);
       
       return await retryWithBackoff(async () => {
-        const response = await axios.get(`${API_BASE_URL}/manga`, {
-          params: {
-            q: query,
+        let queryParams: any = {};
+        
+        if (typeof params === 'string') {
+          queryParams = {
+            q: params,
             page,
             limit: 20
-          }
+          };
+        } else {
+          queryParams = {
+            page: params.page || page,
+            limit: params.limit || 20
+          };
+          
+          if (params.query) queryParams.q = params.query;
+          if (params.genres && params.genres.length > 0) queryParams.genres = params.genres.join(',');
+          if (params.year) queryParams.start_date = `${params.year}`;
+          if (params.status) queryParams.status = params.status;
+          if (params.minScore) queryParams.min_score = params.minScore;
+          if (params.maxScore) queryParams.max_score = params.maxScore;
+          if (params.type) queryParams.type = params.type;
+          if (params.orderBy) queryParams.order_by = params.orderBy;
+          if (params.sort) queryParams.sort = params.sort;
+        }
+        
+        const response = await axios.get(`${API_BASE_URL}/manga`, {
+          params: queryParams
         });
         
         return {

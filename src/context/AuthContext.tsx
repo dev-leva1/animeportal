@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, UserCredentials, RegisterData } from '../types/user';
+import { User, UserCredentials, RegisterData, PasswordChangeData } from '../types/user';
 import { authService } from '../services/authService';
 
 interface AuthContextType {
@@ -10,6 +10,7 @@ interface AuthContextType {
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
+  changePassword: (data: PasswordChangeData) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -77,6 +78,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(updatedUser);
   };
   
+  const changePassword = async (data: PasswordChangeData) => {
+    setIsLoading(true);
+    try {
+      return await authService.changePassword(data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   const value = {
     user,
     isAuthenticated: !!user,
@@ -84,7 +94,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     register,
     logout,
-    updateUser
+    updateUser,
+    changePassword
   };
   
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

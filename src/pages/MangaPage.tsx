@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
-import { mangaService } from '../services/mangaService';
+import { mangaService, MangaSearchParams } from '../services/mangaService';
 import { Manga } from '../types/anime';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
@@ -194,26 +194,176 @@ const genres = [
   { id: 30, name: 'sports' }
 ];
 
+const mangaTypes = [
+  { value: 'manga', label: 'type.manga' },
+  { value: 'novel', label: 'type.novel' },
+  { value: 'lightnovel', label: 'type.lightnovel' },
+  { value: 'oneshot', label: 'type.oneshot' },
+  { value: 'doujin', label: 'type.doujin' },
+  { value: 'manhwa', label: 'type.manhwa' },
+  { value: 'manhua', label: 'type.manhua' }
+];
+
+const mangaStatus = [
+  { value: 'publishing', label: 'status.publishing' },
+  { value: 'complete', label: 'status.complete' },
+  { value: 'hiatus', label: 'status.hiatus' },
+  { value: 'discontinued', label: 'status.discontinued' },
+  { value: 'upcoming', label: 'status.upcoming' }
+];
+
+const sortOptions = [
+  { value: 'title', label: 'sort.title' },
+  { value: 'score', label: 'sort.score' },
+  { value: 'popularity', label: 'sort.popularity' },
+  { value: 'rank', label: 'sort.rank' },
+  { value: 'start_date', label: 'sort.start_date' }
+];
+
+const AdvancedFiltersContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  width: 100%;
+`;
+
+const FilterGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const FilterLabel = styled.label`
+  font-size: 0.9rem;
+  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+`;
+
+const ToggleButton = styled.button`
+  background-color: transparent;
+  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
+const CheckboxGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  cursor: pointer;
+`;
+
 function MangaPage() {
   const { theme, t } = useApp();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [manga, setManga] = useState<Manga[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState(0);
   
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [minScore, setMinScore] = useState<number | null>(null);
+  const [maxScore, setMaxScore] = useState<number | null>(null);
+  const [orderBy, setOrderBy] = useState<string>('score');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
+  // Parse URL params
   const query = searchParams.get('search') || '';
-  const genreId = parseInt(searchParams.get('genre') || '0');
   const page = parseInt(searchParams.get('page') || '1');
   
+  // Parse advanced filters from URL
   useEffect(() => {
     setSearchQuery(query);
-    setSelectedGenre(genreId);
     setCurrentPage(page);
-  }, [query, genreId, page]);
+    
+    const genresParam = searchParams.get('genres');
+    if (genresParam) {
+      setSelectedGenres(genresParam.split(',').map(Number).filter(id => id > 0));
+    } else {
+      setSelectedGenres([]);
+    }
+    
+    const yearParam = searchParams.get('year');
+    if (yearParam) {
+      setSelectedYear(Number(yearParam));
+    } else {
+      setSelectedYear(null);
+    }
+    
+    const statusParam = searchParams.get('status');
+    if (statusParam) {
+      setSelectedStatus(statusParam);
+    } else {
+      setSelectedStatus('');
+    }
+    
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      setSelectedType(typeParam);
+    } else {
+      setSelectedType('');
+    }
+    
+    const minScoreParam = searchParams.get('min_score');
+    if (minScoreParam) {
+      setMinScore(Number(minScoreParam));
+    } else {
+      setMinScore(null);
+    }
+    
+    const maxScoreParam = searchParams.get('max_score');
+    if (maxScoreParam) {
+      setMaxScore(Number(maxScoreParam));
+    } else {
+      setMaxScore(null);
+    }
+    
+    const orderByParam = searchParams.get('order_by');
+    if (orderByParam) {
+      setOrderBy(orderByParam);
+    } else {
+      setOrderBy('score');
+    }
+    
+    const sortParam = searchParams.get('sort');
+    if (sortParam && (sortParam === 'asc' || sortParam === 'desc')) {
+      setSortOrder(sortParam);
+    } else {
+      setSortOrder('desc');
+    }
+    
+    // If any advanced filter is set, show the advanced filters section
+    if (genresParam || yearParam || statusParam || typeParam || minScoreParam || maxScoreParam || orderByParam || sortParam) {
+      setShowAdvancedFilters(true);
+    }
+  }, [searchParams]);
   
   useEffect(() => {
     const fetchManga = async () => {
@@ -221,19 +371,53 @@ function MangaPage() {
       setError(null);
       
       try {
-        let response;
+        const searchParams: MangaSearchParams = {
+          page: currentPage,
+          limit: 20,
+          orderBy: orderBy,
+          sort: sortOrder
+        };
         
         if (query) {
-          response = await mangaService.searchManga(query, currentPage);
+          searchParams.query = query;
           document.title = `${t('manga.search_results')} - ${t('site.name')}`;
-        } else if (genreId > 0) {
-          response = await mangaService.getMangaByGenre(genreId, currentPage);
-          const genreName = genres.find(g => g.id === genreId)?.name || '';
-          document.title = `${t(`genre.${genreName}`)} ${t('manga.genre')} - ${t('site.name')}`;
         } else {
-          response = await mangaService.getMangaList(currentPage);
           document.title = `${t('manga.catalog')} - ${t('site.name')}`;
         }
+        
+        if (selectedGenres.length > 0) {
+          searchParams.genres = selectedGenres;
+          const genreNames = selectedGenres.map(id => {
+            const genre = genres.find(g => g.id === id);
+            return genre ? t(`genre.${genre.name}`) : '';
+          }).filter(Boolean).join(', ');
+          
+          if (genreNames) {
+            document.title = `${genreNames} ${t('manga.genre')} - ${t('site.name')}`;
+          }
+        }
+        
+        if (selectedYear) {
+          searchParams.year = selectedYear;
+        }
+        
+        if (selectedStatus) {
+          searchParams.status = selectedStatus;
+        }
+        
+        if (selectedType) {
+          searchParams.type = selectedType;
+        }
+        
+        if (minScore) {
+          searchParams.minScore = minScore;
+        }
+        
+        if (maxScore) {
+          searchParams.maxScore = maxScore;
+        }
+        
+        const response = await mangaService.searchManga(searchParams);
         
         setManga(response.data);
         setTotalPages(response.pagination.last_visible_page);
@@ -245,48 +429,114 @@ function MangaPage() {
     };
     
     fetchManga();
-  }, [query, genreId, currentPage, t]);
+  }, [query, selectedGenres, selectedYear, selectedStatus, selectedType, minScore, maxScore, orderBy, sortOrder, currentPage, t]);
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      setSearchParams({ search: searchQuery, page: '1' });
-    }
+    updateUrlParams();
   };
   
-  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const genreId = parseInt(e.target.value);
-    if (genreId === 0) {
-      setSearchParams({ page: '1' });
-    } else {
-      setSearchParams({ genre: e.target.value, page: '1' });
-    }
+  const handleGenreToggle = (genreId: number) => {
+    setSelectedGenres(prev => {
+      if (prev.includes(genreId)) {
+        return prev.filter(id => id !== genreId);
+      } else {
+        return [...prev, genreId];
+      }
+    });
   };
   
   const handlePageChange = (page: number) => {
-    const params: Record<string, string> = { page: page.toString() };
-    if (query) params.search = query;
-    if (genreId > 0) params.genre = genreId.toString();
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', page.toString());
+    setSearchParams(newParams);
+  };
+  
+  const updateUrlParams = () => {
+    const params = new URLSearchParams();
+    
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery);
+    }
+    
+    if (selectedGenres.length > 0) {
+      params.set('genres', selectedGenres.join(','));
+    }
+    
+    if (selectedYear) {
+      params.set('year', selectedYear.toString());
+    }
+    
+    if (selectedStatus) {
+      params.set('status', selectedStatus);
+    }
+    
+    if (selectedType) {
+      params.set('type', selectedType);
+    }
+    
+    if (minScore) {
+      params.set('min_score', minScore.toString());
+    }
+    
+    if (maxScore) {
+      params.set('max_score', maxScore.toString());
+    }
+    
+    if (orderBy !== 'score') {
+      params.set('order_by', orderBy);
+    }
+    
+    if (sortOrder !== 'desc') {
+      params.set('sort', sortOrder);
+    }
+    
+    params.set('page', '1');
+    
     setSearchParams(params);
   };
   
   const handleRetry = () => {
-    const params: Record<string, string> = { page: currentPage.toString() };
-    if (query) params.search = query;
-    if (genreId > 0) params.genre = genreId.toString();
-    setSearchParams(params);
+    // Refresh the current page
+    const newParams = new URLSearchParams(searchParams);
+    setSearchParams(newParams);
   };
+  
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSelectedGenres([]);
+    setSelectedYear(null);
+    setSelectedStatus('');
+    setSelectedType('');
+    setMinScore(null);
+    setMaxScore(null);
+    setOrderBy('score');
+    setSortOrder('desc');
+    navigate('/manga');
+  };
+  
+  const getPageTitle = () => {
+    if (query) {
+      return t('manga.search_results');
+    } else if (selectedGenres.length > 0) {
+      const genreNames = selectedGenres.map(id => {
+        const genre = genres.find(g => g.id === id);
+        return genre ? t(`genre.${genre.name}`) : '';
+      }).filter(Boolean).join(', ');
+      
+      return `${genreNames} ${t('manga.genre')}`;
+    } else {
+      return t('manga.catalog');
+    }
+  };
+  
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   
   return (
     <Container>
       <Header>
-        <Title theme={theme}>
-          {query
-            ? t('manga.search_results')
-            : genreId > 0
-              ? `${t(`genre.${genres.find(g => g.id === genreId)?.name || ''}`)} ${t('manga.genre')}`
-              : t('manga.catalog')}
-        </Title>
+        <Title theme={theme}>{getPageTitle()}</Title>
         
         <SearchForm onSubmit={handleSearch}>
           <SearchInput
@@ -297,22 +547,137 @@ function MangaPage() {
             theme={theme}
           />
           <SearchButton type="submit">{t('manga.search')}</SearchButton>
+          <ToggleButton 
+            type="button" 
+            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            theme={theme}
+          >
+            {showAdvancedFilters ? t('manga.hide_filters') : t('manga.show_filters')}
+          </ToggleButton>
+          <SearchButton type="button" onClick={resetFilters}>{t('manga.reset_filters')}</SearchButton>
         </SearchForm>
       </Header>
       
-      <GenreFilter>
-        <GenreSelect
-          value={selectedGenre}
-          onChange={handleGenreChange}
-          theme={theme}
-        >
-          {genres.map(genre => (
-            <option key={genre.id} value={genre.id}>
-              {t(`genre.${genre.name}`)}
-            </option>
-          ))}
-        </GenreSelect>
-      </GenreFilter>
+      {showAdvancedFilters && (
+        <AdvancedFiltersContainer theme={theme}>
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.genres')}</FilterLabel>
+            <CheckboxGroup>
+              {genres.filter(genre => genre.id > 0).map(genre => (
+                <CheckboxLabel key={genre.id} theme={theme}>
+                  <input 
+                    type="checkbox" 
+                    checked={selectedGenres.includes(genre.id)}
+                    onChange={() => handleGenreToggle(genre.id)}
+                  />
+                  {t(`genre.${genre.name}`)}
+                </CheckboxLabel>
+              ))}
+            </CheckboxGroup>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.year')}</FilterLabel>
+            <GenreSelect 
+              value={selectedYear || ''}
+              onChange={(e) => setSelectedYear(e.target.value ? Number(e.target.value) : null)}
+              theme={theme}
+            >
+              <option value="">{t('manga.all_years')}</option>
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </GenreSelect>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.status')}</FilterLabel>
+            <GenreSelect 
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              theme={theme}
+            >
+              <option value="">{t('manga.all_statuses')}</option>
+              {mangaStatus.map(status => (
+                <option key={status.value} value={status.value}>
+                  {t(status.label)}
+                </option>
+              ))}
+            </GenreSelect>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.type')}</FilterLabel>
+            <GenreSelect 
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              theme={theme}
+            >
+              <option value="">{t('manga.all_types')}</option>
+              {mangaTypes.map(type => (
+                <option key={type.value} value={type.value}>
+                  {t(type.label)}
+                </option>
+              ))}
+            </GenreSelect>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.min_score')}</FilterLabel>
+            <GenreSelect 
+              value={minScore || ''}
+              onChange={(e) => setMinScore(e.target.value ? Number(e.target.value) : null)}
+              theme={theme}
+            >
+              <option value="">{t('manga.any_score')}</option>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(score => (
+                <option key={score} value={score}>{score}</option>
+              ))}
+            </GenreSelect>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.max_score')}</FilterLabel>
+            <GenreSelect 
+              value={maxScore || ''}
+              onChange={(e) => setMaxScore(e.target.value ? Number(e.target.value) : null)}
+              theme={theme}
+            >
+              <option value="">{t('manga.any_score')}</option>
+              {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(score => (
+                <option key={score} value={score}>{score}</option>
+              ))}
+            </GenreSelect>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.sort_by')}</FilterLabel>
+            <GenreSelect 
+              value={orderBy}
+              onChange={(e) => setOrderBy(e.target.value)}
+              theme={theme}
+            >
+              {sortOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {t(option.label)}
+                </option>
+              ))}
+            </GenreSelect>
+          </FilterGroup>
+          
+          <FilterGroup>
+            <FilterLabel theme={theme}>{t('manga.sort_order')}</FilterLabel>
+            <GenreSelect 
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              theme={theme}
+            >
+              <option value="desc">{t('manga.descending')}</option>
+              <option value="asc">{t('manga.ascending')}</option>
+            </GenreSelect>
+          </FilterGroup>
+        </AdvancedFiltersContainer>
+      )}
       
       {loading ? (
         <Loading />

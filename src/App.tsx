@@ -12,6 +12,12 @@ import FavoritesPage from './pages/FavoritesPage';
 import AuthPage from './pages/AuthPage';
 import ProfilePage from './pages/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
+import AboutPage from './pages/AboutPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import ContactsPage from './pages/ContactsPage';
+import DataSourcePage from './pages/DataSourcePage';
+import CopyrightPage from './pages/CopyrightPage';
 import { AppProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { translations } from './translations';
@@ -77,6 +83,12 @@ function App() {
                   <Route path="/favorites" element={<FavoritesPage />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/contacts" element={<ContactsPage />} />
+                  <Route path="/data-source" element={<DataSourcePage />} />
+                  <Route path="/copyright" element={<CopyrightPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </MainContent>
