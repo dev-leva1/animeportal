@@ -72,9 +72,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     authService.logout();
     setUser(null);
   };
-  
   const updateUser = (updatedUser: User) => {
-    authService.updateUserProfile(updatedUser);
+    authService.updateUser(updatedUser);
     setUser(updatedUser);
   };
   
