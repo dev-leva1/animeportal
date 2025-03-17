@@ -2,6 +2,10 @@
 
 A modern web application for exploring anime and manga, built with React, TypeScript, and Vite.
 
+![GitHub Release](https://img.shields.io/github/v/release/dev-leva1/animeportal)
+![GitHub top language](https://img.shields.io/github/languages/top/dev-leva1/animeportal)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fanimeportal.netlify.app%2F)
+
 [README.ru.md](https://github.com/dev-leva1/animeportal/blob/main/README.ru.md)
 
 ## Features
