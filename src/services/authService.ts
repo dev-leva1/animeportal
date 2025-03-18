@@ -1,4 +1,4 @@
-import { User, UserCredentials, RegisterData, AuthResponse, WatchHistory, PasswordChangeData, UserComment, UserStats } from '../types/user';
+import { User, UserCredentials, RegisterData, AuthResponse, WatchHistory, PasswordChangeData, UserComment, UserStats, UserReply } from '../types/user';
 import { favoritesService } from './favoritesService';
 
 // const API_URL = 'https://api.example.com'; // Замените на реальный URL API
@@ -47,7 +47,6 @@ const updateUser = (user: User): void => {
   currentUser = user;
   localStorage.setItem('currentUser', JSON.stringify(user));
   
-  // Обновляем пользователя в "базе данных"
   const index = users.findIndex(u => u.id === user.id);
   if (index !== -1) {
     users[index] = user;
@@ -151,25 +150,20 @@ const getWatchHistory = (): WatchHistory[] => {
 const addToWatchHistory = (item: WatchHistory): void => {
   const history = getWatchHistory();
   
-  // Удаляем предыдущую запись с таким же animeId, если она существует
   const filteredHistory = history.filter(h => h.animeId !== item.animeId);
   
-  // Добавляем новую запись в начало списка
   filteredHistory.unshift(item);
   
-  // Ограничиваем историю до 20 элементов
   const limitedHistory = filteredHistory.slice(0, 20);
   
   localStorage.setItem('watchHistory', JSON.stringify(limitedHistory));
   
-  // Обновляем статистику пользователя
   updateUserStats();
 };
 
 const clearWatchHistory = (): void => {
   localStorage.removeItem('watchHistory');
   
-  // Обновляем статистику пользователя
   updateUserStats();
 };
 
@@ -207,8 +201,10 @@ const addUserComment = (text: string): UserComment => {
   const user = getCurrentUser();
   if (!user) throw new Error('User not logged in');
   
+  const uniqueId = Date.now().toString() + '-' + Math.random().toString(36).substring(2, 15);
+  
   const comment: UserComment = {
-    id: Date.now().toString(),
+    id: uniqueId,
     text,
     createdAt: new Date().toISOString(),
     likes: 0,
@@ -277,30 +273,31 @@ const likeUserComment = (commentId: string): UserComment | null => {
   return updatedComment;
 };
 
-const addReplyToComment = (commentId: string, replyText: string, authorName: string): UserComment | null => {
+// Добавление ответа к комментарию
+const addReplyToComment = (commentId: string, text: string, author: string): UserComment | null => {
   const user = getCurrentUser();
   if (!user || !user.comments) return null;
   
   const commentIndex = user.comments.findIndex(c => c.id === commentId);
   if (commentIndex === -1) return null;
   
-  const comment = user.comments[commentIndex];
+  const uniqueReplyId = Date.now().toString() + '-' + Math.random().toString(36).substring(2, 15) + '-reply';
   
-  if (!comment.replies) {
-    comment.replies = [];
-  }
-  
-  const reply = {
-    id: Date.now().toString(),
-    text: replyText,
-    createdAt: new Date().toISOString(),
-    author: authorName
+  const reply: UserReply = {
+    id: uniqueReplyId,
+    text,
+    author,
+    createdAt: new Date().toISOString()
   };
   
-  comment.replies.push(reply);
+  if (!user.comments[commentIndex].replies) {
+    user.comments[commentIndex].replies = [];
+  }
+  
+  user.comments[commentIndex].replies.push(reply);
   updateUser(user);
   
-  return comment;
+  return user.comments[commentIndex];
 };
 
 const updateReply = (commentId: string, replyId: string, text: string): UserComment | null => {

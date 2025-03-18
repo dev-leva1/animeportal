@@ -539,10 +539,17 @@ function ProfilePage() {
     setWatchHistory(history);
     
     if (user) {
-      setComments(user.comments || []);
+      const uniqueComments = user.comments || [];
+      const uniqueIds = new Set();
+      const filteredComments = uniqueComments.filter(comment => {
+        if (uniqueIds.has(comment.id)) return false;
+        uniqueIds.add(comment.id);
+        return true;
+      });
+      
+      setComments(filteredComments);
     }
     
-    // Обновляем статистику при загрузке страницы
     authService.updateUserStats();
   }, [user]);
   
@@ -628,11 +635,13 @@ function ProfilePage() {
     e.preventDefault();
     if (newComment.trim() && user) {
       const addedComment = authService.addUserComment(newComment);
-      setComments(prev => [addedComment, ...prev]);
-      if (user) {
-        user.comments = [addedComment, ...(user.comments || [])];
-        updateUser(user);
-      }
+      
+      setComments(prev => {
+        const exists = prev.some(c => c.id === addedComment.id);
+        if (exists) return prev;
+        return [addedComment, ...prev];
+      });
+      
       setNewComment('');
     }
   };
@@ -647,12 +656,14 @@ function ProfilePage() {
     if (editingCommentId && editingCommentText.trim()) {
       const updatedComment = authService.updateUserComment(editingCommentId, editingCommentText);
       if (updatedComment && user) {
-        setComments(prev => prev.map(c => c.id === editingCommentId ? updatedComment : c));
-        user.comments = user.comments?.map(c => c.id === editingCommentId ? updatedComment : c);
-        updateUser(user);
+        setComments(prev => prev.map(c => c.id === editingCommentId ? {...updatedComment} : c));
+        if (user.comments) {
+          user.comments = user.comments.map(c => c.id === editingCommentId ? {...updatedComment} : c);
+          updateUser({...user});
+        }
+        setEditingCommentId(null);
+        setEditingCommentText('');
       }
-      setEditingCommentId(null);
-      setEditingCommentText('');
     }
   };
   
@@ -661,8 +672,10 @@ function ProfilePage() {
       const success = authService.deleteUserComment(id);
       if (success && user) {
         setComments(prev => prev.filter(c => c.id !== id));
-        user.comments = user.comments?.filter(c => c.id !== id);
-        updateUser(user);
+        if (user.comments) {
+          user.comments = user.comments.filter(c => c.id !== id);
+          updateUser({...user});
+        }
       }
     }
   };
@@ -670,9 +683,11 @@ function ProfilePage() {
   const handleLikeComment = (commentId: string) => {
     const updatedComment = authService.likeUserComment(commentId);
     if (updatedComment && user) {
-      setComments(prev => prev.map(c => c.id === commentId ? updatedComment : c));
-      user.comments = user.comments?.map(c => c.id === commentId ? updatedComment : c);
-      updateUser(user);
+      setComments(prev => prev.map(c => c.id === commentId ? {...updatedComment} : c));
+      if (user.comments) {
+        user.comments = user.comments.map(c => c.id === commentId ? {...updatedComment} : c);
+        updateUser({...user});
+      }
     }
   };
   
@@ -691,9 +706,26 @@ function ProfilePage() {
       );
       
       if (updatedComment) {
-        setComments(prev => prev.map(c => c.id === replyingToCommentId ? updatedComment : c));
-        user.comments = user.comments?.map(c => c.id === replyingToCommentId ? updatedComment : c);
-        updateUser(user);
+        setComments(prev => {
+          return prev.map(c => {
+            if (c.id === replyingToCommentId) {
+              const commentCopy = {...updatedComment};
+              
+              const uniqueReplies = new Set();
+              if (commentCopy.replies) {
+                commentCopy.replies = commentCopy.replies.filter(reply => {
+                  if (uniqueReplies.has(reply.id)) return false;
+                  uniqueReplies.add(reply.id);
+                  return true;
+                });
+              }
+              
+              return commentCopy;
+            }
+            return c;
+          });
+        });
+        
         setReplyingToCommentId(null);
         setReplyText('');
       }
@@ -710,7 +742,7 @@ function ProfilePage() {
   
   const handleUpdateReply = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingReplyData && editingReplyData.text.trim()) {
+    if (editingReplyData && editingReplyData.text.trim() && user) {
       const updatedComment = authService.updateReply(
         editingReplyData.commentId,
         editingReplyData.replyId,
@@ -718,7 +750,11 @@ function ProfilePage() {
       );
       
       if (updatedComment) {
-        setComments(prev => prev.map(c => c.id === editingReplyData.commentId ? updatedComment : c));
+        setComments(prev => prev.map(c => c.id === editingReplyData.commentId ? {...updatedComment} : c));
+        if (user.comments) {
+          user.comments = user.comments.map(c => c.id === editingReplyData.commentId ? {...updatedComment} : c);
+          updateUser({...user});
+        }
         setEditingReplyData(null);
       }
     }
@@ -727,8 +763,12 @@ function ProfilePage() {
   const handleDeleteReply = (commentId: string, replyId: string) => {
     if (window.confirm(t('profile.confirm_delete_reply'))) {
       const updatedComment = authService.deleteReply(commentId, replyId);
-      if (updatedComment) {
-        setComments(prev => prev.map(c => c.id === commentId ? updatedComment : c));
+      if (updatedComment && user) {
+        setComments(prev => prev.map(c => c.id === commentId ? {...updatedComment} : c));
+        if (user.comments) {
+          user.comments = user.comments.map(c => c.id === commentId ? {...updatedComment} : c);
+          updateUser({...user});
+        }
       }
     }
   };
@@ -942,7 +982,7 @@ function ProfilePage() {
         <CommentsList>
           {comments.length > 0 ? (
             comments.map((comment) => (
-              <CommentItem key={comment.id} theme={theme}>
+              <CommentItem key={`comment-${comment.id}`} theme={theme}>
                 {editingCommentId === comment.id ? (
                   <CommentForm onSubmit={handleUpdateComment}>
                     <FormGroup>
@@ -1047,7 +1087,7 @@ function ProfilePage() {
                     {comment.replies && comment.replies.length > 0 && (
                       <RepliesList>
                         {comment.replies.map((reply) => (
-                          <ReplyItem key={reply.id} theme={theme}>
+                          <ReplyItem key={`reply-${reply.id}`} theme={theme}>
                             {editingReplyData && 
                              editingReplyData.commentId === comment.id && 
                              editingReplyData.replyId === reply.id ? (

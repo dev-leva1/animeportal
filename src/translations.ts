@@ -1082,7 +1082,6 @@ export const translations: Translations = {
     en: 'For copyright-related inquiries, please contact us through the Contacts page.'
   },
   
-  // Переводы для страницы О нас
   'about.mission_title': {
     ru: 'Наша миссия',
     en: 'Our Mission'
@@ -1120,7 +1119,6 @@ export const translations: Translations = {
     en: 'If you have any questions, suggestions, or feedback about our site, please feel free to contact us through the Contacts page. We value your opinion and are always open to communication.'
   },
   
-  // Переводы для страницы Условия использования
   'terms.acceptance_title': {
     ru: 'Принятие условий',
     en: 'Acceptance of Terms'
@@ -1194,7 +1192,6 @@ export const translations: Translations = {
     en: 'If you have any questions about these Terms of Service, please contact us through the Contacts page.'
   },
   
-  // Переводы для страницы Политика конфиденциальности
   'privacy.intro_title': {
     ru: 'Введение',
     en: 'Introduction'
@@ -1287,8 +1284,7 @@ export const translations: Translations = {
     ru: 'Если у вас есть вопросы или предложения относительно нашей политики конфиденциальности, пожалуйста, свяжитесь с нами через страницу Контакты.',
     en: 'If you have any questions or suggestions regarding our privacy policy, please contact us through the Contacts page.'
   },
-  
-  // Переводы для страницы Контакты
+
   'contacts.get_in_touch': {
     ru: 'Связаться с нами',
     en: 'Get in Touch'
@@ -1348,5 +1344,81 @@ export const translations: Translations = {
   'profile.confirm_delete_reply': {
     ru: 'Вы уверены, что хотите удалить этот ответ?',
     en: 'Are you sure you want to delete this reply?'
+  },
+  'profile.liked': {
+    ru: 'Понравилось',
+    en: 'Liked'
+  },
+  'profile.likes': {
+    ru: 'Лайков',
+    en: 'Likes'
+  },
+  'profile.replies': {
+    ru: 'Ответы',
+    en: 'Replies'
+  },
+  'profile.reply_to': {
+    ru: 'Ответить пользователю',
+    en: 'Reply to user'
+  },
+  'profile.no_replies': {
+    ru: 'Нет ответов',
+    en: 'No replies'
+  },
+  'profile.reply_added': {
+    ru: 'Ответ добавлен',
+    en: 'Reply added'
+  },
+  'profile.edit_comment_success': {
+    ru: 'Комментарий успешно обновлён',
+    en: 'Comment successfully updated'
+  },
+  'profile.edit_reply_success': {
+    ru: 'Ответ успешно обновлён',
+    en: 'Reply successfully updated'
+  },
+  'profile.delete_comment_success': {
+    ru: 'Комментарий успешно удалён',
+    en: 'Comment successfully deleted'
+  },
+  'profile.delete_reply_success': {
+    ru: 'Ответ успешно удалён',
+    en: 'Reply successfully deleted'
+  },
+  'details.add_to_favorites': {
+    ru: 'Добавить в избранное',
+    en: 'Add to favorites'
+  },
+  'details.remove_from_favorites': {
+    ru: 'Удалить из избранного',
+    en: 'Remove from favorites'
+  },
+  'manga.add_to_favorites': {
+    ru: 'Добавить в избранное',
+    en: 'Add to favorites'
+  },
+  'manga.remove_from_favorites': {
+    ru: 'Удалить из избранного',
+    en: 'Remove from favorites'
+  },
+  'manga.ongoing': {
+    ru: 'Выходит',
+    en: 'Ongoing'
+  },
+  'manga.unknown': {
+    ru: 'Неизвестно',
+    en: 'Unknown'
+  },
+  'manga.synopsis': {
+    ru: 'Описание',
+    en: 'Synopsis'
+  },
+  'manga.back_to_catalog': {
+    ru: 'Вернуться к каталогу',
+    en: 'Back to catalog'
+  },
+  'manga.no_synopsis': {
+    ru: 'Описание отсутствует',
+    en: 'No synopsis available'
   }
-  }
+}
