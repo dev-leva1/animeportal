@@ -1426,8 +1426,8 @@ export const translations: Translations = {
     en: 'No synopsis available'
   },
   'nav.admin': {
-    ru: 'Админ-панель',
-    en: 'Admin panel'
+    ru: 'Админ',
+    en: 'Admin'
   },
   'nav.profile': {
     ru: 'Профиль',
@@ -1709,6 +1709,14 @@ export const translations: Translations = {
     ru: 'Вторичный цвет',
     en: 'Secondary Color'
   },
+  'admin.settings.background_color': {
+    ru: 'Цвет фона',
+    en: 'Background Color'
+  },
+  'admin.settings.text_color': {
+    ru: 'Цвет текста',
+    en: 'Text Color'
+  },
   'admin.settings.accent_color': {
     ru: 'Акцентный цвет',
     en: 'Accent Color'
@@ -1873,9 +1881,17 @@ export const translations: Translations = {
     ru: 'Отмена',
     en: 'Cancel'
   },
+  'admin.common.delete': {
+    ru: 'Удалить',
+    en: 'Delete'
+  },
   'admin.common.search': {
     ru: 'Поиск',
     en: 'Search'
+  },
+  'admin.settings.save_success': {
+    ru: 'Настройки успешно сохранены',
+    en: 'Settings saved successfully'
   },
   'admin.taxonomy': {
     ru: 'Таксономия',
@@ -1984,5 +2000,13 @@ export const translations: Translations = {
   'admin.common.save': {
     ru: 'Сохранить',
     en: 'Save'
+  },
+  'admin.common.close': {
+    ru: 'Закрыть',
+    en: 'Close'
+  },
+  'admin.common.edit': {
+    ru: 'Редактировать',
+    en: 'Edit'
   }
 }
