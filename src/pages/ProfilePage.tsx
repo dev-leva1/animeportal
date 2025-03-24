@@ -5,7 +5,7 @@ import { useApp } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { User, WatchHistory, PasswordChangeData, UserComment } from '../types/user';
-import { FaUser, FaEdit, FaKey, FaSave, FaTimes, FaTrash, FaHistory, FaCheck, FaExclamationTriangle, FaChartBar, FaCalendarAlt, FaComment, FaPlus, FaHeart, FaReply } from 'react-icons/fa';
+import { FaUser, FaEdit, FaKey, FaSave, FaTimes, FaTrash, FaHistory, FaCheck, FaExclamationTriangle, FaChartBar, FaCalendarAlt, FaComment, FaPlus, FaHeart, FaReply, FaUserShield } from 'react-icons/fa';
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -492,6 +492,25 @@ const ReplyActions = styled.div`
   gap: 0.5rem;
 `;
 
+const AdminButton = styled(Link)`
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  background-color: #ff5f5f;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  
+  &:hover {
+    background-color: #ff4545;
+  }
+`;
+
 function ProfilePage() {
   const { theme, t } = useApp();
   const { user, updateUser, changePassword } = useAuth();
@@ -902,6 +921,12 @@ function ProfilePage() {
                 <FaKey />
                 {t('profile.change_password')}
               </PasswordChangeButton>
+              {user.email === 'admin@example.com' && (
+                <AdminButton to="/admin">
+                  <FaUserShield />
+                  {t('nav.admin')}
+                </AdminButton>
+              )}
             </div>
           </ProfileInfo>
         )}

@@ -51,6 +51,10 @@ export const translations: Translations = {
     ru: 'Профиль',
     en: 'Profile'
   },
+  'search.placeholder': {
+    ru: 'Поиск аниме...',
+    en: 'Search anime...'
+  },
   
   'home.welcome': {
     ru: 'Добро пожаловать на АнимеПортал',
@@ -1420,5 +1424,565 @@ export const translations: Translations = {
   'manga.no_synopsis': {
     ru: 'Описание отсутствует',
     en: 'No synopsis available'
+  },
+  'nav.admin': {
+    ru: 'Админ-панель',
+    en: 'Admin panel'
+  },
+  'nav.profile': {
+    ru: 'Профиль',
+    en: 'Profile'
+  },
+  'nav.anime': {
+    ru: 'Аниме',
+    en: 'Anime'
+  },
+  'nav.manga': {
+    ru: 'Манга',
+    en: 'Manga'
+  },
+  'nav.favorites': {
+    ru: 'Избранное',
+    en: 'Favorites'
+  },
+  'nav.login': {
+    ru: 'Войти',
+    en: 'Login'
+  },
+  'nav.logout': {
+    ru: 'Выйти',
+    en: 'Logout'
+  },
+  'admin.dashboard': {
+    ru: 'Панель управления',
+    en: 'Dashboard'
+  },
+  'admin.users': {
+    ru: 'Управление пользователями',
+    en: 'Users Management'
+  },
+  'admin.anime': {
+    ru: 'Управление аниме',
+    en: 'Anime Management'
+  },
+  'admin.manga': {
+    ru: 'Управление мангой',
+    en: 'Manga Management'
+  },
+  'admin.reports': {
+    ru: 'Жалобы',
+    en: 'Reports'
+  },
+  'admin.settings': {
+    ru: 'Системные настройки',
+    en: 'System Settings'
+  },
+  'admin.activity': {
+    ru: 'Активность',
+    en: 'Activity'
+  },
+  'admin.content': {
+    ru: 'Контент',
+    en: 'Content'
+  },
+  'admin.backup': {
+    ru: 'Резервное копирование',
+    en: 'Backup'
+  },
+  'admin.overview': {
+    ru: 'Обзор',
+    en: 'Overview'
+  },
+  'admin.metadata': {
+    ru: 'Метаданные',
+    en: 'Metadata'
+  },
+  'admin.genres': {
+    ru: 'Жанры',
+    en: 'Genres'
+  },
+  'admin.studios': {
+    ru: 'Студии',
+    en: 'Studios'
+  },
+  'admin.authors': {
+    ru: 'Авторы',
+    en: 'Authors'
+  },
+  'admin.modlogs': {
+    ru: 'Журнал модерации',
+    en: 'Moderation Logs'
+  },
+  'admin.notifications': {
+    ru: 'Уведомления',
+    en: 'Notifications'
+  },
+  'admin.stats.total_users': {
+    ru: 'Всего пользователей',
+    en: 'Total Users'
+  },
+  'admin.stats.active_users': {
+    ru: 'Активные пользователи',
+    en: 'Active Users'
+  },
+  'admin.stats.new_users_today': {
+    ru: 'Новые пользователи сегодня',
+    en: 'New Users Today'
+  },
+  'admin.stats.total_anime': {
+    ru: 'Всего аниме',
+    en: 'Total Anime'
+  },
+  'admin.stats.total_manga': {
+    ru: 'Всего манги',
+    en: 'Total Manga'
+  },
+  'admin.stats.total_comments': {
+    ru: 'Всего комментариев',
+    en: 'Total Comments'
+  },
+  'admin.users.search': {
+    ru: 'Поиск пользователей',
+    en: 'Search Users'
+  },
+  'admin.users.id': {
+    ru: 'ID',
+    en: 'ID'
+  },
+  'admin.users.username': {
+    ru: 'Имя пользователя',
+    en: 'Username'
+  },
+  'admin.users.email': {
+    ru: 'Email',
+    en: 'Email'
+  },
+  'admin.users.role': {
+    ru: 'Роль',
+    en: 'Role'
+  },
+  'admin.users.created': {
+    ru: 'Дата регистрации',
+    en: 'Created At'
+  },
+  'admin.users.actions': {
+    ru: 'Действия',
+    en: 'Actions'
+  },
+  'admin.users.edit': {
+    ru: 'Редактировать',
+    en: 'Edit'
+  },
+  'admin.users.delete': {
+    ru: 'Удалить',
+    en: 'Delete'
+  },
+  'admin.users.ban': {
+    ru: 'Заблокировать',
+    en: 'Ban'
+  },
+  'admin.users.unban': {
+    ru: 'Разблокировать',
+    en: 'Unban'
+  },
+  'admin.users.change_role': {
+    ru: 'Изменить роль',
+    en: 'Change Role'
+  },
+  'admin.users.reset_password': {
+    ru: 'Сбросить пароль',
+    en: 'Reset Password'
+  },
+  'admin.users.confirm_delete': {
+    ru: 'Вы уверены, что хотите удалить этого пользователя?',
+    en: 'Are you sure you want to delete this user?'
+  },
+  'admin.users.confirm_ban': {
+    ru: 'Вы уверены, что хотите заблокировать этого пользователя?',
+    en: 'Are you sure you want to ban this user?'
+  },
+  'admin.users.reason': {
+    ru: 'Причина',
+    en: 'Reason'
+  },
+  'admin.users.cancel': {
+    ru: 'Отмена',
+    en: 'Cancel'
+  },
+  'admin.users.save': {
+    ru: 'Сохранить',
+    en: 'Save'
+  },
+  'admin.users.total': {
+    ru: 'Всего пользователей',
+    en: 'Total Users'
+  },
+  'admin.anime.search': {
+    ru: 'Поиск аниме',
+    en: 'Search Anime'
+  },
+  'admin.anime.id': {
+    ru: 'ID',
+    en: 'ID'
+  },
+  'admin.anime.title': {
+    ru: 'Название',
+    en: 'Title'
+  },
+  'admin.anime.status': {
+    ru: 'Статус',
+    en: 'Status'
+  },
+  'admin.anime.added_by': {
+    ru: 'Добавил',
+    en: 'Added By'
+  },
+  'admin.anime.added_date': {
+    ru: 'Дата добавления',
+    en: 'Added Date'
+  },
+  'admin.anime.views': {
+    ru: 'Просмотры',
+    en: 'Views'
+  },
+  'admin.anime.actions': {
+    ru: 'Действия',
+    en: 'Actions'
+  },
+  'admin.anime.edit': {
+    ru: 'Редактировать',
+    en: 'Edit'
+  },
+  'admin.anime.delete': {
+    ru: 'Удалить',
+    en: 'Delete'
+  },
+  'admin.anime.approve': {
+    ru: 'Одобрить',
+    en: 'Approve'
+  },
+  'admin.anime.reject': {
+    ru: 'Отклонить',
+    en: 'Reject'
+  },
+  'admin.anime.confirm_delete': {
+    ru: 'Вы уверены, что хотите удалить это аниме?',
+    en: 'Are you sure you want to delete this anime?'
+  },
+  'admin.anime.total': {
+    ru: 'Всего аниме',
+    en: 'Total Anime'
+  },
+  'admin.settings.site_name': {
+    ru: 'Название сайта',
+    en: 'Site Name'
+  },
+  'admin.settings.site_description': {
+    ru: 'Описание сайта',
+    en: 'Site Description'
+  },
+  'admin.settings.maintenance_mode': {
+    ru: 'Режим обслуживания',
+    en: 'Maintenance Mode'
+  },
+  'admin.settings.registration_enabled': {
+    ru: 'Регистрация включена',
+    en: 'Registration Enabled'
+  },
+  'admin.settings.comments_enabled': {
+    ru: 'Комментарии включены',
+    en: 'Comments Enabled'
+  },
+  'admin.settings.api_keys': {
+    ru: 'API ключи',
+    en: 'API Keys'
+  },
+  'admin.settings.theme_settings': {
+    ru: 'Настройки темы',
+    en: 'Theme Settings'
+  },
+  'admin.settings.primary_color': {
+    ru: 'Основной цвет',
+    en: 'Primary Color'
+  },
+  'admin.settings.secondary_color': {
+    ru: 'Вторичный цвет',
+    en: 'Secondary Color'
+  },
+  'admin.settings.accent_color': {
+    ru: 'Акцентный цвет',
+    en: 'Accent Color'
+  },
+  'admin.settings.save': {
+    ru: 'Сохранить настройки',
+    en: 'Save Settings'
+  },
+  'admin.settings.reset': {
+    ru: 'Сбросить',
+    en: 'Reset'
+  },
+  'admin.settings.api_key_name': {
+    ru: 'Название ключа',
+    en: 'Key Name'
+  },
+  'admin.settings.api_key_value': {
+    ru: 'Значение ключа',
+    en: 'Key Value'
+  },
+  'admin.settings.add_api_key': {
+    ru: 'Добавить API ключ',
+    en: 'Add API Key'
+  },
+  'admin.settings.remove_api_key': {
+    ru: 'Удалить',
+    en: 'Remove'
+  },
+  'admin.reports.id': {
+    ru: 'ID',
+    en: 'ID'
+  },
+  'admin.reports.type': {
+    ru: 'Тип',
+    en: 'Type'
+  },
+  'admin.reports.content': {
+    ru: 'Контент',
+    en: 'Content'
+  },
+  'admin.reports.user': {
+    ru: 'Пользователь',
+    en: 'User'
+  },
+  'admin.reports.reason': {
+    ru: 'Причина',
+    en: 'Reason'
+  },
+  'admin.reports.status': {
+    ru: 'Статус',
+    en: 'Status'
+  },
+  'admin.reports.reported_by': {
+    ru: 'Отправитель',
+    en: 'Reported By'
+  },
+  'admin.reports.date': {
+    ru: 'Дата',
+    en: 'Date'
+  },
+  'admin.reports.details': {
+    ru: 'Детали',
+    en: 'Details'
+  },
+  'admin.reports.actions': {
+    ru: 'Действия',
+    en: 'Actions'
+  },
+  'admin.reports.resolve': {
+    ru: 'Разрешить',
+    en: 'Resolve'
+  },
+  'admin.reports.reject': {
+    ru: 'Отклонить',
+    en: 'Reject'
+  },
+  'admin.reports.view_details': {
+    ru: 'Просмотреть детали',
+    en: 'View Details'
+  },
+  'admin.filters.filter_by': {
+    ru: 'Фильтровать по',
+    en: 'Filter By'
+  },
+  'admin.filters.status': {
+    ru: 'Статус',
+    en: 'Status'
+  },
+  'admin.filters.all': {
+    ru: 'Все',
+    en: 'All'
+  },
+  'admin.filters.approved': {
+    ru: 'Одобрено',
+    en: 'Approved'
+  },
+  'admin.filters.pending': {
+    ru: 'Ожидает',
+    en: 'Pending'
+  },
+  'admin.filters.rejected': {
+    ru: 'Отклонено',
+    en: 'Rejected'
+  },
+  'admin.filters.apply': {
+    ru: 'Применить',
+    en: 'Apply'
+  },
+  'admin.filters.reset': {
+    ru: 'Сбросить',
+    en: 'Reset'
+  },
+  'admin.pagination.prev': {
+    ru: 'Назад',
+    en: 'Previous'
+  },
+  'admin.pagination.next': {
+    ru: 'Вперед',
+    en: 'Next'
+  },
+  'admin.pagination.page': {
+    ru: 'Страница',
+    en: 'Page'
+  },
+  'admin.pagination.of': {
+    ru: 'из',
+    en: 'of'
+  },
+  'admin.pagination.per_page': {
+    ru: 'На странице',
+    en: 'Per Page'
+  },
+  'admin.common.success': {
+    ru: 'Успешно',
+    en: 'Success'
+  },
+  'admin.common.error': {
+    ru: 'Ошибка',
+    en: 'Error'
+  },
+  'admin.common.warning': {
+    ru: 'Предупреждение',
+    en: 'Warning'
+  },
+  'admin.common.info': {
+    ru: 'Информация',
+    en: 'Information'
+  },
+  'admin.common.loading': {
+    ru: 'Загрузка...',
+    en: 'Loading...'
+  },
+  'admin.common.no_results': {
+    ru: 'Нет результатов',
+    en: 'No Results'
+  },
+  'admin.common.confirm': {
+    ru: 'Подтвердить',
+    en: 'Confirm'
+  },
+  'admin.common.cancel': {
+    ru: 'Отмена',
+    en: 'Cancel'
+  },
+  'admin.common.search': {
+    ru: 'Поиск',
+    en: 'Search'
+  },
+  'admin.taxonomy': {
+    ru: 'Таксономия',
+    en: 'Taxonomy'
+  },
+  'admin.moderation': {
+    ru: 'Модерация',
+    en: 'Moderation'
+  },
+  'admin.statistics': {
+    ru: 'Статистика',
+    en: 'Statistics'
+  },
+  'admin.add_anime': {
+    ru: 'Добавить аниме',
+    en: 'Add anime'
+  },
+  'admin.search_anime': {
+    ru: 'Поиск аниме...',
+    en: 'Search anime...'
+  },
+  'admin.feature_in_development': {
+    ru: 'Функционал находится в разработке',
+    en: 'Feature is under development'
+  },
+  'admin.main_settings': {
+    ru: 'Основные настройки',
+    en: 'Main settings'
+  },
+  'admin.theme_settings': {
+    ru: 'Настройки темы',
+    en: 'Theme settings'
+  },
+  'admin.api_keys': {
+    ru: 'API ключи',
+    en: 'API keys'
+  },
+  'admin.add_new_api_key': {
+    ru: '+ Добавить новый API ключ',
+    en: '+ Add new API key'
+  },
+  'admin.reset_changes': {
+    ru: 'Сбросить изменения',
+    en: 'Reset changes'
+  },
+  'admin.save_settings': {
+    ru: 'Сохранить настройки',
+    en: 'Save settings'
+  },
+  'admin.notifications.new_reports': {
+    ru: 'Обнаружено 5 новых жалоб на контент',
+    en: 'Detected 5 new content reports'
+  },
+  'admin.notifications.backup_complete': {
+    ru: 'Ежедневный бэкап успешно завершен',
+    en: 'Daily backup completed successfully'
+  },
+  'anime.random': {
+    ru: 'Случайное аниме',
+    en: 'Random anime'
+  },
+  'admin.filters.admin': {
+    ru: 'Администратор',
+    en: 'Admin'
+  },
+  'admin.filters.moderator': {
+    ru: 'Модератор',
+    en: 'Moderator'
+  },
+  'admin.filters.user': {
+    ru: 'Пользователь',
+    en: 'User'
+  },
+  'admin.anime.add': {
+    ru: 'Добавить аниме',
+    en: 'Add anime'
+  },
+  'admin.anime.status.approved': {
+    ru: 'Одобрено',
+    en: 'Approved'
+  },
+  'admin.anime.status.pending': {
+    ru: 'На рассмотрении',
+    en: 'Pending'
+  },
+  'admin.anime.status.rejected': {
+    ru: 'Отклонено',
+    en: 'Rejected'
+  },
+  'admin.settings.general': {
+    ru: 'Общие настройки',
+    en: 'General settings'
+  },
+  'admin.settings.features': {
+    ru: 'Функции',
+    en: 'Features'
+  },
+  'admin.settings.theme': {
+    ru: 'Тема',
+    en: 'Theme'
+  },
+  'admin.common.reset': {
+    ru: 'Сбросить',
+    en: 'Reset'
+  },
+  'admin.common.save': {
+    ru: 'Сохранить',
+    en: 'Save'
   }
 }

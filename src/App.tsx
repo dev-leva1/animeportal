@@ -11,6 +11,7 @@ import MangaDetailsPage from './pages/MangaDetailsPage';
 import FavoritesPage from './pages/FavoritesPage';
 import AuthPage from './pages/AuthPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AboutPage from './pages/AboutPage';
 import TermsPage from './pages/TermsPage';
@@ -83,6 +84,7 @@ function App() {
                   <Route path="/favorites" element={<FavoritesPage />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/admin" element={<AdminPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/terms" element={<TermsPage />} />
                   <Route path="/privacy" element={<PrivacyPage />} />

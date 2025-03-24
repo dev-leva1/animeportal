@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useApp } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { animeService } from '../services/animeService';
-import { FaUser, FaSignOutAlt, FaDice, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaDice, FaSun, FaMoon, FaBars, FaTimes, FaUserShield } from 'react-icons/fa';
 import { MdLanguage } from 'react-icons/md';
 
 const HeaderContainer = styled.header`
@@ -202,13 +202,128 @@ const NavLinks = styled.div<{ isOpen: boolean; theme: string }>`
   }
 `;
 
+const MobileMenu = styled.div<{ isOpen: boolean; theme: string }>`
+  display: none;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 768px) {
+    display: ${props => props.isOpen ? 'flex' : 'none'};
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 100;
+  }
+`;
+
+const MobileNavLink = styled(Link)<{ theme: string }>`
+  text-decoration: none;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  padding: 0.75rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
+const MobileLogoutButton = styled.button<{ theme: string }>`
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
+const MobileRandomButton = styled.button<{ theme: string }>`
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
+const MobileThemeButton = styled.button<{ theme: string }>`
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
+const MobileLanguageButton = styled.button<{ theme: string }>`
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+  }
+`;
+
 function Header() {
   const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
-  const { /*user,*/ isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  
+  const isAdmin = isAuthenticated && user?.email === 'admin@example.com';
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -235,7 +350,7 @@ function Header() {
     logout();
     navigate('/');
   };
-  
+
   return (
     <HeaderContainer theme={theme}>
       <NavContainer>
@@ -252,17 +367,16 @@ function Header() {
         
         <Nav>
           <NavLinks isOpen={isMenuOpen} theme={theme}>
-            <NavLink to="/" theme={theme}>{t('header.home')}</NavLink>
-            <NavLink to="/anime" theme={theme}>{t('header.catalog')}</NavLink>
-            <NavLink to="/manga" theme={theme}>{t('header.manga')}</NavLink>
-            <NavLink to="/favorites" theme={theme}>{t('header.favorites')}</NavLink>
+            <NavLink to="/anime" theme={theme}>{t('nav.anime')}</NavLink>
+            <NavLink to="/manga" theme={theme}>{t('nav.manga')}</NavLink>
+            <NavLink to="/favorites" theme={theme}>{t('nav.favorites')}</NavLink>
             <RandomAnimeButton 
               onClick={handleRandomAnime} 
               theme={theme}
               disabled={isLoading}
             >
               <FaDice />
-              {t('header.random_anime')}
+              {t('anime.random')}
             </RandomAnimeButton>
           </NavLinks>
           
@@ -270,7 +384,7 @@ function Header() {
             <SearchContainer>
               <SearchInput 
                 type="text" 
-                placeholder={t('header.search')} 
+                placeholder={t('search.placeholder')} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 theme={theme}
@@ -281,18 +395,24 @@ function Header() {
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
             {isAuthenticated ? (
               <>
+                {isAdmin && (
+                  <ProfileButton to="/admin" theme={theme}>
+                    <FaUserShield />
+                    {t('nav.admin')}
+                  </ProfileButton>
+                )}
                 <ProfileButton to="/profile" theme={theme}>
                   <FaUser />
-                  {t('header.profile')}
+                  {t('nav.profile')}
                 </ProfileButton>
                 <LogoutButton onClick={handleLogout} theme={theme}>
                   <FaSignOutAlt />
-                  {t('header.logout')}
+                  {t('nav.logout')}
                 </LogoutButton>
               </>
             ) : (
               <AuthButton to="/auth">
-                {t('header.login')}
+                {t('nav.login')}
               </AuthButton>
             )}
             
@@ -309,6 +429,56 @@ function Header() {
           </div>
         </Nav>
       </NavContainer>
+      
+      <MobileMenu isOpen={isMenuOpen} theme={theme}>
+        <MobileNavLink to="/anime" onClick={() => setIsMenuOpen(false)} theme={theme}>
+          {t('nav.anime')}
+        </MobileNavLink>
+        <MobileNavLink to="/manga" onClick={() => setIsMenuOpen(false)} theme={theme}>
+          {t('nav.manga')}
+        </MobileNavLink>
+        <MobileNavLink to="/favorites" onClick={() => setIsMenuOpen(false)} theme={theme}>
+          {t('nav.favorites')}
+        </MobileNavLink>
+        
+        {isAuthenticated ? (
+          <>
+            {isAdmin && (
+              <MobileNavLink to="/admin" onClick={() => setIsMenuOpen(false)} theme={theme}>
+                <FaUserShield />
+                {t('nav.admin')}
+              </MobileNavLink>
+            )}
+            <MobileNavLink to="/profile" onClick={() => setIsMenuOpen(false)} theme={theme}>
+              <FaUser />
+              {t('nav.profile')}
+            </MobileNavLink>
+            <MobileLogoutButton onClick={() => { handleLogout(); setIsMenuOpen(false); }} theme={theme}>
+              <FaSignOutAlt />
+              {t('nav.logout')}
+            </MobileLogoutButton>
+          </>
+        ) : (
+          <MobileNavLink to="/auth" onClick={() => setIsMenuOpen(false)} theme={theme}>
+            {t('nav.login')}
+          </MobileNavLink>
+        )}
+        
+        <MobileRandomButton onClick={() => { handleRandomAnime(); setIsMenuOpen(false); }} theme={theme}>
+          <FaDice />
+          {t('anime.random')}
+        </MobileRandomButton>
+        
+        <MobileThemeButton onClick={() => { toggleTheme(); setIsMenuOpen(false); }} theme={theme}>
+          {theme === 'dark' ? <FaSun /> : <FaMoon />}
+          {theme === 'dark' ? t('theme.light') : t('theme.dark')}
+        </MobileThemeButton>
+        
+        <MobileLanguageButton onClick={() => { toggleLanguage(); setIsMenuOpen(false); }} theme={theme}>
+          <MdLanguage />
+          {language === 'ru' ? 'English' : 'Русский'}
+        </MobileLanguageButton>
+      </MobileMenu>
     </HeaderContainer>
   );
 }

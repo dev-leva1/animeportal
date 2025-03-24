@@ -13,6 +13,7 @@ dist-ssr
 *.local
 package-lock.json
 todo.md
+tsconfig.tsbuildinfo
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +25,4 @@ todo.md
 *.njsproj
 *.sln
 *.sw?
+tsconfig.tsbuildinfo
