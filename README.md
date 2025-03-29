@@ -8,23 +8,7 @@ A modern web application for exploring anime and manga, built with React, TypeSc
 
 [README.ru.md](https://github.com/dev-leva1/animeportal/blob/main/README.ru.md)
 
-## Features
-
-- **Anime Catalog**: Browse through a vast collection of anime titles
-- **Manga Catalog**: Explore manga with filtering and search capabilities
-- **Detailed Information**: View comprehensive details about anime and manga titles
-- **Character Information**: Explore characters from your favorite anime
-- **Staff Details**: Learn about the creators behind the anime
-- **Reviews**: Read and browse user reviews
-- **Search Functionality**: Find specific anime or manga titles
-- **Favorites System**: Save your favorite anime and manga for quick access
-- **Random Anime**: Discover new anime with the random anime feature
-- **Responsive Design**: Enjoy a seamless experience on any device
-- **Dark/Light Theme**: Choose your preferred visual theme
-- **Multilingual Support**: Switch between English and Russian languages
-- **Collapsible Sections**: Expand or collapse character, staff, and review sections for better navigation
-- **Error Handling**: Robust error boundary system to prevent application crashes
-- **Enhanced UI**: Improved visual presentation with icons and better spacing
+![Feturest image](https://i.imgur.com/erE0V2B.png)
 
 ## Getting Started
 
