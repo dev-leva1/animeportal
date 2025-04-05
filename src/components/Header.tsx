@@ -38,6 +38,10 @@ const Nav = styled.nav`
   display: flex;
   gap: 1rem;
   align-items: center;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const NavLink = styled(Link)`
@@ -119,6 +123,13 @@ const RandomAnimeButton = styled.button`
 const SearchContainer = styled.div`
   position: relative;
   margin: 0 1rem;
+  flex: 1;
+  max-width: 300px;
+  
+  @media (max-width: 768px) {
+    max-width: none;
+    margin: 0 0.5rem;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -127,13 +138,17 @@ const SearchInput = styled.input`
   border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
   background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
   color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
-  width: 200px;
+  width: 100%;
   transition: all 0.3s ease;
   
   &:focus {
     outline: none;
-    width: 250px;
     border-color: #ff5f5f;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -171,52 +186,45 @@ const LanguageToggle = styled.button`
   }
 `;
 
-const MobileMenuButton = styled.button`
+const MobileMenuButton = styled.button<{ theme: string }>`
   display: none;
   background: none;
   border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    color: #ff5f5f;
+  }
   
   @media (max-width: 768px) {
     display: block;
   }
 `;
 
-const NavLinks = styled.div<{ isOpen: boolean; theme: string }>`
-  display: flex;
-  gap: 1.5rem;
-  
-  @media (max-width: 768px) {
-    position: absolute;
-    flex-direction: column;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
-    padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    display: ${props => props.isOpen ? 'flex' : 'none'};
-  }
-`;
-
-const MobileMenu = styled.div<{ isOpen: boolean; theme: string }>`
+const MobileMenu = styled.div<{ isOpen: boolean }>`
   display: none;
-  flex-direction: column;
-  gap: 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 2rem;
+  transform: translateX(${props => props.isOpen ? '0' : '100%'});
+  transition: transform 0.3s ease;
   
   @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 `;
 
@@ -315,11 +323,21 @@ const MobileLanguageButton = styled.button<{ theme: string }>`
   }
 `;
 
+const DesktopControls = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
 function Header() {
   const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
   const { user, isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
@@ -359,126 +377,130 @@ function Header() {
         </Logo>
         
         <MobileMenuButton 
-          theme={theme} 
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+          theme={theme}
         >
-          {isMenuOpen ? <FaTimes /> : <FaBars />}
+          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
         </MobileMenuButton>
         
         <Nav>
-          <NavLinks isOpen={isMenuOpen} theme={theme}>
-            <NavLink to="/anime" theme={theme}>{t('nav.anime')}</NavLink>
-            <NavLink to="/manga" theme={theme}>{t('nav.manga')}</NavLink>
-            <NavLink to="/favorites" theme={theme}>{t('nav.favorites')}</NavLink>
-            <RandomAnimeButton 
-              onClick={handleRandomAnime} 
-              theme={theme}
-              disabled={isLoading}
-            >
-              <FaDice />
-              {t('anime.random')}
-            </RandomAnimeButton>
-          </NavLinks>
-          
-          <form onSubmit={handleSearch}>
-            <SearchContainer>
-              <SearchInput 
-                type="text" 
-                placeholder={t('search.placeholder')} 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                theme={theme}
-              />
-            </SearchContainer>
-          </form>
-          
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            {isAuthenticated ? (
-              <>
-                {isAdmin && (
-                  <ProfileButton to="/admin" theme={theme}>
-                    <FaUserShield />
-                    {t('nav.admin')}
-                  </ProfileButton>
-                )}
-                <ProfileButton to="/profile" theme={theme}>
-                  <FaUser />
-                  {t('nav.profile')}
-                </ProfileButton>
-                <LogoutButton onClick={handleLogout} theme={theme}>
-                  <FaSignOutAlt />
-                  {t('nav.logout')}
-                </LogoutButton>
-              </>
-            ) : (
-              <AuthButton to="/auth">
-                {t('nav.login')}
-              </AuthButton>
-            )}
-            
-            <LanguageToggle onClick={toggleLanguage} theme={theme} aria-label="Change language">
-              <MdLanguage />
-              <span style={{ marginLeft: '0.25rem' }}>
-                {language === 'ru' ? 'RU' : 'EN'}
-              </span>
-            </LanguageToggle>
-            
-            <ThemeToggle onClick={toggleTheme} theme={theme}>
-              {theme === 'dark' ? <FaSun /> : <FaMoon />}
-            </ThemeToggle>
-          </div>
+          <NavLink to="/anime" theme={theme}>{t('nav.anime')}</NavLink>
+          <NavLink to="/manga" theme={theme}>{t('nav.manga')}</NavLink>
+          <NavLink to="/favorites" theme={theme}>{t('nav.favorites')}</NavLink>
+          <RandomAnimeButton 
+            onClick={handleRandomAnime} 
+            theme={theme}
+            disabled={isLoading}
+          >
+            <FaDice />
+            {t('anime.random')}
+          </RandomAnimeButton>
         </Nav>
-      </NavContainer>
-      
-      <MobileMenu isOpen={isMenuOpen} theme={theme}>
-        <MobileNavLink to="/anime" onClick={() => setIsMenuOpen(false)} theme={theme}>
-          {t('nav.anime')}
-        </MobileNavLink>
-        <MobileNavLink to="/manga" onClick={() => setIsMenuOpen(false)} theme={theme}>
-          {t('nav.manga')}
-        </MobileNavLink>
-        <MobileNavLink to="/favorites" onClick={() => setIsMenuOpen(false)} theme={theme}>
-          {t('nav.favorites')}
-        </MobileNavLink>
         
-        {isAuthenticated ? (
-          <>
-            {isAdmin && (
-              <MobileNavLink to="/admin" onClick={() => setIsMenuOpen(false)} theme={theme}>
-                <FaUserShield />
-                {t('nav.admin')}
-              </MobileNavLink>
-            )}
-            <MobileNavLink to="/profile" onClick={() => setIsMenuOpen(false)} theme={theme}>
-              <FaUser />
-              {t('nav.profile')}
-            </MobileNavLink>
-            <MobileLogoutButton onClick={() => { handleLogout(); setIsMenuOpen(false); }} theme={theme}>
-              <FaSignOutAlt />
-              {t('nav.logout')}
-            </MobileLogoutButton>
-          </>
-        ) : (
-          <MobileNavLink to="/auth" onClick={() => setIsMenuOpen(false)} theme={theme}>
-            {t('nav.login')}
+        <form onSubmit={handleSearch}>
+          <SearchContainer>
+            <SearchInput 
+              type="text" 
+              placeholder={t('search.placeholder')} 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              theme={theme}
+            />
+          </SearchContainer>
+        </form>
+        
+        <DesktopControls>
+          {isAuthenticated ? (
+            <>
+              {isAdmin && (
+                <ProfileButton to="/admin" theme={theme}>
+                  <FaUserShield />
+                  {t('nav.admin')}
+                </ProfileButton>
+              )}
+              <ProfileButton to="/profile" theme={theme}>
+                <FaUser />
+                {t('nav.profile')}
+              </ProfileButton>
+              <LogoutButton onClick={handleLogout} theme={theme}>
+                <FaSignOutAlt />
+                {t('nav.logout')}
+              </LogoutButton>
+            </>
+          ) : (
+            <AuthButton to="/auth">
+              {t('nav.login')}
+            </AuthButton>
+          )}
+          
+          <LanguageToggle onClick={toggleLanguage} theme={theme} aria-label="Change language">
+            <MdLanguage />
+            <span style={{ marginLeft: '0.25rem' }}>
+              {language === 'ru' ? 'RU' : 'EN'}
+            </span>
+          </LanguageToggle>
+          
+          <ThemeToggle onClick={toggleTheme} theme={theme}>
+            {theme === 'dark' ? <FaSun /> : <FaMoon />}
+          </ThemeToggle>
+        </DesktopControls>
+        
+        <MobileMenu theme={theme} isOpen={isMobileMenuOpen}>
+          <MobileMenuButton 
+            onClick={() => setIsMobileMenuOpen(false)} 
+            theme={theme}
+          >
+            <FaTimes />
+          </MobileMenuButton>
+          <MobileNavLink to="/anime" onClick={() => setIsMobileMenuOpen(false)} theme={theme}>
+            {t('nav.anime')}
           </MobileNavLink>
-        )}
-        
-        <MobileRandomButton onClick={() => { handleRandomAnime(); setIsMenuOpen(false); }} theme={theme}>
-          <FaDice />
-          {t('anime.random')}
-        </MobileRandomButton>
-        
-        <MobileThemeButton onClick={() => { toggleTheme(); setIsMenuOpen(false); }} theme={theme}>
-          {theme === 'dark' ? <FaSun /> : <FaMoon />}
-          {theme === 'dark' ? t('theme.light') : t('theme.dark')}
-        </MobileThemeButton>
-        
-        <MobileLanguageButton onClick={() => { toggleLanguage(); setIsMenuOpen(false); }} theme={theme}>
-          <MdLanguage />
-          {language === 'ru' ? 'English' : 'Русский'}
-        </MobileLanguageButton>
-      </MobileMenu>
+          <MobileNavLink to="/manga" onClick={() => setIsMobileMenuOpen(false)} theme={theme}>
+            {t('nav.manga')}
+          </MobileNavLink>
+          <MobileNavLink to="/favorites" onClick={() => setIsMobileMenuOpen(false)} theme={theme}>
+            {t('nav.favorites')}
+          </MobileNavLink>
+          
+          {isAuthenticated ? (
+            <>
+              {isAdmin && (
+                <MobileNavLink to="/admin" onClick={() => setIsMobileMenuOpen(false)} theme={theme}>
+                  <FaUserShield />
+                  {t('nav.admin')}
+                </MobileNavLink>
+              )}
+              <MobileNavLink to="/profile" onClick={() => setIsMobileMenuOpen(false)} theme={theme}>
+                <FaUser />
+                {t('nav.profile')}
+              </MobileNavLink>
+              <MobileLogoutButton onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} theme={theme}>
+                <FaSignOutAlt />
+                {t('nav.logout')}
+              </MobileLogoutButton>
+            </>
+          ) : (
+            <MobileNavLink to="/auth" onClick={() => setIsMobileMenuOpen(false)} theme={theme}>
+              {t('nav.login')}
+            </MobileNavLink>
+          )}
+          
+          <MobileRandomButton onClick={() => { handleRandomAnime(); setIsMobileMenuOpen(false); }} theme={theme}>
+            <FaDice />
+            {t('anime.random')}
+          </MobileRandomButton>
+          
+          <MobileThemeButton onClick={() => { toggleTheme(); setIsMobileMenuOpen(false); }} theme={theme}>
+            {theme === 'dark' ? <FaSun /> : <FaMoon />}
+            {theme === 'dark' ? t('theme.light') : t('theme.dark')}
+          </MobileThemeButton>
+          
+          <MobileLanguageButton onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }} theme={theme}>
+            <MdLanguage />
+            {language === 'ru' ? 'English' : 'Русский'}
+          </MobileLanguageButton>
+        </MobileMenu>
+      </NavContainer>
     </HeaderContainer>
   );
 }

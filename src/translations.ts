@@ -39,6 +39,14 @@ export const translations: Translations = {
     ru: 'Случайное аниме',
     en: 'Random anime'
   },
+  'theme.light': {
+    ru: 'Светлая',
+    en: 'Light'
+  },
+  'theme.dark': {
+    ru: 'Темная',
+    en: 'Dark'
+  },
   'header.login': {
     ru: 'Войти',
     en: 'Login'

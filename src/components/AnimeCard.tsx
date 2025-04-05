@@ -35,12 +35,25 @@ const Card = styled.div`
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
+  
+  @media (max-width: 768px) {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      transform: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
 `;
 
 const ImageContainer = styled.div`
   position: relative;
   padding-top: 140%;
   overflow: hidden;
+  
+  @media (max-width: 480px) {
+    padding-top: 120%;
+  }
 `;
 
 const AnimeImage = styled.img`
@@ -62,6 +75,10 @@ const CardContent = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+  }
 `;
 
 const Title = styled.h3`
@@ -73,6 +90,11 @@ const Title = styled.h3`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
 `;
 
 const Info = styled.div`
@@ -81,6 +103,10 @@ const Info = styled.div`
   align-items: center;
   margin-top: auto;
   padding-top: 0.5rem;
+  
+  @media (max-width: 480px) {
+    padding-top: 0.25rem;
+  }
 `;
 
 const Score = styled.span`
@@ -89,11 +115,19 @@ const Score = styled.span`
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
   font-weight: 500;
   gap: 0.25rem;
+  
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Episodes = styled.span`
   color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
   font-size: 0.9rem;
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const FavoriteButton = styled.button<FavoriteButtonProps>`
