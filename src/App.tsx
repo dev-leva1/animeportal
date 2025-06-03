@@ -1,24 +1,27 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, Suspense, lazy } from 'react';
 import styled from '@emotion/styled';
 import Header from './components/organisms/Header';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import AnimePage from './pages/AnimePage';
-import AnimeDetailsPage from './pages/AnimeDetailsPage';
-import MangaPage from './pages/MangaPage';
-import MangaDetailsPage from './pages/MangaDetailsPage';
-import FavoritesPage from './pages/FavoritesPage';
-import AuthPage from './pages/AuthPage';
-import ProfilePage from './pages/ProfilePage';
-import AdminPage from './pages/AdminPage';
-import NotFoundPage from './pages/NotFoundPage';
-import AboutPage from './pages/AboutPage';
-import TermsPage from './pages/TermsPage';
-import PrivacyPage from './pages/PrivacyPage';
-import ContactsPage from './pages/ContactsPage';
-import DataSourcePage from './pages/DataSourcePage';
-import CopyrightPage from './pages/CopyrightPage';
+import LoadingFallback from './components/atoms/Spinner/LoadingFallback';
+
+// Lazy loading для всех страниц
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AnimePage = lazy(() => import('./pages/AnimePage'));
+const AnimeDetailsPage = lazy(() => import('./pages/AnimeDetailsPage'));
+const MangaPage = lazy(() => import('./pages/MangaPage'));
+const MangaDetailsPage = lazy(() => import('./pages/MangaDetailsPage'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const AuthPage = lazy(() => import('./pages/AuthPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const ContactsPage = lazy(() => import('./pages/ContactsPage'));
+const DataSourcePage = lazy(() => import('./pages/DataSourcePage'));
+const CopyrightPage = lazy(() => import('./pages/CopyrightPage'));
 import { AppProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { translations } from './translations';
@@ -75,24 +78,26 @@ function App() {
             <Router>
               <Header />
               <MainContent>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/anime" element={<AnimePage />} />
-                  <Route path="/anime/:id" element={<AnimeDetailsPage />} />
-                  <Route path="/manga" element={<MangaPage />} />
-                  <Route path="/manga/:id" element={<MangaDetailsPage />} />
-                  <Route path="/favorites" element={<FavoritesPage />} />
-                  <Route path="/auth" element={<AuthPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/admin" element={<AdminPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/terms" element={<TermsPage />} />
-                  <Route path="/privacy" element={<PrivacyPage />} />
-                  <Route path="/contacts" element={<ContactsPage />} />
-                  <Route path="/data-source" element={<DataSourcePage />} />
-                  <Route path="/copyright" element={<CopyrightPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/anime" element={<AnimePage />} />
+                    <Route path="/anime/:id" element={<AnimeDetailsPage />} />
+                    <Route path="/manga" element={<MangaPage />} />
+                    <Route path="/manga/:id" element={<MangaDetailsPage />} />
+                    <Route path="/favorites" element={<FavoritesPage />} />
+                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
+                    <Route path="/contacts" element={<ContactsPage />} />
+                    <Route path="/data-source" element={<DataSourcePage />} />
+                    <Route path="/copyright" element={<CopyrightPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </Suspense>
               </MainContent>
               <Footer />
             </Router>

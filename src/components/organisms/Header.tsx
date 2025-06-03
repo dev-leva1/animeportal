@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FaDice } from 'react-icons/fa';
@@ -39,16 +39,19 @@ const DesktopControls = styled.div`
   }
 `;
 
-export const Header: React.FC = () => {
+export const Header: React.FC = memo(() => {
   const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
-  const isAdmin = isAuthenticated && user?.email === 'admin@example.com';
+  const isAdmin = useMemo(() => 
+    isAuthenticated && user?.email === 'admin@example.com', 
+    [isAuthenticated, user?.email]
+  );
   
-  const handleRandomAnime = async () => {
+  const handleRandomAnime = useCallback(async () => {
     if (isLoading) return;
     
     setIsLoading(true);
@@ -60,14 +63,14 @@ export const Header: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading, navigate]);
   
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     navigate('/');
-  };
+  }, [logout, navigate]);
 
-  const navigationItems = [
+  const navigationItems = useMemo(() => [
     { to: '/anime', label: t('nav.anime') },
     { to: '/manga', label: t('nav.manga') },
     { to: '/favorites', label: t('nav.favorites') },
@@ -78,22 +81,22 @@ export const Header: React.FC = () => {
       icon: <FaDice />,
       disabled: isLoading
     }
-  ];
+  ], [t, handleRandomAnime, isLoading]);
 
-  const userMenuLabels = {
+  const userMenuLabels = useMemo(() => ({
     admin: t('nav.admin'),
     profile: t('nav.profile'),
     logout: t('nav.logout'),
     login: t('nav.login')
-  };
+  }), [t]);
 
-  const mobileMenuLabels = {
+  const mobileMenuLabels = useMemo(() => ({
     ...userMenuLabels,
     themeDark: t('theme.dark'),
     themeLight: t('theme.light'),
     languageEn: 'English',
     languageRu: 'Русский'
-  };
+  }), [userMenuLabels, t]);
 
   return (
     <HeaderContainer theme={theme}>
@@ -156,6 +159,6 @@ export const Header: React.FC = () => {
       </NavContainer>
     </HeaderContainer>
   );
-};
+});
 
 export default Header; 

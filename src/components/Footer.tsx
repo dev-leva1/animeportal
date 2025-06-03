@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { memo, useMemo } from 'react';
 import { useApp } from '../context/ThemeContext';
 
 const FooterContainer = styled.footer`
@@ -50,9 +51,10 @@ const FooterCopyright = styled.div`
   margin-top: 1rem;
 `;
 
-const Footer = () => {
+const Footer = memo(() => {
   const { theme, t } = useApp();
-  const currentYear = new Date().getFullYear();
+  
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
   
   return (
     <FooterContainer theme={theme}>
@@ -83,6 +85,6 @@ const Footer = () => {
       </FooterContent>
     </FooterContainer>
   );
-};
+});
 
 export default Footer; 

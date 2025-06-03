@@ -1,51 +1,32 @@
-import { useState, useEffect, useCallback } from 'react';
-
-type SetValue<T> = T | ((val: T) => T);
-
-interface UseLocalStorageReturn<T> {
-  value: T;
-  setValue: (value: SetValue<T>) => void;
-  removeValue: () => void;
-  isLoading: boolean;
-}
+import { useState, useCallback, useEffect } from 'react';
 
 export const useLocalStorage = <T>(
   key: string,
   initialValue: T
-): UseLocalStorageReturn<T> => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [storedValue, setStoredValue] = useState<T>(initialValue);
-
-  // Read from localStorage on mount
-  useEffect(() => {
+): [T, (value: T | ((val: T) => T)) => void, () => void] => {
+  // Получаем значение из localStorage при инициализации
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
-      if (item) {
-        setStoredValue(JSON.parse(item));
-      }
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       console.error(`Error reading localStorage key "${key}":`, error);
-      setStoredValue(initialValue);
-    } finally {
-      setIsLoading(false);
+      return initialValue;
     }
-  }, [key, initialValue]);
+  });
 
-  // Save to localStorage
-  const setValue = useCallback(
-    (value: SetValue<T>) => {
-      try {
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
-        setStoredValue(valueToStore);
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      } catch (error) {
-        console.error(`Error setting localStorage key "${key}":`, error);
-      }
-    },
-    [key, storedValue]
-  );
+  // Мемоизированная функция для установки значения
+  const setValue = useCallback((value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  }, [key, storedValue]);
 
-  // Remove from localStorage
+  // Мемоизированная функция для удаления значения
   const removeValue = useCallback(() => {
     try {
       window.localStorage.removeItem(key);
@@ -55,12 +36,23 @@ export const useLocalStorage = <T>(
     }
   }, [key, initialValue]);
 
-  return {
-    value: storedValue,
-    setValue,
-    removeValue,
-    isLoading
-  };
+  // Слушаем изменения в других вкладках
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === key && e.newValue !== null) {
+        try {
+          setStoredValue(JSON.parse(e.newValue));
+        } catch (error) {
+          console.error(`Error parsing localStorage value for key "${key}":`, error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [key]);
+
+  return [storedValue, setValue, removeValue];
 };
 
 export default useLocalStorage; 

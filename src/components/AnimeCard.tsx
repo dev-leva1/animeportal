@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Anime, WatchStatus } from '../types/anime';
 import { useApp } from '../context/ThemeContext';
 import { favoritesService } from '../services/favoritesService';
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { FaHeart, FaRegHeart, FaStar, FaEye, FaClock, FaCheck, FaPause, FaTimesCircle } from 'react-icons/fa';
 
 interface AnimeCardProps {
@@ -208,7 +208,7 @@ const StatusMenuItem = styled.button`
   }
 `;
 
-function AnimeCard({ anime }: AnimeCardProps) {
+const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
   const { theme, t } = useApp();
   const [isFavorite, setIsFavorite] = useState(favoritesService.isFavorite(anime.mal_id));
   const [watchStatus, setWatchStatus] = useState<WatchStatus>(
@@ -216,7 +216,7 @@ function AnimeCard({ anime }: AnimeCardProps) {
   );
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -228,15 +228,15 @@ function AnimeCard({ anime }: AnimeCardProps) {
       favoritesService.addToFavorites(anime);
       setIsFavorite(true);
     }
-  };
+  }, [isFavorite, anime]);
   
-  const handleStatusClick = (e: React.MouseEvent) => {
+  const handleStatusClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setShowStatusMenu(!showStatusMenu);
-  };
+  }, [showStatusMenu]);
   
-  const handleStatusChange = (e: React.MouseEvent, status: WatchStatus) => {
+  const handleStatusChange = useCallback((e: React.MouseEvent, status: WatchStatus) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -249,7 +249,7 @@ function AnimeCard({ anime }: AnimeCardProps) {
     
     setWatchStatus(status);
     setShowStatusMenu(false);
-  };
+  }, [isFavorite, anime]);
   
   const getStatusIcon = (status: WatchStatus) => {
     switch(status) {
@@ -346,6 +346,6 @@ function AnimeCard({ anime }: AnimeCardProps) {
       </Card>
     </Link>
   );
-}
+});
 
 export default AnimeCard; 
