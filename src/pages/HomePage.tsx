@@ -4,9 +4,7 @@ import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { Anime } from '../types/anime';
-import AnimeCard from '../components/AnimeCard';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import { AnimeCard, LoadingFallback, ErrorMessage } from '../components';
 import React from 'react';
 
 const HeroSection = styled.section`
@@ -311,8 +309,8 @@ function HomePage() {
         <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
       </SectionHeader>
       
-      {loading.top ? (
-        <Loading />
+              {loading.top ? (
+          <LoadingFallback />
       ) : error.top ? (
         <ErrorMessage message={error.top} onRetry={() => handleRetry('top')} />
       ) : (
@@ -340,8 +338,8 @@ function HomePage() {
         <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
       </SectionHeader>
       
-      {loading.seasonal ? (
-        <Loading />
+              {loading.seasonal ? (
+          <LoadingFallback />
       ) : error.seasonal ? (
         <ErrorMessage message={error.seasonal} onRetry={() => handleRetry('seasonal')} />
       ) : (
@@ -369,8 +367,8 @@ function HomePage() {
         <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
       </SectionHeader>
       
-      {loading.recommended ? (
-        <Loading />
+              {loading.recommended ? (
+          <LoadingFallback />
       ) : error.recommended ? (
         <ErrorMessage message={error.recommended} onRetry={() => handleRetry('recommended')} />
       ) : (

@@ -4,10 +4,7 @@ import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { animeService, AnimeSearchParams } from '../services/animeService';
 import { Anime } from '../types/anime';
-import AnimeCard from '../components/AnimeCard';
-import Pagination from '../components/Pagination';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import { AnimeCard, Pagination, LoadingFallback, ErrorMessage } from '../components';
 
 const PageTitle = styled.h1`
   color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
@@ -702,8 +699,8 @@ function AnimePage() {
         )}
       </FiltersContainer>
       
-      {loading ? (
-        <Loading />
+              {loading ? (
+          <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error} onRetry={handleRetry} />
       ) : animeList.length === 0 ? (

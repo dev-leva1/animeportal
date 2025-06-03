@@ -6,9 +6,7 @@ import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { favoritesService } from '../services/favoritesService';
 import { Anime, Character, StaffMember, Review, WatchStatus } from '../types/anime';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
-import AnimePlayer from '../components/AnimePlayer';
+import { LoadingFallback, ErrorMessage, AnimePlayer } from '../components';
 import { FaArrowLeft, FaHeart, FaRegHeart, FaPlay, FaTimes, FaTv, FaFilm, FaChartLine, FaCalendarAlt, FaLeaf, FaClock, FaShieldAlt, FaBuilding, FaChevronUp, FaChevronDown, FaEye, FaCheck, FaPause, FaTimesCircle } from 'react-icons/fa';
 
 const Container = styled.div`
@@ -644,8 +642,8 @@ function AnimeDetailsPage() {
         {t('anime.back_to_catalog')}
       </BackLink>
       
-      {isLoading ? (
-        <Loading />
+          {isLoading ? (
+      <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error} onRetry={handleRetry} />
       ) : anime ? (

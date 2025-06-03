@@ -5,8 +5,7 @@ import { useApp } from '../context/ThemeContext';
 import { mangaService } from '../services/mangaService';
 import { favoritesService } from '../services/favoritesService';
 import { Manga } from '../types/anime';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import { LoadingFallback, ErrorMessage } from '../components';
 import { FaArrowLeft, FaHeart, FaRegHeart, FaBook, FaBookOpen, FaChartLine, FaCalendarAlt, FaLayerGroup, FaUser } from 'react-icons/fa';
 
 const Container = styled.div`
@@ -269,8 +268,8 @@ function MangaDetailsPage() {
         {t('manga.back_to_catalog')}
       </BackLink>
       
-      {loading ? (
-        <Loading />
+          {loading ? (
+      <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error.message} onRetry={handleRetry} />
       ) : manga ? (

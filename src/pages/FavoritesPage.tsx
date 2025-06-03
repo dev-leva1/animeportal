@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { favoritesService } from '../services/favoritesService';
 import { Anime, WatchStatus } from '../types/anime';
-import AnimeCard from '../components/AnimeCard';
+import { AnimeCard } from '../components';
 import { FaEye, FaClock, FaCheck, FaPause, FaTimesCircle, FaFilter } from 'react-icons/fa';
 
 const PageTitle = styled.h1`

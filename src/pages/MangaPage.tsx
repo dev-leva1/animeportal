@@ -4,8 +4,7 @@ import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { mangaService, MangaSearchParams } from '../services/mangaService';
 import { Manga } from '../types/anime';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import { LoadingFallback, ErrorMessage } from '../components';
 
 const Container = styled.div`
   display: flex;
@@ -676,8 +675,8 @@ function MangaPage() {
         </AdvancedFiltersContainer>
       )}
       
-      {loading ? (
-        <Loading />
+              {loading ? (
+          <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error.message} onRetry={handleRetry} />
       ) : manga.length === 0 ? (

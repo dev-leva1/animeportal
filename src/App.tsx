@@ -1,8 +1,7 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useCallback, useEffect, Suspense, lazy } from 'react';
 import styled from '@emotion/styled';
-import Header from './components/organisms/Header';
-import Footer from './components/Footer';
+import { Header, Footer, ErrorBoundary } from './components/organisms';
 import LoadingFallback from './components/atoms/Spinner/LoadingFallback';
 
 // Lazy loading для всех страниц
@@ -27,7 +26,6 @@ import { AuthProvider } from './context/AuthContext';
 import { translations } from './translations';
 import './App.css';
 import './styles/responsive.css';
-import ErrorBoundary from './components/ErrorBoundary';
 
 const AppContainer = styled.div`
   min-height: 100vh;
