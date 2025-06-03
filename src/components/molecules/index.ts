@@ -4,4 +4,9 @@ export { default as UserMenu } from './UserMenu';
 export { default as MobileMenu } from './MobileMenu';
 export { default as ProfileForm } from './ProfileForm';
 export { default as WatchHistory } from './WatchHistory';
-export { default as FavoritesList } from './FavoritesList'; 
+export { default as FavoritesList } from './FavoritesList';
+
+// Compound Components
+export { Tabs } from './Tabs';
+export { Modal } from './Modal';
+export { Accordion } from './Accordion'; 
