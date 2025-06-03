@@ -24,14 +24,14 @@
 ## 🏗️ ФАЗА 1: Фундаментальная реструктуризация (Atomic Design)
 
 ### 1.1 Создание новой файловой структуры
-- [ ] Создать директорию `src/components/atoms/`
-- [ ] Создать директорию `src/components/molecules/`
-- [ ] Создать директорию `src/components/organisms/`
-- [ ] Создать директорию `src/components/templates/`
-- [ ] Создать директорию `src/design-system/`
-- [ ] Создать директорию `src/hooks/`
-- [ ] Создать директорию `src/utils/`
-- [ ] Создать директорий `src/constants/`
+- [x] Создать директорию `src/components/atoms/`
+- [x] Создать директорию `src/components/molecules/`
+- [x] Создать директорию `src/components/organisms/`
+- [x] Создать директорию `src/components/templates/`
+- [x] Создать директорию `src/design-system/`
+- [x] Создать директорию `src/hooks/`
+- [x] Создать директорию `src/utils/`
+- [x] Создать директорий `src/constants/`
 
 **Новая структура:**
 ```
@@ -49,14 +49,16 @@ src/
 ```
 
 ### 1.2 Декомпозиция больших компонентов
-- [ ] Разбить `Header.tsx` (508 строк) на атомы и молекулы:
-  - [ ] Atom: `Logo`
-  - [ ] Atom: `ThemeToggle`
-  - [ ] Atom: `LanguageToggle`
-  - [ ] Molecule: `SearchBox`
-  - [ ] Molecule: `Navigation`
-  - [ ] Molecule: `UserMenu`
-  - [ ] Organism: `Header`
+- [x] Разбить `Header.tsx` (508 строк) на атомы и молекулы:
+  - [x] Atom: `Logo`
+  - [x] Atom: `ThemeToggle`
+  - [x] Atom: `LanguageToggle`
+  - [x] Atom: `MenuToggle`
+  - [x] Molecule: `SearchBox`
+  - [x] Molecule: `Navigation`
+  - [x] Molecule: `UserMenu`
+  - [x] Molecule: `MobileMenu`
+  - [x] Organism: `Header`
 
 - [ ] Разделить `ProfilePage.tsx` (1312 строк) на логические блоки:
   - [ ] Molecule: `ProfileForm`

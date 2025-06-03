@@ -1,7 +1,7 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
-import Header from './components/Header';
+import Header from './components/organisms/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AnimePage from './pages/AnimePage';
