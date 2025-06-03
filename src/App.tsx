@@ -26,6 +26,7 @@ import { AppProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { translations } from './translations';
 import './App.css';
+import './styles/responsive.css';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const AppContainer = styled.div`

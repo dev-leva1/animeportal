@@ -1,0 +1,353 @@
+/* 
+ * Mobile-First Responsive Styles
+ * Base: Mobile (320px+)
+ * Breakpoints: 480px, 768px, 1024px, 1280px
+ */
+
+/* ===== BASE STYLES (Mobile) ===== */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  /* Улучшенный touch для мобильных */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  /* Оптимизация для мобильных */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Touch-friendly базовые стили */
+button, 
+[role="button"], 
+input[type="submit"], 
+input[type="button"] {
+  min-height: 44px; /* Минимум для touch targets */
+  min-width: 44px;
+  touch-action: manipulation; /* Быстрые touch события */
+}
+
+/* Улучшенная прокрутка */
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Container система - Mobile First */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem; /* 16px на мобильных */
+}
+
+/* Grid система - Mobile First */
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr; /* По умолчанию одна колонка на мобильных */
+}
+
+.grid-auto {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Flexbox утилиты */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* Spacing утилиты - Mobile First */
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+
+.p-2 { padding: 0.5rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+
+.m-2 { margin: 0.5rem; }
+.m-4 { margin: 1rem; }
+.m-6 { margin: 1.5rem; }
+.m-8 { margin: 2rem; }
+
+/* Typography - Mobile First */
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+
+/* Responsive стили для компонентов */
+.responsive-hide-mobile {
+  display: none;
+}
+
+.responsive-show-mobile {
+  display: block;
+}
+
+/* ===== SMALL TABLETS (480px+) ===== */
+@media (min-width: 480px) {
+  .container {
+    padding: 0 1.5rem; /* 24px */
+  }
+
+  .grid {
+    gap: 1.5rem;
+  }
+
+  .grid-sm-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .text-sm\:lg { font-size: 1.125rem; }
+  .text-sm\:xl { font-size: 1.25rem; }
+  .text-sm\:2xl { font-size: 1.5rem; }
+  .text-sm\:3xl { font-size: 1.875rem; }
+  .text-sm\:4xl { font-size: 2.25rem; }
+}
+
+/* ===== TABLETS (768px+) ===== */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 2rem; /* 32px */
+  }
+
+  .grid {
+    gap: 2rem;
+  }
+
+  .grid-md-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-md-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-md-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .responsive-hide-tablet {
+    display: none;
+  }
+
+  .responsive-show-tablet {
+    display: block;
+  }
+
+  .responsive-hide-mobile {
+    display: block;
+  }
+
+  .responsive-show-mobile {
+    display: none;
+  }
+
+  /* Touch targets можно уменьшить на планшетах */
+  button, 
+  [role="button"], 
+  input[type="submit"], 
+  input[type="button"] {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  .text-md\:xl { font-size: 1.25rem; }
+  .text-md\:2xl { font-size: 1.5rem; }
+  .text-md\:3xl { font-size: 1.875rem; }
+  .text-md\:4xl { font-size: 2.25rem; }
+  .text-md\:5xl { font-size: 3rem; }
+}
+
+/* ===== DESKTOP (1024px+) ===== */
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 3rem; /* 48px */
+  }
+
+  .grid {
+    gap: 2.5rem;
+  }
+
+  .grid-lg-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-lg-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grid-lg-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .grid-lg-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .responsive-hide-desktop {
+    display: none;
+  }
+
+  .responsive-show-desktop {
+    display: block;
+  }
+
+  /* Desktop touch targets */
+  button, 
+  [role="button"], 
+  input[type="submit"], 
+  input[type="button"] {
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  .text-lg\:2xl { font-size: 1.5rem; }
+  .text-lg\:3xl { font-size: 1.875rem; }
+  .text-lg\:4xl { font-size: 2.25rem; }
+  .text-lg\:5xl { font-size: 3rem; }
+  .text-lg\:6xl { font-size: 3.75rem; }
+}
+
+/* ===== LARGE DESKTOP (1280px+) ===== */
+@media (min-width: 1280px) {
+  .container {
+    padding: 0 4rem; /* 64px */
+  }
+
+  .grid {
+    gap: 3rem;
+  }
+
+  .grid-xl-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grid-xl-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .grid-xl-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .grid-xl-8 {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .text-xl\:3xl { font-size: 1.875rem; }
+  .text-xl\:4xl { font-size: 2.25rem; }
+  .text-xl\:5xl { font-size: 3rem; }
+  .text-xl\:6xl { font-size: 3.75rem; }
+  .text-xl\:7xl { font-size: 4.5rem; }
+}
+
+/* ===== SMOOTH ANIMATIONS ===== */
+.transition-all {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-fast {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-slow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects - только для non-touch устройств */
+@media (hover: hover) and (pointer: fine) {
+  .hover\:scale-105:hover {
+    transform: scale(1.05);
+  }
+
+  .hover\:opacity-80:hover {
+    opacity: 0.8;
+  }
+
+  .hover\:shadow-lg:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Focus styles для accessibility */
+.focus\:outline-none:focus {
+  outline: none;
+}
+
+.focus\:ring:focus {
+  box-shadow: 0 0 0 3px rgba(255, 95, 95, 0.3);
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Utility classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+} 

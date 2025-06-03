@@ -103,23 +103,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       switch (size) {
         case 'small':
           return {
-            padding: `${spacing[2]} ${spacing[3]}`,
+            padding: `${spacing[2.5]} ${spacing[3]}`, // Увеличиваем для touch
             fontSize: '0.875rem',
             lineHeight: '1.25rem',
+            minHeight: '2.25rem', // 36px минимум для touch targets
           };
         
         case 'medium':
           return {
-            padding: `${spacing[2.5]} ${spacing[4]}`,
+            padding: `${spacing[3]} ${spacing[4]}`, // Увеличиваем для touch
             fontSize: '1rem',
             lineHeight: '1.5rem',
+            minHeight: '2.75rem', // 44px - рекомендуемый размер для touch
           };
         
         case 'large':
           return {
-            padding: `${spacing[3]} ${spacing[6]}`,
+            padding: `${spacing[4]} ${spacing[6]}`, // Увеличиваем для touch
             fontSize: '1.125rem',
             lineHeight: '1.75rem',
+            minHeight: '3.25rem', // 52px для крупных кнопок
           };
         
         default:
