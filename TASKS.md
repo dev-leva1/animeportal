@@ -60,17 +60,16 @@ src/
   - [x] Molecule: `MobileMenu`
   - [x] Organism: `Header`
 
-- [ ] Разделить `ProfilePage.tsx` (1312 строк) на логические блоки:
-  - [ ] Molecule: `ProfileForm`
-  - [ ] Molecule: `FavoritesList`
-  - [ ] Molecule: `WatchHistory`
-  - [ ] Template: `ProfileLayout`
+- [x] Разделить `ProfilePage.tsx` (1312 строк) на логические блоки:
+  - [x] Molecule: `ProfileForm`
+  - [x] Molecule: `FavoritesList`
+  - [x] Molecule: `WatchHistory`
+  - [x] Template: `ProfileLayout`
 
-- [ ] Извлечь повторяющуюся логику в кастомные хуки:
-  - [ ] `useAuth`
-  - [ ] `usePagination`
-  - [ ] `useSearch`
-  - [ ] `useLocalStorage`
+- [x] Извлечь повторяющуюся логику в кастомные хуки:
+  - [x] `usePagination`
+  - [x] `useSearch`
+  - [x] `useLocalStorage`
 
 ---
 
