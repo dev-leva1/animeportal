@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Anime, WatchStatus } from '../../types/anime';
-import { useApp } from '../../context/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 import { favoritesService } from '../../services/favoritesService';
 import { useState, useCallback, memo } from 'react';
 import { FaHeart, FaRegHeart, FaStar, FaEye, FaClock, FaCheck, FaPause, FaTimesCircle } from 'react-icons/fa';
@@ -11,7 +11,7 @@ interface AnimeCardProps {
 }
 
 const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
-  const { theme } = useApp();
+  const theme = useTheme();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<WatchStatus>(null);
@@ -132,7 +132,7 @@ const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
               position: 'absolute',
               top: '3rem',
               right: '0.5rem',
-              background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
+              background: theme.background.secondary,
               borderRadius: '4px',
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
               overflow: 'hidden',
@@ -205,7 +205,7 @@ const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
             <Typography 
               variant="body-sm" 
               style={{ 
-                color: theme === 'dark' ? '#aaa' : '#666' 
+                color: theme.text.muted 
               }}
             >
               {anime.episodes} эп.

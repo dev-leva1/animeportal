@@ -17,9 +17,9 @@ const PasswordForm = styled.form`
   max-width: 400px;
   margin-top: 1rem;
   padding: 1rem;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  border: 1px solid ${props => props.theme.border.primary};
   border-radius: 8px;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#f9f9f9'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#1a1a1a' : '#f9f9f9'};
 `;
 
 const FormGroup = styled.div`
@@ -28,17 +28,17 @@ const FormGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const Label = styled.label<{ theme: string }>`
+const Label = styled.label`
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
-const Input = styled.input<{ theme: string }>`
+const Input = styled.input`
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   
   &:focus {
     outline: none;
@@ -56,17 +56,17 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   padding: 0.75rem 1rem;
   border-radius: 4px;
   border: ${props => props.variant === 'secondary' 
-    ? `1px solid ${props.theme === 'dark' ? '#444' : '#ddd'}` 
+    ? `1px solid ${props.theme.mode === 'dark' ? '#444' : '#ddd'}` 
     : 'none'};
   background-color: ${props => {
     if (props.variant === 'secondary') {
-      return props.theme === 'dark' ? 'transparent' : 'transparent';
+      return props.theme.mode === 'dark' ? 'transparent' : 'transparent';
     }
     return '#ff5f5f';
   }};
   color: ${props => {
     if (props.variant === 'secondary') {
-      return props.theme === 'dark' ? '#ffffff' : '#121212';
+      return props.theme.mode === 'dark' ? '#ffffff' : '#121212';
     }
     return 'white';
   }};
@@ -80,27 +80,26 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   &:hover {
     background-color: ${props => {
       if (props.variant === 'secondary') {
-        return props.theme === 'dark' ? '#333' : '#f0f0f0';
+        return props.theme.mode === 'dark' ? '#333' : '#f0f0f0';
       }
       return '#ff4545';
     }};
   }
 `;
 
-const ErrorMessage = styled.div<{ theme: string }>`
+const ErrorMessage = styled.div`
   color: #ff4545;
   font-size: 0.875rem;
   margin-top: 0.5rem;
 `;
 
-const SuccessMessage = styled.div<{ theme: string }>`
+const SuccessMessage = styled.div`
   color: #4CAF50;
   font-size: 0.875rem;
   margin-top: 0.5rem;
 `;
 
 interface ProfileFormProps {
-  theme: string;
   user: User;
   isEditing: boolean;
   isChangingPassword: boolean;
@@ -125,9 +124,7 @@ interface ProfileFormProps {
   className?: string;
 }
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({
-  theme,
-  user,
+export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
   isEditing,
   isChangingPassword,
   onStartEdit,
@@ -205,41 +202,38 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       {isEditing ? (
         <EditProfileForm onSubmit={handleEditSubmit}>
           <FormGroup>
-            <Label theme={theme}>{labels.username}</Label>
+            <Label>{labels.username}</Label>
             <Input
               type="text"
               name="username"
               value={editData.username}
               onChange={handleEditChange}
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{labels.email}</Label>
+            <Label>{labels.email}</Label>
             <Input
               type="email"
               name="email"
               value={editData.email}
               onChange={handleEditChange}
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{labels.avatarUrl}</Label>
+            <Label>{labels.avatarUrl}</Label>
             <Input
               type="text"
               name="avatar"
               value={editData.avatar}
               onChange={handleEditChange}
-              theme={theme}
               placeholder={labels.avatarUrlPlaceholder}
             />
           </FormGroup>
           
           <ButtonGroup>
-            <Button type="submit" theme={theme}>
+            <Button type="submit">
               <FaSave />
               {labels.save}
             </Button>
@@ -247,7 +241,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               type="button" 
               variant="secondary"
               onClick={onCancelEdit}
-              theme={theme}
             >
               <FaTimes />
               {labels.cancel}
@@ -256,14 +249,13 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         </EditProfileForm>
       ) : (
         <ButtonGroup>
-          <Button onClick={onStartEdit} theme={theme}>
+          <Button onClick={onStartEdit}>
             <FaEdit />
             {labels.edit}
           </Button>
           <Button 
             variant="secondary"
             onClick={onTogglePasswordChange}
-            theme={theme}
           >
             <FaKey />
             {labels.changePassword}
@@ -272,50 +264,47 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       )}
 
       {isChangingPassword && (
-        <PasswordForm onSubmit={handlePasswordSubmit} theme={theme}>
+        <PasswordForm onSubmit={handlePasswordSubmit}>
           <FormGroup>
-            <Label theme={theme}>{labels.currentPassword}</Label>
+            <Label>{labels.currentPassword}</Label>
             <Input
               type="password"
               name="currentPassword"
               value={passwordData.currentPassword}
               onChange={handlePasswordChange}
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{labels.newPassword}</Label>
+            <Label>{labels.newPassword}</Label>
             <Input
               type="password"
               name="newPassword"
               value={passwordData.newPassword}
               onChange={handlePasswordChange}
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{labels.confirmPassword}</Label>
+            <Label>{labels.confirmPassword}</Label>
             <Input
               type="password"
               name="confirmNewPassword"
               value={passwordData.confirmNewPassword}
               onChange={handlePasswordChange}
-              theme={theme}
             />
           </FormGroup>
           
           {passwordError && (
-            <ErrorMessage theme={theme}>{passwordError}</ErrorMessage>
+            <ErrorMessage>{passwordError}</ErrorMessage>
           )}
           
           {passwordSuccess && (
-            <SuccessMessage theme={theme}>{passwordSuccess}</SuccessMessage>
+            <SuccessMessage>{passwordSuccess}</SuccessMessage>
           )}
           
           <ButtonGroup>
-            <Button type="submit" theme={theme}>
+            <Button type="submit">
               <FaSave />
               {labels.save}
             </Button>
@@ -323,7 +312,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               type="button" 
               variant="secondary"
               onClick={onTogglePasswordChange}
-              theme={theme}
             >
               <FaTimes />
               {labels.cancel}

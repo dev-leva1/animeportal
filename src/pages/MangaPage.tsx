@@ -6,6 +6,7 @@ import { mangaService, MangaSearchParams } from '../services/mangaService';
 import { Manga } from '../types/anime';
 import { LoadingFallback, ErrorMessage } from '../components';
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,7 +27,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin: 0;
 `;
 
@@ -42,9 +43,9 @@ const SearchForm = styled.form`
 const SearchInput = styled.input`
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   width: 250px;
   
   @media (max-width: 768px) {
@@ -66,13 +67,12 @@ const SearchButton = styled.button`
   }
 `;
 
-
 const GenreSelect = styled.select`
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   width: 100%;
   max-width: 300px;
 `;
@@ -96,7 +96,7 @@ const MangaCard = styled(Link)`
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme.background.secondary};
   
   &:hover {
     transform: translateY(-5px);
@@ -114,7 +114,7 @@ const MangaInfo = styled.div`
 `;
 
 const MangaTitle = styled.h3`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin: 0 0 0.5rem;
   font-size: 1rem;
   overflow: hidden;
@@ -129,7 +129,7 @@ const MangaDetails = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const MangaScore = styled.div`
@@ -155,13 +155,13 @@ const Pagination = styled.div`
 const PageButton = styled.button<{ isActive?: boolean }>`
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.isActive ? '#ff5f5f' : props.theme === 'dark' ? '#444' : '#ddd'};
+  border: 1px solid ${props => props.isActive ? '#ff5f5f' : props.theme.mode === 'dark' ? '#444' : '#ddd'};
   background-color: ${props => props.isActive ? '#ff5f5f' : 'transparent'};
-  color: ${props => props.isActive ? 'white' : props.theme === 'dark' ? '#fff' : '#333'};
+  color: ${props => props.isActive ? 'white' : props.theme.mode === 'dark' ? '#fff' : '#333'};
   cursor: pointer;
   
   &:hover {
-    background-color: ${props => props.isActive ? '#ff4545' : props.theme === 'dark' ? '#333' : '#f5f5f5'};
+    background-color: ${props => props.isActive ? '#ff4545' : props.theme.mode === 'dark' ? '#333' : '#f5f5f5'};
   }
   
   &:disabled {
@@ -173,7 +173,7 @@ const PageButton = styled.button<{ isActive?: boolean }>`
 const NoResults = styled.div`
   text-align: center;
   padding: 2rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const genres = [
@@ -222,7 +222,7 @@ const AdvancedFiltersContainer = styled.div`
   gap: 1rem;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  border-top: 1px solid ${props => props.theme.border.primary};
   width: 100%;
 `;
 
@@ -234,13 +234,13 @@ const FilterGroup = styled.div`
 
 const FilterLabel = styled.label`
   font-size: 0.9rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const ToggleButton = styled.button`
   background-color: transparent;
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  color: ${props => props.theme.text.primary};
+  border: 1px solid ${props => props.theme.border.primary};
   border-radius: 4px;
   padding: 0.5rem;
   cursor: pointer;
@@ -250,7 +250,7 @@ const ToggleButton = styled.button`
   justify-content: center;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme.background.secondary};
   }
 `;
 
@@ -265,12 +265,12 @@ const CheckboxLabel = styled.label`
   align-items: center;
   gap: 0.25rem;
   font-size: 0.9rem;
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  color: ${props => props.theme.text.secondary};
   cursor: pointer;
 `;
 
 function MangaPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [manga, setManga] = useState<Manga[]>([]);
@@ -532,7 +532,7 @@ function MangaPage() {
   return (
     <Container>
       <Header>
-        <Title theme={theme}>{getPageTitle()}</Title>
+        <Title>{getPageTitle()}</Title>
         
         <SearchForm onSubmit={handleSearch}>
           <SearchInput
@@ -540,13 +540,11 @@ function MangaPage() {
             placeholder={t('manga.search')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            theme={theme}
           />
           <SearchButton type="submit">{t('manga.search')}</SearchButton>
           <ToggleButton 
             type="button" 
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            theme={theme}
           >
             {showAdvancedFilters ? t('manga.hide_filters') : t('manga.show_filters')}
           </ToggleButton>
@@ -555,12 +553,12 @@ function MangaPage() {
       </Header>
       
       {showAdvancedFilters && (
-        <AdvancedFiltersContainer theme={theme}>
+        <AdvancedFiltersContainer>
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.genres')}</FilterLabel>
+            <FilterLabel>{t('manga.genres')}</FilterLabel>
             <CheckboxGroup>
               {genres.filter(genre => genre.id > 0).map(genre => (
-                <CheckboxLabel key={genre.id} theme={theme}>
+                <CheckboxLabel key={genre.id}>
                   <input 
                     type="checkbox" 
                     checked={selectedGenres.includes(genre.id)}
@@ -573,11 +571,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.year')}</FilterLabel>
+            <FilterLabel>{t('manga.year')}</FilterLabel>
             <GenreSelect 
               value={selectedYear || ''}
               onChange={(e) => setSelectedYear(e.target.value ? Number(e.target.value) : null)}
-              theme={theme}
             >
               <option value="">{t('manga.all_years')}</option>
               {years.map(year => (
@@ -587,11 +584,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.status')}</FilterLabel>
+            <FilterLabel>{t('manga.status')}</FilterLabel>
             <GenreSelect 
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              theme={theme}
             >
               <option value="">{t('manga.all_statuses')}</option>
               {mangaStatus.map(status => (
@@ -603,11 +599,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.type')}</FilterLabel>
+            <FilterLabel>{t('manga.type')}</FilterLabel>
             <GenreSelect 
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              theme={theme}
             >
               <option value="">{t('manga.all_types')}</option>
               {mangaTypes.map(type => (
@@ -619,11 +614,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.min_score')}</FilterLabel>
+            <FilterLabel>{t('manga.min_score')}</FilterLabel>
             <GenreSelect 
               value={minScore || ''}
               onChange={(e) => setMinScore(e.target.value ? Number(e.target.value) : null)}
-              theme={theme}
             >
               <option value="">{t('manga.any_score')}</option>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(score => (
@@ -633,11 +627,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.max_score')}</FilterLabel>
+            <FilterLabel>{t('manga.max_score')}</FilterLabel>
             <GenreSelect 
               value={maxScore || ''}
               onChange={(e) => setMaxScore(e.target.value ? Number(e.target.value) : null)}
-              theme={theme}
             >
               <option value="">{t('manga.any_score')}</option>
               {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(score => (
@@ -647,11 +640,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.sort_by')}</FilterLabel>
+            <FilterLabel>{t('manga.sort_by')}</FilterLabel>
             <GenreSelect 
               value={orderBy}
               onChange={(e) => setOrderBy(e.target.value)}
-              theme={theme}
             >
               {sortOptions.map(option => (
                 <option key={option.value} value={option.value}>
@@ -662,11 +654,10 @@ function MangaPage() {
           </FilterGroup>
           
           <FilterGroup>
-            <FilterLabel theme={theme}>{t('manga.sort_order')}</FilterLabel>
+            <FilterLabel>{t('manga.sort_order')}</FilterLabel>
             <GenreSelect 
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-              theme={theme}
             >
               <option value="desc">{t('manga.descending')}</option>
               <option value="asc">{t('manga.ascending')}</option>
@@ -680,16 +671,16 @@ function MangaPage() {
       ) : error ? (
         <ErrorMessage message={error.message} onRetry={handleRetry} />
       ) : manga.length === 0 ? (
-        <NoResults theme={theme}>{t('manga.no_results')}</NoResults>
+        <NoResults>{t('manga.no_results')}</NoResults>
       ) : (
         <>
           <MangaGrid>
             {manga.map(item => (
-              <MangaCard key={item.id} to={`/manga/${item.id}`} theme={theme}>
+              <MangaCard key={item.id} to={`/manga/${item.id}`}>
                 <MangaImage src={item.image_url} alt={item.title} />
                 <MangaInfo>
-                  <MangaTitle theme={theme}>{item.title}</MangaTitle>
-                  <MangaDetails theme={theme}>
+                  <MangaTitle>{item.title}</MangaTitle>
+                  <MangaDetails>
                     {item.score && <MangaScore>{item.score.toFixed(1)}</MangaScore>}
                     <MangaChapters>
                       {item.chapters > 0 ? `${item.chapters} ${t('manga.chapters')}` : ''}
@@ -704,7 +695,6 @@ function MangaPage() {
             <PageButton
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              theme={theme}
             >
               &lt;
             </PageButton>
@@ -720,7 +710,6 @@ function MangaPage() {
                     key={pageNum}
                     onClick={() => handlePageChange(pageNum)}
                     isActive={pageNum === currentPage}
-                    theme={theme}
                   >
                     {pageNum}
                   </PageButton>
@@ -732,7 +721,6 @@ function MangaPage() {
             <PageButton
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              theme={theme}
             >
               &gt;
             </PageButton>

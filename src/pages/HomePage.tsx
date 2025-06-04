@@ -54,7 +54,7 @@ const HeroButton = styled(Link)`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin: 2rem 0 1.5rem;
   font-size: 1.8rem;
   position: relative;
@@ -158,7 +158,7 @@ const ViewAllLink = styled(Link)`
 `;
 
 function HomePage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const [topAnime, setTopAnime] = useState<Anime[]>([]);
   const [seasonalAnime, setSeasonalAnime] = useState<Anime[]>([]);
   const [recommendedAnime, setRecommendedAnime] = useState<Anime[]>([]);
@@ -305,7 +305,7 @@ function HomePage() {
       </HeroSection>
       
       <SectionHeader>
-        <SectionTitle theme={theme}>{t('home.popular_anime')}</SectionTitle>
+        <SectionTitle>{t('home.popular_anime')}</SectionTitle>
         <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
       </SectionHeader>
       
@@ -334,7 +334,7 @@ function HomePage() {
       )}
 
       <SectionHeader>
-        <SectionTitle theme={theme}>{t('home.seasonal_anime')}</SectionTitle>
+        <SectionTitle>{t('home.seasonal_anime')}</SectionTitle>
         <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
       </SectionHeader>
       
@@ -363,7 +363,7 @@ function HomePage() {
       )}
 
       <SectionHeader>
-        <SectionTitle theme={theme}>{t('home.recommended_anime')}</SectionTitle>
+        <SectionTitle>{t('home.recommended_anime')}</SectionTitle>
         <ViewAllLink to="/anime">{t('home.view_all')} &rarr;</ViewAllLink>
       </SectionHeader>
       

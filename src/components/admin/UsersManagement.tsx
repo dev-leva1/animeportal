@@ -7,7 +7,6 @@ import { FaSearch, FaEdit, FaBan, FaTrash, FaUserShield, FaInfoCircle } from 're
 import { useApp } from '../../context/ThemeContext';
 
 interface UsersManagementProps {
-  theme: string;
 }
 
 const Container = styled.div`
@@ -42,9 +41,9 @@ const SearchInput = styled.input`
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -62,13 +61,13 @@ const FilterButton = styled.button<{active?: boolean}>`
   padding: 0.5rem 1rem;
   border-radius: 4px;
   border: none;
-  background-color: ${props => props.active ? '#ff5f5f' : props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.active ? '#ffffff' : props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  background-color: ${props => props.active ? '#ff5f5f' : props.theme.mode === 'dark' ? '#2a2a2a' : '#f0f0f0'};
+  color: ${props => props.active ? '#ffffff' : props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: ${props => props.active ? '#ff4545' : props.theme === 'dark' ? '#383838' : '#e0e0e0'};
+    background-color: ${props => props.active ? '#ff4545' : props.theme.mode === 'dark' ? '#383838' : '#e0e0e0'};
   }
 `;
 
@@ -82,19 +81,19 @@ const UsersTable = styled.table`
   th, td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
+    border-bottom: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
   }
   
   th {
-    background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#f0f0f0'};
+    background-color: ${props => props.theme.mode === 'dark' ? '#1a1a1a' : '#f0f0f0'};
     font-weight: 600;
   }
   
   tr {
-    background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+    background-color: ${props => props.theme.background.secondary};
     
     &:hover {
-      background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
+      background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
     }
   }
 `;
@@ -103,7 +102,7 @@ const UsersStats = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f8f8f8'};
+  background-color: ${props => props.theme.background.secondary};
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -128,7 +127,7 @@ const PaginationContainer = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f8f8f8'};
+  background-color: ${props => props.theme.background.secondary};
   padding: 1rem;
   border-radius: 8px;
 `;
@@ -145,9 +144,9 @@ const PerPageSelector = styled.div`
   select {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
-    border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-    background-color: ${props => props.theme === 'dark' ? '#383838' : '#ffffff'};
-    color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+    border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+    background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#ffffff'};
+    color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   }
 `;
 
@@ -160,11 +159,11 @@ const PageButton = styled.button<{active?: boolean}>`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: ${props => props.active ? '#ff5f5f' : props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.active ? '#ffffff' : props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  background-color: ${props => props.active ? '#ff5f5f' : props.theme.mode === 'dark' ? '#2a2a2a' : '#f0f0f0'};
+  color: ${props => props.active ? '#ffffff' : props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:hover {
-    background-color: ${props => props.active ? '#ff4545' : props.theme === 'dark' ? '#383838' : '#e0e0e0'};
+    background-color: ${props => props.active ? '#ff4545' : props.theme.mode === 'dark' ? '#383838' : '#e0e0e0'};
   }
   
   &:disabled {
@@ -187,7 +186,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
   padding: 2rem;
   width: 100%;
@@ -217,10 +216,10 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
   font-size: 1.5rem;
-  color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+  color: ${props => props.theme.text.muted};
   
   &:hover {
-    color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+    color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   }
 `;
 
@@ -232,16 +231,16 @@ const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -253,9 +252,9 @@ const TextArea = styled.textarea`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   resize: vertical;
   min-height: 100px;
   
@@ -269,9 +268,9 @@ const Select = styled.select`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -291,7 +290,7 @@ const StatsItem = styled.div`
   
   span {
     font-size: 0.875rem;
-    color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+    color: ${props => props.theme.text.muted};
   }
 `;
 
@@ -364,7 +363,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
     switch(props.variant) {
       case 'primary': return '#ff5f5f';
       case 'danger': return '#d0021b';
-      default: return props.theme === 'dark' ? '#383838' : '#e0e0e0';
+      default: return props.theme.mode === 'dark' ? '#383838' : '#e0e0e0';
     }
   }};
   
@@ -374,7 +373,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
       case 'danger':
         return '#ffffff';
       default:
-        return props.theme === 'dark' ? '#ffffff' : '#1a1a1a';
+        return props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a';
     }
   }};
   
@@ -383,13 +382,13 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
       switch(props.variant) {
         case 'primary': return '#ff4545';
         case 'danger': return '#c0020b';
-        default: return props.theme === 'dark' ? '#444' : '#d0d0d0';
+        default: return props.theme.mode === 'dark' ? '#444' : '#d0d0d0';
       }
     }};
   }
 `;
 
-const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
+const UsersManagement: React.FC<UsersManagementProps> = ({}) => {
   const { t } = useApp();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -550,7 +549,6 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
             placeholder={t('admin.users.search')}
             value={searchTerm}
             onChange={handleSearchChange}
-            theme={theme}
           />
         </SearchBar>
       </Header>
@@ -559,34 +557,31 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
         <FilterButton
           active={currentFilter === 'all'}
           onClick={() => handleFilterChange('all')}
-          theme={theme}
         >
           {t('admin.filters.all')}
         </FilterButton>
         <FilterButton
           active={currentFilter === 'admin'}
           onClick={() => handleFilterChange('admin')}
-          theme={theme}
         >
           {t('admin.users.role')}: {t('admin.filters.admin')}
         </FilterButton>
         <FilterButton
           active={currentFilter === 'moderator'}
           onClick={() => handleFilterChange('moderator')}
-          theme={theme}
         >
           {t('admin.users.role')}: {t('admin.filters.moderator')}
         </FilterButton>
       </Filters>
 
-      <UsersStats theme={theme}>
+      <UsersStats>
         <StatsItem>
           <strong>{totalUsers}</strong>
           <span>{t('admin.users.total')}</span>
         </StatsItem>
       </UsersStats>
 
-      <UsersTable theme={theme}>
+      <UsersTable>
         <thead>
           <tr>
             <th>{t('admin.users.id')}</th>
@@ -647,12 +642,11 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
         </tbody>
       </UsersTable>
 
-      <PaginationContainer theme={theme}>
+      <PaginationContainer>
         <Pagination>
           <PageButton
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            theme={theme}
           >
             {t('admin.pagination.prev')}
           </PageButton>
@@ -663,7 +657,6 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
           <PageButton
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= Math.ceil(totalUsers / itemsPerPage)}
-            theme={theme}
           >
             {t('admin.pagination.next')}
           </PageButton>
@@ -684,8 +677,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
 
       {/* Edit User Modal */}
       {selectedUser && showEditModal && (
-        <Modal theme={theme}>
-          <ModalContent theme={theme}>
+        <Modal>
+          <ModalContent>
             <ModalHeader>
               <h3>{t('admin.users.edit')}: {selectedUser.username}</h3>
               <CloseButton onClick={closeModals}>×</CloseButton>
@@ -697,7 +690,6 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
                   id="username"
                   value={selectedUser.username}
                   onChange={e => setSelectedUser({ ...selectedUser, username: e.target.value })}
-                  theme={theme}
                 />
               </FormGroup>
               <FormGroup>
@@ -706,15 +698,14 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
                   id="email"
                   value={selectedUser.email}
                   onChange={e => setSelectedUser({ ...selectedUser, email: e.target.value })}
-                  theme={theme}
                 />
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button variant="default" onClick={closeModals} theme={theme}>
+              <Button variant="default" onClick={closeModals}>
                 {t('admin.common.cancel')}
               </Button>
-              <Button variant="primary" onClick={closeModals} theme={theme}>
+              <Button variant="primary" onClick={closeModals}>
                 {t('admin.users.save')}
               </Button>
             </ModalFooter>
@@ -724,8 +715,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
 
       {/* Change Role Modal */}
       {selectedUser && showRoleModal && (
-        <Modal theme={theme}>
-          <ModalContent theme={theme}>
+        <Modal>
+          <ModalContent>
             <ModalHeader>
               <h3>{t('admin.users.change_role')}: {selectedUser.username}</h3>
               <CloseButton onClick={closeModals}>×</CloseButton>
@@ -737,7 +728,6 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
                   id="role"
                   value={selectedRole}
                   onChange={e => setSelectedRole(e.target.value as 'admin' | 'moderator' | 'user')}
-                  theme={theme}
                 >
                   <option value="user">{t('admin.filters.user')}</option>
                   <option value="moderator">{t('admin.filters.moderator')}</option>
@@ -746,10 +736,10 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button variant="default" onClick={closeModals} theme={theme}>
+              <Button variant="default" onClick={closeModals}>
                 {t('admin.common.cancel')}
               </Button>
-              <Button variant="primary" onClick={handleRoleChange} theme={theme}>
+              <Button variant="primary" onClick={handleRoleChange}>
                 {t('admin.common.confirm')}
               </Button>
             </ModalFooter>
@@ -759,8 +749,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
 
       {/* Ban User Modal */}
       {selectedUser && showBanModal && (
-        <Modal theme={theme}>
-          <ModalContent theme={theme}>
+        <Modal>
+          <ModalContent>
             <ModalHeader>
               <h3>{t('admin.users.ban')}: {selectedUser.username}</h3>
               <CloseButton onClick={closeModals}>×</CloseButton>
@@ -773,16 +763,15 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
                   id="reason"
                   value={banReason}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBanReason(e.target.value)}
-                  theme={theme}
                   rows={3}
                 />
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button variant="default" onClick={closeModals} theme={theme}>
+              <Button variant="default" onClick={closeModals}>
                 {t('admin.common.cancel')}
               </Button>
-              <Button variant="danger" onClick={handleBanUser} theme={theme}>
+              <Button variant="danger" onClick={handleBanUser}>
                 {t('admin.users.ban')}
               </Button>
             </ModalFooter>
@@ -792,8 +781,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
 
       {/* Delete User Modal */}
       {selectedUser && showDeleteModal && (
-        <Modal theme={theme}>
-          <ModalContent theme={theme}>
+        <Modal>
+          <ModalContent>
             <ModalHeader>
               <h3>{t('admin.users.delete')}: {selectedUser.username}</h3>
               <CloseButton onClick={closeModals}>×</CloseButton>
@@ -802,10 +791,10 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
               <p>{t('admin.users.confirm_delete')}</p>
             </ModalBody>
             <ModalFooter>
-              <Button variant="default" onClick={closeModals} theme={theme}>
+              <Button variant="default" onClick={closeModals}>
                 {t('admin.common.cancel')}
               </Button>
-              <Button variant="danger" onClick={closeModals} theme={theme}>
+              <Button variant="danger" onClick={closeModals}>
                 {t('admin.users.delete')}
               </Button>
             </ModalFooter>
@@ -815,24 +804,24 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ theme }) => {
 
       {/* User Details Modal */}
       {userDetails && showDetailsModal && (
-        <Modal theme={theme}>
-          <ModalContent theme={theme}>
+        <Modal>
+          <ModalContent>
             <ModalHeader>
               <h3>{t('admin.users.info')}: {userDetails.username}</h3>
               <CloseButton onClick={closeModals}>×</CloseButton>
             </ModalHeader>
             <ModalBody>
               <FormGroup>
-                <Label theme={theme}>{t('admin.users.role')}</Label>
+                <Label>{t('admin.users.role')}</Label>
                 <div>{userDetails.role}</div>
               </FormGroup>
               <FormGroup>
-                <Label theme={theme}>{t('admin.users.created')}</Label>
+                <Label>{t('admin.users.created')}</Label>
                 <div>{new Date(userDetails.createdAt).toLocaleDateString()}</div>
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button variant="default" onClick={closeModals} theme={theme}>
+              <Button variant="default" onClick={closeModals}>
                 {t('admin.common.close')}
               </Button>
             </ModalFooter>

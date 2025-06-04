@@ -12,14 +12,14 @@ const FavoritesGrid = styled.div`
   }
 `;
 
-const FavoriteItem = styled(Link)<{ theme: string }>`
+const FavoriteItem = styled(Link)`
   text-decoration: none;
   color: inherit;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   
   &:hover {
     transform: translateY(-5px);
@@ -49,41 +49,41 @@ const FavoriteRating = styled.div`
   gap: 0.25rem;
 `;
 
-const FavoriteInfo = styled.div<{ theme: string }>`
+const FavoriteInfo = styled.div`
   padding: 0.75rem;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
 `;
 
-const FavoriteTitle = styled.h3<{ theme: string }>`
+const FavoriteTitle = styled.h3`
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
-const FavoriteGenres = styled.p<{ theme: string }>`
+const FavoriteGenres = styled.p`
   font-size: 0.75rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
-const EmptyState = styled.div<{ theme: string }>`
+const EmptyState = styled.div`
   text-align: center;
   padding: 2rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
-const SectionHeader = styled.div<{ theme: string }>`
+const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 `;
 
-const SectionTitle = styled.h2<{ theme: string }>`
+const SectionTitle = styled.h2`
   font-size: 1.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -98,7 +98,6 @@ interface FavoriteAnime {
 }
 
 interface FavoritesListProps {
-  theme: string;
   favorites: FavoriteAnime[];
   labels: {
     title: string;
@@ -107,23 +106,21 @@ interface FavoritesListProps {
   className?: string;
 }
 
-export const FavoritesList: React.FC<FavoritesListProps> = ({
-  theme,
-  favorites,
+export const FavoritesList: React.FC<FavoritesListProps> = ({ favorites,
   labels,
   className
 }) => {
   return (
     <div className={className}>
-      <SectionHeader theme={theme}>
-        <SectionTitle theme={theme}>
+      <SectionHeader>
+        <SectionTitle>
           <FaHeart />
           {labels.title}
         </SectionTitle>
       </SectionHeader>
 
       {favorites.length === 0 ? (
-        <EmptyState theme={theme}>
+        <EmptyState>
           {labels.empty}
         </EmptyState>
       ) : (
@@ -132,7 +129,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
             <FavoriteItem 
               key={item.id}
               to={`/anime/${item.id}`}
-              theme={theme}
             >
               <FavoriteImage imageUrl={item.image}>
                 {item.rating && (
@@ -142,10 +138,10 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
                   </FavoriteRating>
                 )}
               </FavoriteImage>
-              <FavoriteInfo theme={theme}>
-                <FavoriteTitle theme={theme}>{item.title}</FavoriteTitle>
+              <FavoriteInfo>
+                <FavoriteTitle>{item.title}</FavoriteTitle>
                 {item.genres && (
-                  <FavoriteGenres theme={theme}>
+                  <FavoriteGenres>
                     {item.genres.slice(0, 2).join(', ')}
                   </FavoriteGenres>
                 )}

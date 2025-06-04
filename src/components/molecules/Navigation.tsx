@@ -11,9 +11,9 @@ const Nav = styled.nav`
   }
 `;
 
-const NavLink = styled(Link)<{ theme: string }>`
+const NavLink = styled(Link)`
   text-decoration: none;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   padding: 0.5rem 0.75rem;
   transition: color 0.3s ease;
@@ -23,8 +23,8 @@ const NavLink = styled(Link)<{ theme: string }>`
   }
 `;
 
-const RandomButton = styled.button<{ theme: string }>`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+const RandomButton = styled.button`
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   padding: 0.5rem;
   transition: color 0.3s ease;
@@ -55,14 +55,11 @@ interface NavigationItem {
 }
 
 interface NavigationProps {
-  theme: string;
   items: NavigationItem[];
   className?: string;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ 
-  theme, 
-  items, 
+export const Navigation: React.FC<NavigationProps> = ({ items, 
   className 
 }) => {
   return (
@@ -72,7 +69,6 @@ export const Navigation: React.FC<NavigationProps> = ({
           <RandomButton
             key={index}
             onClick={item.onClick}
-            theme={theme}
             disabled={item.disabled}
           >
             {item.icon}
@@ -82,7 +78,6 @@ export const Navigation: React.FC<NavigationProps> = ({
           <NavLink 
             key={index}
             to={item.to || '/'}
-            theme={theme}
           >
             {item.label}
           </NavLink>

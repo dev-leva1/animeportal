@@ -14,12 +14,12 @@ const SearchContainer = styled.div`
   }
 `;
 
-const SearchInput = styled.input<{ theme: string }>`
+const SearchInput = styled.input`
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   width: 100%;
   transition: all 0.3s ease;
   
@@ -35,14 +35,11 @@ const SearchInput = styled.input<{ theme: string }>`
 `;
 
 interface SearchBoxProps {
-  theme: string;
   placeholder: string;
   className?: string;
 }
 
-export const SearchBox: React.FC<SearchBoxProps> = ({ 
-  theme, 
-  placeholder, 
+export const SearchBox: React.FC<SearchBoxProps> = ({ placeholder, 
   className 
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +60,6 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
           placeholder={placeholder} 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          theme={theme}
         />
       </SearchContainer>
     </form>

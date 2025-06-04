@@ -3,12 +3,12 @@ import styled from '@emotion/styled';
 import { memo, useMemo } from 'react';
 import { useApp } from '../../context/ThemeContext';
 
-const FooterContainer = styled.footer<{ theme: string }>`
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#f0f0f0'};
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+const FooterContainer = styled.footer`
+  background-color: ${props => props.theme.mode === 'dark' ? '#1a1a1a' : '#f0f0f0'};
+  color: ${props => props.theme.text.muted};
   padding: 2rem 0;
   margin-top: 3rem;
-  border-top: 1px solid ${props => props.theme === 'dark' ? '#333' : '#ddd'};
+  border-top: 1px solid ${props => props.theme.mode === 'dark' ? '#333' : '#ddd'};
 `;
 
 const FooterContent = styled.div`
@@ -33,14 +33,14 @@ const FooterLinks = styled.div`
   }
 `;
 
-const FooterLink = styled(Link)<{ theme: string }>`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+const FooterLink = styled(Link)`
+  color: ${props => props.theme.text.muted};
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
   
   &:hover {
-    color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+    color: ${props => props.theme.text.primary};
     text-decoration: underline;
   }
 `;
@@ -52,7 +52,7 @@ const FooterCopyright = styled.div`
 `;
 
 export const Footer: React.FC = memo(() => {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   
@@ -66,11 +66,11 @@ export const Footer: React.FC = memo(() => {
   ], [t]);
   
   return (
-    <FooterContainer theme={theme}>
+    <FooterContainer>
       <FooterContent>
         <FooterLinks>
           {footerLinks.map(({ to, label }) => (
-            <FooterLink key={to} to={to} theme={theme}>
+            <FooterLink key={to} to={to}>
               {label}
             </FooterLink>
           ))}

@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { typography, colors } from '../../../design-system/tokens';
+import { typography, colors, useTheme } from '../../../design-system/tokens';
 
 type VariantType = 
   | 'display-2xl' | 'display-xl' | 'display-lg' | 'display-md' | 'display-sm' | 'display-xs'
@@ -39,6 +39,7 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
     },
     ref
   ) => {
+    const { theme } = useTheme();
     const getVariantStyles = (variant: VariantType) => {
       const [category, size] = variant.split('-') as [string, string];
       
@@ -59,13 +60,13 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
     const getColorStyles = (color: TypographyProps['color']) => {
       switch (color) {
         case 'primary':
-          return colors.theme.light.text.primary;
+          return theme.text.primary;
         case 'secondary':
-          return colors.theme.light.text.secondary;
+          return theme.text.secondary;
         case 'muted':
-          return colors.theme.light.text.muted;
+          return theme.text.muted;
         case 'inverse':
-          return colors.theme.light.text.inverse;
+          return theme.text.inverse;
         case 'error':
           return colors.semantic.error[600];
         case 'success':
@@ -73,7 +74,7 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
         case 'warning':
           return colors.semantic.warning[600];
         default:
-          return colors.theme.light.text.primary;
+          return theme.text.primary;
       }
     };
 

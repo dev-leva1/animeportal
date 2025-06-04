@@ -1,12 +1,13 @@
 import styled from '@emotion/styled';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { useTheme } from '../../hooks/useTheme';
 
-const ToggleButton = styled.button<{ theme: string }>`
+const ToggleButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   padding: 0.5rem;
   transition: color 0.3s ease;
   display: flex;
@@ -14,28 +15,27 @@ const ToggleButton = styled.button<{ theme: string }>`
   justify-content: center;
   
   &:hover {
-    color: #ff5f5f;
+    color: ${props => props.theme.colors.primary[500]};
   }
 `;
 
 interface ThemeToggleProps {
-  theme: string;
   onToggle: () => void;
   className?: string;
 }
 
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({ 
-  theme, 
   onToggle, 
   className 
 }) => {
+  const theme = useTheme();
+  
   return (
     <ToggleButton 
       onClick={onToggle} 
-      theme={theme}
       className={className}
     >
-      {theme === 'dark' ? <FaSun /> : <FaMoon />}
+      {theme.mode === 'dark' ? <FaSun /> : <FaMoon />}
     </ToggleButton>
   );
 };

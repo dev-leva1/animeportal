@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { colors, spacing, borderRadius } from '../../../design-system/tokens';
+import { spacing, borderRadius, useTheme } from '../../../design-system/tokens';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'elevated' | 'outlined' | 'filled';
@@ -24,25 +24,27 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     },
     ref
   ) => {
+    const { theme } = useTheme();
+
     const getVariantStyles = (variant: CardProps['variant'], elevation: CardProps['elevation']) => {
       switch (variant) {
         case 'elevated':
           return {
-            backgroundColor: colors.theme.light.background.primary,
+            backgroundColor: theme.background.primary,
             border: 'none',
-            boxShadow: colors.theme.light.shadow[elevation as keyof typeof colors.theme.light.shadow] || colors.theme.light.shadow.md,
+            boxShadow: theme.shadow[elevation as keyof typeof theme.shadow] || theme.shadow.md,
           };
         
         case 'outlined':
           return {
-            backgroundColor: colors.theme.light.background.primary,
-            border: `1px solid ${colors.theme.light.border.primary}`,
+            backgroundColor: theme.background.primary,
+            border: `1px solid ${theme.border.primary}`,
             boxShadow: 'none',
           };
         
         case 'filled':
           return {
-            backgroundColor: colors.theme.light.background.secondary,
+            backgroundColor: theme.background.secondary,
             border: 'none',
             boxShadow: 'none',
           };
@@ -106,7 +108,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       transition: 'transform 150ms ease, box-shadow 150ms ease',
       ':hover': {
         transform: 'translateY(-2px)',
-        boxShadow: colors.theme.light.shadow.lg,
+        boxShadow: theme.shadow.lg,
       },
       ':active': {
         transform: 'translateY(0)',

@@ -5,7 +5,6 @@ import { AnimeContent } from '../../types/admin';
 import { FaSearch, FaEdit, FaTrash, FaEye, FaCheckCircle, FaTimesCircle, FaExclamationCircle } from 'react-icons/fa';
 
 interface AnimeManagementProps {
-  theme: string;
   t: (key: string) => string;
 }
 
@@ -41,9 +40,9 @@ const SearchInput = styled.input`
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -76,13 +75,13 @@ const FilterButton = styled.button<{active?: boolean}>`
   padding: 0.5rem 1rem;
   border-radius: 4px;
   border: none;
-  background-color: ${props => props.active ? '#ff5f5f' : props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.active ? '#ffffff' : props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  background-color: ${props => props.active ? '#ff5f5f' : props.theme.mode === 'dark' ? '#2a2a2a' : '#f0f0f0'};
+  color: ${props => props.active ? '#ffffff' : props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: ${props => props.active ? '#ff4545' : props.theme === 'dark' ? '#383838' : '#e0e0e0'};
+    background-color: ${props => props.active ? '#ff4545' : props.theme.mode === 'dark' ? '#383838' : '#e0e0e0'};
   }
 `;
 
@@ -95,7 +94,7 @@ const AnimeTable = styled.div`
 const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 1fr 4fr 1fr 1fr 1fr 1fr;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#f0f0f0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#1a1a1a' : '#f0f0f0'};
   padding: 1rem;
   font-weight: 600;
 `;
@@ -110,11 +109,11 @@ const TableRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 4fr 1fr 1fr 1fr 1fr;
   padding: 1rem;
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  border-bottom: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.background.secondary};
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
+    background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
   }
 `;
 
@@ -228,11 +227,11 @@ const PageButton = styled.button<{active?: boolean}>`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: ${props => props.active ? '#ff5f5f' : props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.active ? '#ffffff' : props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  background-color: ${props => props.active ? '#ff5f5f' : props.theme.mode === 'dark' ? '#2a2a2a' : '#f0f0f0'};
+  color: ${props => props.active ? '#ffffff' : props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:hover {
-    background-color: ${props => props.active ? '#ff4545' : props.theme === 'dark' ? '#383838' : '#e0e0e0'};
+    background-color: ${props => props.active ? '#ff4545' : props.theme.mode === 'dark' ? '#383838' : '#e0e0e0'};
   }
   
   &:disabled {
@@ -255,7 +254,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
   padding: 2rem;
   width: 100%;
@@ -273,7 +272,7 @@ const ModalHeader = styled.div`
 const ModalTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const CloseButton = styled.button`
@@ -281,10 +280,10 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
   font-size: 1.5rem;
-  color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+  color: ${props => props.theme.text.muted};
   
   &:hover {
-    color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+    color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   }
 `;
 
@@ -296,16 +295,16 @@ const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -317,9 +316,9 @@ const Select = styled.select`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -345,7 +344,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
     switch(props.variant) {
       case 'primary': return '#ff5f5f';
       case 'danger': return '#d0021b';
-      default: return props.theme === 'dark' ? '#383838' : '#e0e0e0';
+      default: return props.theme.mode === 'dark' ? '#383838' : '#e0e0e0';
     }
   }};
   
@@ -355,7 +354,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
       case 'danger':
         return '#ffffff';
       default:
-        return props.theme === 'dark' ? '#ffffff' : '#1a1a1a';
+        return props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a';
     }
   }};
   
@@ -364,7 +363,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
       switch(props.variant) {
         case 'primary': return '#ff4545';
         case 'danger': return '#c0020b';
-        default: return props.theme === 'dark' ? '#444' : '#d0d0d0';
+        default: return props.theme.mode === 'dark' ? '#444' : '#d0d0d0';
       }
     }};
   }
@@ -373,10 +372,10 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
 const EmptyState = styled.div`
   padding: 2rem;
   text-align: center;
-  color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+  color: ${props => props.theme.text.muted};
 `;
 
-const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
+const AnimeManagement = ({ t }: AnimeManagementProps) => {
   const [animeList, setAnimeList] = useState<AnimeContent[]>([]);
   const [filteredAnime, setFilteredAnime] = useState<AnimeContent[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -470,7 +469,6 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
             placeholder={t('admin.anime.search')}
             value={searchQuery}
             onChange={handleSearchChange}
-            theme={theme}
           />
         </SearchBar>
         <AddButton onClick={() => {}}>
@@ -482,35 +480,31 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
         <FilterButton
           active={selectedStatus === 'all'}
           onClick={() => setSelectedStatus('all')}
-          theme={theme}
         >
           {t('admin.filters.all')}
         </FilterButton>
         <FilterButton
           active={selectedStatus === 'approved'}
           onClick={() => setSelectedStatus('approved')}
-          theme={theme}
         >
           {t('admin.anime.status.approved')}
         </FilterButton>
         <FilterButton
           active={selectedStatus === 'pending'}
           onClick={() => setSelectedStatus('pending')}
-          theme={theme}
         >
           {t('admin.anime.status.pending')}
         </FilterButton>
         <FilterButton
           active={selectedStatus === 'rejected'}
           onClick={() => setSelectedStatus('rejected')}
-          theme={theme}
         >
           {t('admin.anime.status.rejected')}
         </FilterButton>
       </Filters>
 
       <AnimeTable>
-        <TableHeader theme={theme}>
+        <TableHeader>
           <TableCell>{t('admin.anime.id')}</TableCell>
           <TableCell>{t('admin.anime.title')}</TableCell>
           <TableCell>{t('admin.anime.status')}</TableCell>
@@ -521,7 +515,7 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
         
         {filteredAnime.length > 0 ? (
           filteredAnime.map(anime => (
-            <TableRow key={anime.id} theme={theme}>
+            <TableRow key={anime.id}>
               <TableCell>{anime.id}</TableCell>
               <TableCell>
                 <AnimeTitle>{anime.title}</AnimeTitle>
@@ -562,7 +556,7 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
             </TableRow>
           ))
         ) : (
-          <EmptyState theme={theme}>
+          <EmptyState>
             <p>{t('admin.common.no_results')}</p>
           </EmptyState>
         )}
@@ -572,7 +566,6 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
         <PageButton 
           onClick={() => handlePageChange(currentPage - 1)} 
           disabled={currentPage === 1}
-          theme={theme}
         >
           {t('admin.pagination.prev')}
         </PageButton>
@@ -594,7 +587,6 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
               key={pageNumber}
               active={currentPage === pageNumber}
               onClick={() => handlePageChange(pageNumber)}
-              theme={theme}
             >
               {pageNumber}
             </PageButton>
@@ -604,7 +596,6 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
         <PageButton 
           onClick={() => handlePageChange(currentPage + 1)} 
           disabled={currentPage === totalPages}
-          theme={theme}
         >
           {t('admin.pagination.next')}
         </PageButton>
@@ -613,28 +604,26 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
       {/* Модальное окно для изменения статуса */}
       {showStatusModal && selectedAnime && (
         <Modal>
-          <ModalContent theme={theme}>
+          <ModalContent>
             <ModalHeader>
-              <ModalTitle theme={theme}>{t('admin.anime.change_status')}</ModalTitle>
-              <CloseButton onClick={closeModals} theme={theme}>&times;</CloseButton>
+              <ModalTitle>{t('admin.anime.change_status')}</ModalTitle>
+              <CloseButton onClick={closeModals}>&times;</CloseButton>
             </ModalHeader>
             
             <FormGroup>
-              <Label theme={theme}>{t('admin.anime.title')}</Label>
+              <Label>{t('admin.anime.title')}</Label>
               <Input 
                 type="text" 
                 value={selectedAnime.title} 
-                disabled 
-                theme={theme}
+                disabled
               />
             </FormGroup>
             
             <FormGroup>
-              <Label theme={theme}>{t('admin.anime.status')}</Label>
+              <Label>{t('admin.anime.status')}</Label>
               <Select 
                 value={newStatus} 
                 onChange={(e) => setNewStatus(e.target.value as 'approved' | 'pending' | 'rejected')}
-                theme={theme}
               >
                 <option value="approved">{t('admin.anime.status.approved')}</option>
                 <option value="pending">{t('admin.anime.status.pending')}</option>
@@ -646,14 +635,12 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
               <Button 
                 variant="default" 
                 onClick={closeModals}
-                theme={theme}
               >
                 {t('admin.common.cancel')}
               </Button>
               <Button 
                 variant="primary" 
                 onClick={handleStatusChange}
-                theme={theme}
               >
                 {t('admin.common.save')}
               </Button>
@@ -665,10 +652,10 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
       {/* Модальное окно для удаления аниме */}
       {showDeleteModal && selectedAnime && (
         <Modal>
-          <ModalContent theme={theme}>
+          <ModalContent>
             <ModalHeader>
-              <ModalTitle theme={theme}>{t('admin.anime.confirm_delete')}</ModalTitle>
-              <CloseButton onClick={closeModals} theme={theme}>&times;</CloseButton>
+              <ModalTitle>{t('admin.anime.confirm_delete')}</ModalTitle>
+              <CloseButton onClick={closeModals}>&times;</CloseButton>
             </ModalHeader>
             
             <p style={{ marginBottom: '1.5rem' }}>
@@ -679,14 +666,12 @@ const AnimeManagement = ({ theme, t }: AnimeManagementProps) => {
               <Button 
                 variant="default" 
                 onClick={closeModals}
-                theme={theme}
               >
                 {t('admin.common.cancel')}
               </Button>
               <Button 
                 variant="danger" 
                 onClick={closeModals}
-                theme={theme}
               >
                 {t('admin.common.delete')}
               </Button>

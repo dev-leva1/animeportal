@@ -8,7 +8,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 2rem;
   font-size: 2rem;
 `;
@@ -18,19 +18,19 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 1rem;
   font-size: 1.5rem;
 `;
 
 const Paragraph = styled.p`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
 `;
 
 const List = styled.ul`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
   padding-left: 2rem;
@@ -41,24 +41,24 @@ const ListItem = styled.li`
 `;
 
 function TermsPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   
   // Устанавливаем заголовок страницы
   document.title = `${t('footer.terms')} - ${t('site.name')}`;
   
   return (
     <Container>
-      <Title theme={theme}>{t('footer.terms')}</Title>
+      <Title>{t('footer.terms')}</Title>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.acceptance_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.acceptance_text')}</Paragraph>
+        <SectionTitle>{t('terms.acceptance_title')}</SectionTitle>
+        <Paragraph>{t('terms.acceptance_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.use_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.use_text')}</Paragraph>
-        <List theme={theme}>
+        <SectionTitle>{t('terms.use_title')}</SectionTitle>
+        <Paragraph>{t('terms.use_text')}</Paragraph>
+        <List>
           <ListItem>{t('terms.use_item1')}</ListItem>
           <ListItem>{t('terms.use_item2')}</ListItem>
           <ListItem>{t('terms.use_item3')}</ListItem>
@@ -67,28 +67,28 @@ function TermsPage() {
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.content_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.content_text')}</Paragraph>
+        <SectionTitle>{t('terms.content_title')}</SectionTitle>
+        <Paragraph>{t('terms.content_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.accounts_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.accounts_text')}</Paragraph>
+        <SectionTitle>{t('terms.accounts_title')}</SectionTitle>
+        <Paragraph>{t('terms.accounts_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.termination_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.termination_text')}</Paragraph>
+        <SectionTitle>{t('terms.termination_title')}</SectionTitle>
+        <Paragraph>{t('terms.termination_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.changes_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.changes_text')}</Paragraph>
+        <SectionTitle>{t('terms.changes_title')}</SectionTitle>
+        <Paragraph>{t('terms.changes_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('terms.contact_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('terms.contact_text')}</Paragraph>
+        <SectionTitle>{t('terms.contact_title')}</SectionTitle>
+        <Paragraph>{t('terms.contact_text')}</Paragraph>
       </Section>
     </Container>
   );

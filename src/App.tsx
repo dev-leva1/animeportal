@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, Suspense, lazy } from 'react';
 import styled from '@emotion/styled';
 import { Header, Footer, ErrorBoundary } from './components/organisms';
 import LoadingFallback from './components/atoms/Spinner/LoadingFallback';
+import { ThemeProvider } from './design-system/tokens';
 
 // Lazy loading для всех страниц
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -31,8 +32,8 @@ const AppContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${props => props.theme === 'dark' ? '#121212' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  background-color: ${props => props.theme.background.primary};
+  color: ${props => props.theme.text.primary};
 `;
 
 const MainContent = styled.main`
@@ -44,7 +45,7 @@ const MainContent = styled.main`
 `;
 
 function App() {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [language, setLanguage] = useState('ru');
 
   const toggleTheme = () => {
@@ -70,40 +71,42 @@ function App() {
   }, [language, t]);
 
   return (
-    <AppProvider value={{ theme, toggleTheme, language, toggleLanguage, t }}>
-      <AuthProvider>
-        <ErrorBoundary>
-          <AppContainer theme={theme}>
-            <Router>
-              <Header />
-              <MainContent>
-                <Suspense fallback={<LoadingFallback />}>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/anime" element={<AnimePage />} />
-                    <Route path="/anime/:id" element={<AnimeDetailsPage />} />
-                    <Route path="/manga" element={<MangaPage />} />
-                    <Route path="/manga/:id" element={<MangaDetailsPage />} />
-                    <Route path="/favorites" element={<FavoritesPage />} />
-                    <Route path="/auth" element={<AuthPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/terms" element={<TermsPage />} />
-                    <Route path="/privacy" element={<PrivacyPage />} />
-                    <Route path="/contacts" element={<ContactsPage />} />
-                    <Route path="/data-source" element={<DataSourcePage />} />
-                    <Route path="/copyright" element={<CopyrightPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
-                </Suspense>
-              </MainContent>
-              <Footer />
-            </Router>
-          </AppContainer>
-        </ErrorBoundary>
-      </AuthProvider>
-    </AppProvider>
+    <ThemeProvider initialTheme={theme} onThemeChange={setTheme}>
+      <AppProvider value={{ theme, toggleTheme, language, toggleLanguage, t }}>
+        <AuthProvider>
+          <ErrorBoundary>
+            <AppContainer>
+                <Router>
+                <Header />
+                <MainContent>
+                  <Suspense fallback={<LoadingFallback />}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/anime" element={<AnimePage />} />
+                      <Route path="/anime/:id" element={<AnimeDetailsPage />} />
+                      <Route path="/manga" element={<MangaPage />} />
+                      <Route path="/manga/:id" element={<MangaDetailsPage />} />
+                      <Route path="/favorites" element={<FavoritesPage />} />
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/admin" element={<AdminPage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/terms" element={<TermsPage />} />
+                      <Route path="/privacy" element={<PrivacyPage />} />
+                      <Route path="/contacts" element={<ContactsPage />} />
+                      <Route path="/data-source" element={<DataSourcePage />} />
+                      <Route path="/copyright" element={<CopyrightPage />} />
+                      <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                  </Suspense>
+                </MainContent>
+                <Footer />
+              </Router>
+            </AppContainer>
+          </ErrorBoundary>
+        </AuthProvider>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 

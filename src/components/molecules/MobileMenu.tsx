@@ -3,15 +3,16 @@ import styled from '@emotion/styled';
 import { FaUser, FaSignOutAlt, FaUserShield, FaDice } from 'react-icons/fa';
 import { MdLanguage } from 'react-icons/md';
 import MenuToggle from '../atoms/MenuToggle';
+import { useTheme } from '../../hooks/useTheme';
 
-const MobileMenuOverlay = styled.div<{ isOpen: boolean; theme: string }>`
+const MobileMenuOverlay = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   z-index: 1000;
   padding: 2rem;
   transform: translateX(${props => props.isOpen ? '0' : '100%'});
@@ -24,9 +25,9 @@ const MobileMenuOverlay = styled.div<{ isOpen: boolean; theme: string }>`
   }
 `;
 
-const MobileNavLink = styled(Link)<{ theme: string }>`
+const MobileNavLink = styled(Link)`
   text-decoration: none;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   padding: 0.75rem;
   border-radius: 4px;
@@ -35,16 +36,16 @@ const MobileNavLink = styled(Link)<{ theme: string }>`
   gap: 0.5rem;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme.background.secondary};
   }
 `;
 
-const MobileButton = styled.button<{ theme: string }>`
+const MobileButton = styled.button`
   background: none;
   border: none;
   text-align: left;
   width: 100%;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   font-size: 1rem;
   padding: 0.75rem;
@@ -55,7 +56,7 @@ const MobileButton = styled.button<{ theme: string }>`
   gap: 0.5rem;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme.background.secondary};
   }
 `;
 
@@ -72,7 +73,6 @@ interface User {
 }
 
 interface MobileMenuProps {
-  theme: string;
   language: string;
   isOpen: boolean;
   isAuthenticated: boolean;
@@ -97,9 +97,7 @@ interface MobileMenuProps {
   className?: string;
 }
 
-export const MobileMenu: React.FC<MobileMenuProps> = ({ 
-  theme,
-  language,
+export const MobileMenu: React.FC<MobileMenuProps> = ({ language,
   isOpen,
   isAuthenticated,
   isAdmin,
@@ -112,6 +110,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   labels,
   className 
 }) => {
+  const theme = useTheme();
   const handleLogout = () => {
     onLogout();
     onClose();
@@ -133,9 +132,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   };
 
   return (
-    <MobileMenuOverlay theme={theme} isOpen={isOpen} className={className}>
-      <MenuToggle 
-        theme={theme}
+    <MobileMenuOverlay isOpen={isOpen} className={className}>
+      <MenuToggle
         isOpen={true}
         onToggle={onClose}
       />
@@ -145,7 +143,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           key={index}
           to={item.to || '/'}
           onClick={onClose}
-          theme={theme}
         >
           {item.icon}
           {item.label}
@@ -155,37 +152,37 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       {isAuthenticated ? (
         <>
           {isAdmin && (
-            <MobileNavLink to="/admin" onClick={onClose} theme={theme}>
+            <MobileNavLink to="/admin" onClick={onClose}>
               <FaUserShield />
               {labels.admin}
             </MobileNavLink>
           )}
-          <MobileNavLink to="/profile" onClick={onClose} theme={theme}>
+          <MobileNavLink to="/profile" onClick={onClose}>
             <FaUser />
             {labels.profile}
           </MobileNavLink>
-          <MobileButton onClick={handleLogout} theme={theme}>
+          <MobileButton onClick={handleLogout}>
             <FaSignOutAlt />
             {labels.logout}
           </MobileButton>
         </>
       ) : (
-        <MobileNavLink to="/auth" onClick={onClose} theme={theme}>
+        <MobileNavLink to="/auth" onClick={onClose}>
           {labels.login}
         </MobileNavLink>
       )}
       
-      <MobileButton onClick={handleRandomAnime} theme={theme}>
+      <MobileButton onClick={handleRandomAnime}>
         <FaDice />
         Random Anime
       </MobileButton>
       
-      <MobileButton onClick={handleThemeToggle} theme={theme}>
-        {theme === 'dark' ? '☀️' : '🌙'}
-        {theme === 'dark' ? labels.themeLight : labels.themeDark}
+      <MobileButton onClick={handleThemeToggle}>
+        {theme.mode === 'dark' ? '☀️' : '🌙'}
+        {theme.mode === 'dark' ? labels.themeLight : labels.themeDark}
       </MobileButton>
       
-      <MobileButton onClick={handleLanguageToggle} theme={theme}>
+      <MobileButton onClick={handleLanguageToggle}>
         <MdLanguage />
         {language === 'ru' ? labels.languageEn : labels.languageRu}
       </MobileButton>

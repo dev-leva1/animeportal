@@ -8,7 +8,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 2rem;
   font-size: 2rem;
 `;
@@ -18,19 +18,19 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 1rem;
   font-size: 1.5rem;
 `;
 
 const Paragraph = styled.p`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
 `;
 
 const List = styled.ul`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
   padding-left: 2rem;
@@ -41,7 +41,7 @@ const ListItem = styled.li`
 `;
 
 function CopyrightPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const currentYear = new Date().getFullYear();
   
   // Устанавливаем заголовок страницы
@@ -49,19 +49,19 @@ function CopyrightPage() {
   
   return (
     <Container>
-      <Title theme={theme}>{t('copyright.title')}</Title>
+      <Title>{t('copyright.title')}</Title>
       
       <Section>
-        <SectionTitle theme={theme}>{t('copyright.ownership_title')}</SectionTitle>
-        <Paragraph theme={theme}>
+        <SectionTitle>{t('copyright.ownership_title')}</SectionTitle>
+        <Paragraph>
           {t('copyright.ownership_text').replace('{year}', currentYear.toString())}
         </Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('copyright.content_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('copyright.content_text')}</Paragraph>
-        <List theme={theme}>
+        <SectionTitle>{t('copyright.content_title')}</SectionTitle>
+        <Paragraph>{t('copyright.content_text')}</Paragraph>
+        <List>
           <ListItem>{t('copyright.content_item1')}</ListItem>
           <ListItem>{t('copyright.content_item2')}</ListItem>
           <ListItem>{t('copyright.content_item3')}</ListItem>
@@ -70,18 +70,18 @@ function CopyrightPage() {
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('copyright.fair_use_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('copyright.fair_use_text')}</Paragraph>
+        <SectionTitle>{t('copyright.fair_use_title')}</SectionTitle>
+        <Paragraph>{t('copyright.fair_use_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('copyright.dmca_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('copyright.dmca_text')}</Paragraph>
+        <SectionTitle>{t('copyright.dmca_title')}</SectionTitle>
+        <Paragraph>{t('copyright.dmca_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('copyright.contact_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('copyright.contact_text')}</Paragraph>
+        <SectionTitle>{t('copyright.contact_title')}</SectionTitle>
+        <Paragraph>{t('copyright.contact_text')}</Paragraph>
       </Section>
     </Container>
   );

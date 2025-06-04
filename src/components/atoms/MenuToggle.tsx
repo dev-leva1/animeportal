@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
-const ToggleButton = styled.button<{ theme: string }>`
+const ToggleButton = styled.button`
   display: none;
   background: none;
   border: none;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -23,22 +23,18 @@ const ToggleButton = styled.button<{ theme: string }>`
 `;
 
 interface MenuToggleProps {
-  theme: string;
   isOpen: boolean;
   onToggle: () => void;
   className?: string;
 }
 
-export const MenuToggle: React.FC<MenuToggleProps> = ({ 
-  theme, 
-  isOpen, 
+export const MenuToggle: React.FC<MenuToggleProps> = ({ isOpen, 
   onToggle, 
   className 
 }) => {
   return (
     <ToggleButton 
-      onClick={onToggle} 
-      theme={theme}
+      onClick={onToggle}
       className={className}
     >
       {isOpen ? <FaTimes /> : <FaBars />}

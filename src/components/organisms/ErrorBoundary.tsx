@@ -51,7 +51,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   render(): ReactNode {
     const { hasError, error, errorInfo } = this.state;
-    const { children, theme, t, fallback } = this.props;
+    const { children, t, fallback } = this.props;
 
     if (hasError) {
       if (fallback) {
@@ -89,12 +89,12 @@ class ErrorBoundary extends Component<Props, State> {
                 </Typography>
               </summary>
               <pre style={{
-                backgroundColor: theme === 'dark' ? '#111' : '#f0f0f0',
+                backgroundColor: '#f0f0f0',
                 padding: '1rem',
                 borderRadius: '4px',
                 overflow: 'auto',
                 fontSize: '0.875rem',
-                color: theme === 'dark' ? '#ddd' : '#333'
+                color: '#333'
               }}>
                 {errorInfo.componentStack}
               </pre>

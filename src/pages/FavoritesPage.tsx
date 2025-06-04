@@ -6,8 +6,9 @@ import { Anime, WatchStatus } from '../types/anime';
 import { AnimeCard } from '../components';
 import { FaEye, FaClock, FaCheck, FaPause, FaTimesCircle, FaFilter } from 'react-icons/fa';
 
+
 const PageTitle = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 1.5rem;
   font-size: 2rem;
 `;
@@ -27,9 +28,9 @@ const AnimeGrid = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 3rem;
-  background-color: ${props => props.theme === 'dark' ? '#1e1e1e' : '#f5f5f5'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const EmptyStateIcon = styled.div`
@@ -70,7 +71,7 @@ const FilterLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
 `;
 
@@ -88,24 +89,24 @@ const FilterButton = styled.button<FilterButtonProps>`
   border-radius: 4px;
   border: none;
   background-color: ${props => props.active 
-    ? props.color || (props.theme === 'dark' ? '#444' : '#e0e0e0') 
-    : props.theme === 'dark' ? '#1e1e1e' : '#f5f5f5'};
+    ? props.color || (props.theme.mode === 'dark' ? '#444' : '#e0e0e0') 
+    : props.theme.mode === 'dark' ? '#1e1e1e' : '#f5f5f5'};
   color: ${props => props.active 
     ? '#ffffff' 
-    : props.theme === 'dark' ? '#aaa' : '#666'};
+    : props.theme.mode === 'dark' ? '#aaa' : '#666'};
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: ${props => props.active ? '500' : '400'};
   
   &:hover {
     background-color: ${props => props.active 
-      ? props.color || (props.theme === 'dark' ? '#555' : '#d0d0d0') 
-      : props.theme === 'dark' ? '#333' : '#e0e0e0'};
+      ? props.color || (props.theme.mode === 'dark' ? '#555' : '#d0d0d0') 
+      : props.theme.mode === 'dark' ? '#333' : '#e0e0e0'};
   }
 `;
 
 function FavoritesPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const [favorites, setFavorites] = useState<Anime[]>([]);
   const [filteredFavorites, setFilteredFavorites] = useState<Anime[]>([]);
   const [activeFilter, setActiveFilter] = useState<WatchStatus | 'all'>('all');
@@ -158,10 +159,10 @@ function FavoritesPage() {
   
   return (
     <div>
-      <PageTitle theme={theme}>{t('favorites.title')}</PageTitle>
+      <PageTitle>{t('favorites.title')}</PageTitle>
       
       {favorites.length === 0 ? (
-        <EmptyState theme={theme}>
+        <EmptyState>
           <EmptyStateIcon>🤔</EmptyStateIcon>
           <EmptyStateText>{t('favorites.empty')}</EmptyStateText>
           <EmptyStateLink href="/anime">{t('home.go_to_catalog')}</EmptyStateLink>
@@ -169,13 +170,12 @@ function FavoritesPage() {
       ) : (
         <>
           <FilterContainer>
-            <FilterLabel theme={theme}>
+            <FilterLabel>
               <FaFilter />
               {t('favorites.filter_by_status')}:
             </FilterLabel>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === 'all'} 
               onClick={() => handleFilterChange('all')}
             >
@@ -183,7 +183,6 @@ function FavoritesPage() {
             </FilterButton>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === 'watching'} 
               color={getStatusColor('watching')}
               onClick={() => handleFilterChange('watching')}
@@ -193,7 +192,6 @@ function FavoritesPage() {
             </FilterButton>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === 'planned'} 
               color={getStatusColor('planned')}
               onClick={() => handleFilterChange('planned')}
@@ -203,7 +201,6 @@ function FavoritesPage() {
             </FilterButton>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === 'completed'} 
               color={getStatusColor('completed')}
               onClick={() => handleFilterChange('completed')}
@@ -213,7 +210,6 @@ function FavoritesPage() {
             </FilterButton>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === 'on_hold'} 
               color={getStatusColor('on_hold')}
               onClick={() => handleFilterChange('on_hold')}
@@ -223,7 +219,6 @@ function FavoritesPage() {
             </FilterButton>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === 'dropped'} 
               color={getStatusColor('dropped')}
               onClick={() => handleFilterChange('dropped')}
@@ -233,7 +228,6 @@ function FavoritesPage() {
             </FilterButton>
             
             <FilterButton 
-              theme={theme} 
               active={activeFilter === null} 
               onClick={() => handleFilterChange(null)}
             >
@@ -242,7 +236,7 @@ function FavoritesPage() {
           </FilterContainer>
           
           {filteredFavorites.length === 0 ? (
-            <EmptyState theme={theme}>
+            <EmptyState>
               <EmptyStateText>{t('favorites.empty')}</EmptyStateText>
             </EmptyState>
           ) : (

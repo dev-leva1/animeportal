@@ -12,9 +12,9 @@ const MenuContainer = styled.div`
   }
 `;
 
-const ProfileButton = styled(Link)<{ theme: string }>`
+const ProfileButton = styled(Link)`
   text-decoration: none;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   padding: 0.5rem;
   transition: color 0.3s ease;
@@ -27,10 +27,10 @@ const ProfileButton = styled(Link)<{ theme: string }>`
   }
 `;
 
-const LogoutButton = styled.button<{ theme: string }>`
+const LogoutButton = styled.button`
   background: none;
   border: none;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   padding: 0.5rem;
   cursor: pointer;
@@ -64,7 +64,6 @@ interface User {
 }
 
 interface UserMenuProps {
-  theme: string;
   isAuthenticated: boolean;
   user?: User | null;
   isAdmin?: boolean;
@@ -78,9 +77,7 @@ interface UserMenuProps {
   className?: string;
 }
 
-export const UserMenu: React.FC<UserMenuProps> = ({ 
-  theme, 
-  isAuthenticated, 
+export const UserMenu: React.FC<UserMenuProps> = ({ isAuthenticated, 
   isAdmin,
   onLogout, 
   labels,
@@ -91,16 +88,16 @@ export const UserMenu: React.FC<UserMenuProps> = ({
       {isAuthenticated ? (
         <>
           {isAdmin && (
-            <ProfileButton to="/admin" theme={theme}>
+            <ProfileButton to="/admin">
               <FaUserShield />
               {labels.admin}
             </ProfileButton>
           )}
-          <ProfileButton to="/profile" theme={theme}>
+          <ProfileButton to="/profile">
             <FaUser />
             {labels.profile}
           </ProfileButton>
-          <LogoutButton onClick={onLogout} theme={theme}>
+          <LogoutButton onClick={onLogout}>
             <FaSignOutAlt />
             {labels.logout}
           </LogoutButton>

@@ -13,14 +13,14 @@ const HistoryGrid = styled.div`
   }
 `;
 
-const HistoryItem = styled(Link)<{ theme: string }>`
+const HistoryItem = styled(Link)`
   text-decoration: none;
   color: inherit;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   
   &:hover {
     transform: translateY(-5px);
@@ -35,47 +35,47 @@ const HistoryImage = styled.div<{ imageUrl: string }>`
   background-color: #333;
 `;
 
-const HistoryInfo = styled.div<{ theme: string }>`
+const HistoryInfo = styled.div`
   padding: 0.75rem;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
 `;
 
-const HistoryTitle = styled.h3<{ theme: string }>`
+const HistoryTitle = styled.h3`
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
-const HistoryDate = styled.p<{ theme: string }>`
+const HistoryDate = styled.p`
   font-size: 0.75rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
-const EmptyState = styled.div<{ theme: string }>`
+const EmptyState = styled.div`
   text-align: center;
   padding: 2rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
-const SectionHeader = styled.div<{ theme: string }>`
+const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 `;
 
-const SectionTitle = styled.h2<{ theme: string }>`
+const SectionTitle = styled.h2`
   font-size: 1.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   display: flex;
   align-items: center;
   gap: 0.5rem;
 `;
 
-const ClearButton = styled.button<{ theme: string }>`
+const ClearButton = styled.button`
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   border: none;
@@ -94,7 +94,6 @@ const ClearButton = styled.button<{ theme: string }>`
 `;
 
 interface WatchHistoryProps {
-  theme: string;
   history: WatchHistoryType[];
   onClearHistory: () => void;
   formatDate: (dateString: string) => string;
@@ -106,9 +105,7 @@ interface WatchHistoryProps {
   className?: string;
 }
 
-export const WatchHistory: React.FC<WatchHistoryProps> = ({
-  theme,
-  history,
+export const WatchHistory: React.FC<WatchHistoryProps> = ({ history,
   onClearHistory,
   formatDate,
   labels,
@@ -116,13 +113,13 @@ export const WatchHistory: React.FC<WatchHistoryProps> = ({
 }) => {
   return (
     <div className={className}>
-      <SectionHeader theme={theme}>
-        <SectionTitle theme={theme}>
+      <SectionHeader>
+        <SectionTitle>
           <FaHistory />
           {labels.title}
         </SectionTitle>
         {history.length > 0 && (
-          <ClearButton onClick={onClearHistory} theme={theme}>
+          <ClearButton onClick={onClearHistory}>
             <FaTrash />
             {labels.clear}
           </ClearButton>
@@ -130,7 +127,7 @@ export const WatchHistory: React.FC<WatchHistoryProps> = ({
       </SectionHeader>
 
       {history.length === 0 ? (
-        <EmptyState theme={theme}>
+        <EmptyState>
           {labels.empty}
         </EmptyState>
       ) : (
@@ -139,12 +136,11 @@ export const WatchHistory: React.FC<WatchHistoryProps> = ({
             <HistoryItem 
               key={`${item.animeId}-${item.lastWatched}`}
               to={`/anime/${item.animeId}`}
-              theme={theme}
             >
               <HistoryImage imageUrl={item.image} />
-              <HistoryInfo theme={theme}>
-                <HistoryTitle theme={theme}>{item.title}</HistoryTitle>
-                <HistoryDate theme={theme}>
+              <HistoryInfo>
+                <HistoryTitle>{item.title}</HistoryTitle>
+                <HistoryDate>
                   {formatDate(item.lastWatched)}
                   {item.episodeNumber && ` • Эпизод ${item.episodeNumber}`}
                 </HistoryDate>

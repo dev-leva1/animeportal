@@ -9,12 +9,12 @@ const ProfileContainer = styled.div`
   gap: 2rem;
 `;
 
-const ProfileHeader = styled.div<{ theme: string }>`
+const ProfileHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#333' : '#eee'};
+  border-bottom: 1px solid ${props => props.theme.border.primary};
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -46,19 +46,19 @@ const ProfileInfo = styled.div`
   flex: 1;
 `;
 
-const Username = styled.h1<{ theme: string }>`
+const Username = styled.h1`
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
-const Email = styled.p<{ theme: string }>`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+const Email = styled.p`
+  color: ${props => props.theme.text.muted};
   margin-bottom: 1rem;
 `;
 
-const RegisteredDate = styled.p<{ theme: string }>`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+const RegisteredDate = styled.p`
+  color: ${props => props.theme.text.muted};
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -86,10 +86,10 @@ const Section = styled.section`
   margin-bottom: 2rem;
 `;
 
-const SectionTitle = styled.h2<{ theme: string }>`
+const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -105,8 +105,8 @@ const StatsGrid = styled.div`
   }
 `;
 
-const StatCard = styled.div<{ theme: string }>`
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+const StatCard = styled.div`
+  background-color: ${props => props.theme.background.primary};
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
@@ -120,9 +120,9 @@ const StatValue = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const StatLabel = styled.div<{ theme: string }>`
+const StatLabel = styled.div`
   font-size: 0.875rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const BioSection = styled.div`
@@ -130,7 +130,6 @@ const BioSection = styled.div`
 `;
 
 interface ProfileLayoutProps {
-  theme: string;
   user: User;
   isAdmin: boolean;
   formatDate: (dateString: string) => string;
@@ -154,9 +153,7 @@ interface ProfileLayoutProps {
   className?: string;
 }
 
-export const ProfileLayout: React.FC<ProfileLayoutProps> = ({
-  theme,
-  user,
+export const ProfileLayout: React.FC<ProfileLayoutProps> = ({ user,
   isAdmin,
   formatDate,
   labels,
@@ -170,7 +167,7 @@ export const ProfileLayout: React.FC<ProfileLayoutProps> = ({
   return (
     <ProfileContainer className={className}>
       <Section>
-        <SectionTitle theme={theme}>
+        <SectionTitle>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <FaChartBar style={{ marginRight: '0.5rem' }} />
             {labels.stats}
@@ -178,34 +175,34 @@ export const ProfileLayout: React.FC<ProfileLayoutProps> = ({
         </SectionTitle>
         
         <StatsGrid>
-          <StatCard theme={theme}>
+          <StatCard>
             <StatValue>{user.stats?.watchedAnime || 0}</StatValue>
-            <StatLabel theme={theme}>{labels.watchedAnime}</StatLabel>
+            <StatLabel>{labels.watchedAnime}</StatLabel>
           </StatCard>
           
-          <StatCard theme={theme}>
+          <StatCard>
             <StatValue>{user.stats?.readManga || 0}</StatValue>
-            <StatLabel theme={theme}>{labels.readManga}</StatLabel>
+            <StatLabel>{labels.readManga}</StatLabel>
           </StatCard>
           
-          <StatCard theme={theme}>
+          <StatCard>
             <StatValue>{user.stats?.ratings || 0}</StatValue>
-            <StatLabel theme={theme}>{labels.ratings}</StatLabel>
+            <StatLabel>{labels.ratings}</StatLabel>
           </StatCard>
           
-          <StatCard theme={theme}>
+          <StatCard>
             <StatValue>{user.stats?.favoriteAnime || 0}</StatValue>
-            <StatLabel theme={theme}>{labels.favoriteAnime}</StatLabel>
+            <StatLabel>{labels.favoriteAnime}</StatLabel>
           </StatCard>
           
-          <StatCard theme={theme}>
+          <StatCard>
             <StatValue>{user.stats?.favoriteManga || 0}</StatValue>
-            <StatLabel theme={theme}>{labels.favoriteManga}</StatLabel>
+            <StatLabel>{labels.favoriteManga}</StatLabel>
           </StatCard>
         </StatsGrid>
       </Section>
       
-      <ProfileHeader theme={theme}>
+      <ProfileHeader>
         <Avatar>
           {user.avatar ? (
             <img src={user.avatar} alt={user.username} />
@@ -215,9 +212,9 @@ export const ProfileLayout: React.FC<ProfileLayoutProps> = ({
         </Avatar>
         
         <ProfileInfo>
-          <Username theme={theme}>{user.username}</Username>
-          <Email theme={theme}>{user.email}</Email>
-          <RegisteredDate theme={theme}>
+          <Username>{user.username}</Username>
+          <Email>{user.email}</Email>
+          <RegisteredDate>
             <FaCalendarAlt />
             {labels.registeredDate}: {formatDate(user.createdAt)}
           </RegisteredDate>
@@ -235,7 +232,7 @@ export const ProfileLayout: React.FC<ProfileLayoutProps> = ({
       </ProfileHeader>
       
       <Section>
-        <SectionTitle theme={theme}>
+        <SectionTitle>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <FaUser style={{ marginRight: '0.5rem' }} />
             {labels.bio}

@@ -14,11 +14,11 @@ import Navigation from '../molecules/Navigation';
 import UserMenu from '../molecules/UserMenu';
 import MobileMenu from '../molecules/MobileMenu';
 
-const HeaderContainer = styled.header<{ theme: string }>`
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+const HeaderContainer = styled.header`
+  background-color: ${props => props.theme.background.primary};
+  color: ${props => props.theme.text.primary};
   padding: 1rem 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: ${props => props.theme.shadow.sm};
 `;
 
 const NavContainer = styled.div`
@@ -40,7 +40,7 @@ const DesktopControls = styled.div`
 `;
 
 export const Header: React.FC = memo(() => {
-  const { theme, toggleTheme, language, toggleLanguage, t } = useApp();
+  const { toggleTheme, language, toggleLanguage, t } = useApp();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -99,29 +99,25 @@ export const Header: React.FC = memo(() => {
   }), [userMenuLabels, t]);
 
   return (
-    <HeaderContainer theme={theme}>
+    <HeaderContainer>
       <NavContainer>
         <Logo text={t('site.name')} />
         
-        <MenuToggle 
-          theme={theme}
+        <MenuToggle
           isOpen={isMobileMenuOpen}
           onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         />
         
-        <Navigation 
-          theme={theme}
+        <Navigation
           items={navigationItems}
         />
         
-        <SearchBox 
-          theme={theme}
+        <SearchBox
           placeholder={t('search.placeholder')}
         />
         
         <DesktopControls>
-          <UserMenu 
-            theme={theme}
+          <UserMenu
             isAuthenticated={isAuthenticated}
             user={user}
             isAdmin={isAdmin}
@@ -129,20 +125,17 @@ export const Header: React.FC = memo(() => {
             labels={userMenuLabels}
           />
           
-          <LanguageToggle 
-            theme={theme}
+          <LanguageToggle
             language={language}
             onToggle={toggleLanguage}
           />
           
-          <ThemeToggle 
-            theme={theme}
+          <ThemeToggle
             onToggle={toggleTheme}
           />
         </DesktopControls>
         
-        <MobileMenu 
-          theme={theme}
+        <MobileMenu
           language={language}
           isOpen={isMobileMenuOpen}
           isAuthenticated={isAuthenticated}

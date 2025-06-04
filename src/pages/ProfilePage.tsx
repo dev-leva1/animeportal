@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { PasswordChangeData, WatchHistory as WatchHistoryType } from '../types/user';
 import { ProfileLayout, ProfileForm, WatchHistory, FavoritesList } from '../components';
+import { useTheme } from '../hooks/useTheme';
 
 // Заглушки для данных - в реальном приложении эти данные будут загружаться из API
 const sampleWatchHistory: WatchHistoryType[] = [
@@ -41,7 +42,8 @@ const sampleFavorites = [
 ];
 
 function ProfilePage() {
-  const { theme, t } = useApp();
+  const theme = useTheme();
+  const { t } = useApp();
   const { user, updateUser, changePassword } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -144,9 +146,9 @@ function ProfilePage() {
           minHeight: '100px',
           padding: '0.75rem',
           borderRadius: '4px',
-          border: `1px solid ${theme === 'dark' ? '#444' : '#ddd'}`,
-          backgroundColor: theme === 'dark' ? '#333' : '#f5f5f5',
-          color: theme === 'dark' ? '#fff' : '#333',
+          border: `1px solid ${theme.mode === 'dark' ? '#444' : '#ddd'}`,
+          backgroundColor: theme.mode === 'dark' ? '#333' : '#f5f5f5',
+          color: theme.mode === 'dark' ? '#fff' : '#333',
           resize: 'vertical',
           fontFamily: 'inherit'
         }}
@@ -174,9 +176,9 @@ function ProfilePage() {
           style={{
             padding: '0.75rem 1rem',
             borderRadius: '4px',
-            border: `1px solid ${theme === 'dark' ? '#444' : '#ddd'}`,
+            border: `1px solid ${theme.mode === 'dark' ? '#444' : '#ddd'}`,
             backgroundColor: 'transparent',
-            color: theme === 'dark' ? '#ffffff' : '#121212',
+            color: theme.mode === 'dark' ? '#ffffff' : '#121212',
             fontWeight: '500',
             cursor: 'pointer'
           }}
@@ -188,7 +190,7 @@ function ProfilePage() {
   ) : (
     <div>
       <p style={{ 
-        color: theme === 'dark' ? '#ffffff' : '#121212',
+        color: theme.mode === 'dark' ? '#ffffff' : '#121212',
         lineHeight: '1.6',
         marginBottom: '1rem'
       }}>
@@ -213,14 +215,12 @@ function ProfilePage() {
 
   return (
     <ProfileLayout
-      theme={theme}
       user={user}
       isAdmin={isAdmin}
       formatDate={formatDate}
       labels={labels}
       profileFormSlot={
         <ProfileForm
-          theme={theme}
           user={user}
           isEditing={isEditing}
           isChangingPassword={isChangingPassword}
@@ -235,14 +235,12 @@ function ProfilePage() {
       bioFormSlot={bioFormSlot}
       favoritesSlot={
         <FavoritesList
-          theme={theme}
           favorites={sampleFavorites}
           labels={favoritesLabels}
         />
       }
       watchHistorySlot={
         <WatchHistory
-          theme={theme}
           history={watchHistory}
           onClearHistory={clearWatchHistory}
           formatDate={formatDate}

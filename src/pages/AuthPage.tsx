@@ -11,14 +11,14 @@ const AuthContainer = styled.div`
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
 `;
 
 const Title = styled.h1`
   font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const Form = styled.form`
@@ -35,15 +35,15 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const Input = styled.input`
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   
   &:focus {
     outline: none;
@@ -93,7 +93,7 @@ const ErrorMessage = styled.div`
 `;
 
 function AuthPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const { login, register, isLoading } = useAuth();
   const navigate = useNavigate();
   
@@ -152,34 +152,32 @@ function AuthPage() {
   };
   
   return (
-    <AuthContainer theme={theme}>
-      <Title theme={theme}>
+    <AuthContainer>
+      <Title>
         {isLoginMode ? t('auth.login') : t('auth.register')}
       </Title>
       
       {isLoginMode ? (
         <Form onSubmit={handleLoginSubmit}>
           <FormGroup>
-            <Label theme={theme}>{t('auth.email')}</Label>
+            <Label>{t('auth.email')}</Label>
             <Input
               type="email"
               name="email"
               value={loginData.email}
               onChange={handleLoginChange}
               required
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{t('auth.password')}</Label>
+            <Label>{t('auth.password')}</Label>
             <Input
               type="password"
               name="password"
               value={loginData.password}
               onChange={handleLoginChange}
               required
-              theme={theme}
             />
           </FormGroup>
           
@@ -190,50 +188,46 @@ function AuthPage() {
       ) : (
         <Form onSubmit={handleRegisterSubmit}>
           <FormGroup>
-            <Label theme={theme}>{t('auth.username')}</Label>
+            <Label>{t('auth.username')}</Label>
             <Input
               type="text"
               name="username"
               value={registerData.username}
               onChange={handleRegisterChange}
               required
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{t('auth.email')}</Label>
+            <Label>{t('auth.email')}</Label>
             <Input
               type="email"
               name="email"
               value={registerData.email}
               onChange={handleRegisterChange}
               required
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{t('auth.password')}</Label>
+            <Label>{t('auth.password')}</Label>
             <Input
               type="password"
               name="password"
               value={registerData.password}
               onChange={handleRegisterChange}
               required
-              theme={theme}
             />
           </FormGroup>
           
           <FormGroup>
-            <Label theme={theme}>{t('auth.confirm_password')}</Label>
+            <Label>{t('auth.confirm_password')}</Label>
             <Input
               type="password"
               name="confirmPassword"
               value={registerData.confirmPassword}
               onChange={handleRegisterChange}
               required
-              theme={theme}
             />
           </FormGroup>
           

@@ -3,6 +3,7 @@ import { useApp } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 import { Card, Typography } from '../atoms';
+import { useTheme } from '../../hooks/useTheme';
 
 interface AnimePlayerProps {
   animeId: number;
@@ -11,7 +12,8 @@ interface AnimePlayerProps {
 }
 
 const AnimePlayer = memo(function AnimePlayer({ animeId, title, image }: AnimePlayerProps) {
-  const { theme, t } = useApp();
+  const theme = useTheme();
+  const { t } = useApp();
   const { isAuthenticated } = useAuth();
   const [currentEpisode, setCurrentEpisode] = useState(1);
   const [quality, setQuality] = useState('720p');
@@ -137,9 +139,9 @@ const AnimePlayer = memo(function AnimePlayer({ animeId, title, image }: AnimePl
               style={{
                 padding: '0.5rem',
                 borderRadius: '4px',
-                border: `1px solid ${theme === 'dark' ? '#444' : '#ddd'}`,
-                backgroundColor: theme === 'dark' ? '#333' : '#f5f5f5',
-                color: theme === 'dark' ? '#fff' : '#333'
+                border: `1px solid ${theme.mode === 'dark' ? '#444' : '#ddd'}`,
+                backgroundColor: theme.mode === 'dark' ? '#333' : '#f5f5f5',
+                color: theme.mode === 'dark' ? '#fff' : '#333'
               }}
             >
               {Array.from({ length: totalEpisodes }, (_, i) => i + 1).map(ep => (
@@ -160,9 +162,9 @@ const AnimePlayer = memo(function AnimePlayer({ animeId, title, image }: AnimePl
               style={{
                 padding: '0.5rem',
                 borderRadius: '4px',
-                border: `1px solid ${theme === 'dark' ? '#444' : '#ddd'}`,
-                backgroundColor: theme === 'dark' ? '#333' : '#f5f5f5',
-                color: theme === 'dark' ? '#fff' : '#333'
+                border: `1px solid ${theme.mode === 'dark' ? '#444' : '#ddd'}`,
+                backgroundColor: theme.mode === 'dark' ? '#333' : '#f5f5f5',
+                color: theme.mode === 'dark' ? '#fff' : '#333'
               }}
             >
               {qualities.map(q => (
