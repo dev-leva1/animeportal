@@ -5,7 +5,7 @@ export const useThrottle = <T extends (...args: any[]) => any>(
   delay: number
 ): T => {
   const lastRun = useRef<number>(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   return useCallback(
     ((...args: Parameters<T>) => {

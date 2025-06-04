@@ -7,7 +7,7 @@ import React, {
   useRef,
   useEffect
 } from 'react';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 
 interface AccordionContextValue {
   openItems: Set<string>;

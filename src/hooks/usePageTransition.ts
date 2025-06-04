@@ -74,7 +74,7 @@ export const usePageTransition = (
     ...initialConfig
   });
   
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAnimating = state === 'entering' || state === 'exiting';
 
   const reset = useCallback(() => {

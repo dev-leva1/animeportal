@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 
 interface TabsContextValue {
   activeTab: string;
