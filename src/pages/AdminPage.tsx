@@ -26,6 +26,7 @@ import UsersManagement from '../components/admin/UsersManagement';
 import AnimeManagement from '../components/admin/AnimeManagement';
 import SystemSettings from '../components/admin/SystemSettings';
 
+
 const AdminContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,7 +43,7 @@ const AdminHeader = styled.div`
 const AdminTitle = styled.h1`
   font-size: 2rem;
   font-weight: 700;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const AdminNavigation = styled.div`
@@ -52,7 +53,7 @@ const AdminNavigation = styled.div`
   margin-bottom: 1rem;
 `;
 
-const NavButton = styled.button<{active?: boolean, theme: string}>`
+const NavButton = styled.button<{ active: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -62,17 +63,17 @@ const NavButton = styled.button<{active?: boolean, theme: string}>`
   font-weight: 500;
   transition: all 0.3s ease;
   background-color: ${props => props.active 
-    ? (props.theme === 'dark' ? '#ff5f5f' : '#ff5f5f') 
-    : (props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0')};
+    ? (props.theme.mode === 'dark' ? '#ff5f5f' : '#ff5f5f') 
+    : (props.theme.mode === 'dark' ? '#2a2a2a' : '#f0f0f0')};
   color: ${props => props.active 
     ? '#ffffff' 
-    : (props.theme === 'dark' ? '#ffffff' : '#333333')};
+    : (props.theme.mode === 'dark' ? '#ffffff' : '#333333')};
   border: none;
 
   &:hover {
     background-color: ${props => props.active 
       ? '#ff5f5f' 
-      : (props.theme === 'dark' ? '#383838' : '#e0e0e0')};
+      : (props.theme.mode === 'dark' ? '#383838' : '#e0e0e0')};
   }
 `;
 
@@ -84,7 +85,7 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f8f8f8'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
   padding: 1.5rem;
   display: flex;
@@ -94,7 +95,7 @@ const StatCard = styled.div`
 
 const StatTitle = styled.div`
   font-size: 0.875rem;
-  color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+  color: ${props => props.theme.text.muted};
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -104,11 +105,11 @@ const StatTitle = styled.div`
 const StatValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const TabContent = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f8f8f8'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -121,7 +122,7 @@ const NotificationsList = styled.div`
 `;
 
 const NotificationItem = styled.div<{read: boolean, type: string}>`
-  background-color: ${props => props.theme === 'dark' 
+  background-color: ${props => props.theme.mode === 'dark' 
     ? (props.read ? '#2a2a2a' : '#383838') 
     : (props.read ? '#f8f8f8' : '#ffffff')};
   border-left: 4px solid ${props => {
@@ -141,12 +142,12 @@ const NotificationItem = styled.div<{read: boolean, type: string}>`
 `;
 
 const NotificationMessage = styled.div`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const NotificationDate = styled.div`
   font-size: 0.75rem;
-  color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const TabHeader = styled.div`
@@ -159,7 +160,7 @@ const TabHeader = styled.div`
 const TabTitle = styled.h2`
   font-size: 1.5rem;
   font-weight: 600;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -178,7 +179,7 @@ const AccessDenied = styled.div`
   justify-content: center;
   height: 300px;
   gap: 1rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   svg {
     font-size: 3rem;
@@ -192,60 +193,60 @@ const AccessDeniedMessage = styled.h2`
 `;
 
 // Реализация отдельных компонентов для Dashboard
-const Dashboard = ({ stats, theme, t }: { stats: AdminStats, theme: string, t: (key: string) => string }) => (
-  <TabContent theme={theme}>
+const Dashboard = ({ stats, t }: { stats: AdminStats, t: (key: string) => string }) => (
+  <TabContent>
     <TabHeader>
-      <TabTitle theme={theme}>
+      <TabTitle>
         <FaTachometerAlt /> {t('admin.dashboard')}
       </TabTitle>
     </TabHeader>
     
     <StatsGrid>
-      <StatCard theme={theme}>
-        <StatTitle theme={theme}>
+      <StatCard>
+        <StatTitle>
           <FaUsers /> {t('admin.stats.total_users')}
         </StatTitle>
-        <StatValue theme={theme}>{stats.totalUsers}</StatValue>
+        <StatValue>{stats.totalUsers}</StatValue>
       </StatCard>
-      <StatCard theme={theme}>
-        <StatTitle theme={theme}>
+      <StatCard>
+        <StatTitle>
           <FaUsers /> {t('admin.stats.active_users')}
         </StatTitle>
-        <StatValue theme={theme}>{stats.activeUsers}</StatValue>
+        <StatValue>{stats.activeUsers}</StatValue>
       </StatCard>
-      <StatCard theme={theme}>
-        <StatTitle theme={theme}>
+      <StatCard>
+        <StatTitle>
           <FaUsers /> {t('admin.stats.new_users_today')}
         </StatTitle>
-        <StatValue theme={theme}>{stats.newUsersToday}</StatValue>
+        <StatValue>{stats.newUsersToday}</StatValue>
       </StatCard>
-      <StatCard theme={theme}>
-        <StatTitle theme={theme}>
+      <StatCard>
+        <StatTitle>
           <FaFilm /> {t('admin.stats.total_anime')}
         </StatTitle>
-        <StatValue theme={theme}>{stats.totalAnime}</StatValue>
+        <StatValue>{stats.totalAnime}</StatValue>
       </StatCard>
-      <StatCard theme={theme}>
-        <StatTitle theme={theme}>
+      <StatCard>
+        <StatTitle>
           <FaBook /> {t('admin.stats.total_manga')}
         </StatTitle>
-        <StatValue theme={theme}>{stats.totalManga}</StatValue>
+        <StatValue>{stats.totalManga}</StatValue>
       </StatCard>
-      <StatCard theme={theme}>
-        <StatTitle theme={theme}>
+      <StatCard>
+        <StatTitle>
           <FaComments /> {t('admin.stats.total_comments')}
         </StatTitle>
-        <StatValue theme={theme}>{stats.totalComments}</StatValue>
+        <StatValue>{stats.totalComments}</StatValue>
       </StatCard>
     </StatsGrid>
   </TabContent>
 );
 
 // Компонент для отображения уведомлений
-const Notifications = ({ notifications, theme, t }: { notifications: AdminNotification[], theme: string, t: (key: string) => string }) => (
-  <TabContent theme={theme}>
+const Notifications = ({ notifications, t }: { notifications: AdminNotification[], t: (key: string) => string }) => (
+  <TabContent>
     <TabHeader>
-      <TabTitle theme={theme}>
+      <TabTitle>
         <FaBell /> {t('admin.notifications')}
       </TabTitle>
     </TabHeader>
@@ -256,10 +257,9 @@ const Notifications = ({ notifications, theme, t }: { notifications: AdminNotifi
           key={notification.id} 
           read={notification.read} 
           type={notification.type}
-          theme={theme}
         >
-          <NotificationMessage theme={theme}>{notification.message}</NotificationMessage>
-          <NotificationDate theme={theme}>
+          <NotificationMessage>{notification.message}</NotificationMessage>
+          <NotificationDate>
             {new Date(notification.date).toLocaleDateString()}
           </NotificationDate>
         </NotificationItem>
@@ -268,10 +268,10 @@ const Notifications = ({ notifications, theme, t }: { notifications: AdminNotifi
   </TabContent>
 );
 
-const PlaceholderTab = ({ title, icon, theme, t }: { title: string, icon: React.ReactNode, theme: string, t: (key: string) => string }) => (
-  <TabContent theme={theme}>
+const PlaceholderTab = ({ title, icon, t }: { title: string, icon: React.ReactNode, t: (key: string) => string }) => (
+  <TabContent>
     <TabHeader>
-      <TabTitle theme={theme}>
+      <TabTitle>
         {icon} {title}
       </TabTitle>
     </TabHeader>
@@ -280,7 +280,8 @@ const PlaceholderTab = ({ title, icon, theme, t }: { title: string, icon: React.
 );
 
 function AdminPage() {
-  const { theme, t } = useApp();
+
+  const { t } = useApp();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   
@@ -326,7 +327,7 @@ function AdminPage() {
 
   if (!isAdmin) {
     return (
-      <AccessDenied theme={theme}>
+      <AccessDenied>
         <FaExclamationTriangle />
         <AccessDeniedMessage>{t('admin.common.error')}</AccessDeniedMessage>
         <p>{t('admin.feature_in_development')}</p>
@@ -337,91 +338,79 @@ function AdminPage() {
   return (
     <AdminContainer>
       <AdminHeader>
-        <AdminTitle theme={theme}>{t('nav.admin')}</AdminTitle>
+        <AdminTitle>{t('nav.admin')}</AdminTitle>
       </AdminHeader>
 
       <AdminNavigation>
         <NavButton 
           active={activeTab === 'dashboard'} 
           onClick={() => setActiveTab('dashboard')}
-          theme={theme}
         >
           <FaTachometerAlt /> {t('admin.dashboard')}
         </NavButton>
         <NavButton 
           active={activeTab === 'users'} 
           onClick={() => setActiveTab('users')}
-          theme={theme}
         >
           <FaUsers /> {t('admin.users')}
         </NavButton>
         <NavButton 
           active={activeTab === 'anime'} 
           onClick={() => setActiveTab('anime')}
-          theme={theme}
         >
           <FaFilm /> {t('admin.anime')}
         </NavButton>
         <NavButton 
           active={activeTab === 'manga'} 
           onClick={() => setActiveTab('manga')}
-          theme={theme}
         >
           <FaBook /> {t('admin.manga')}
         </NavButton>
         <NavButton 
           active={activeTab === 'reports'} 
           onClick={() => setActiveTab('reports')}
-          theme={theme}
         >
           <FaExclamationTriangle /> {t('admin.reports')}
         </NavButton>
         <NavButton 
           active={activeTab === 'moderation'} 
           onClick={() => setActiveTab('moderation')}
-          theme={theme}
         >
           <FaUserShield /> {t('admin.moderation')}
         </NavButton>
         <NavButton 
           active={activeTab === 'stats'} 
           onClick={() => setActiveTab('stats')}
-          theme={theme}
         >
           <FaChartLine /> {t('admin.statistics')}
         </NavButton>
         <NavButton 
           active={activeTab === 'taxonomy'} 
           onClick={() => setActiveTab('taxonomy')}
-          theme={theme}
         >
           <FaTags /> {t('admin.taxonomy')}
         </NavButton>
         <NavButton 
           active={activeTab === 'settings'} 
           onClick={() => setActiveTab('settings')}
-          theme={theme}
         >
           <FaCog /> {t('admin.settings')}
         </NavButton>
         <NavButton 
           active={activeTab === 'backup'} 
           onClick={() => setActiveTab('backup')}
-          theme={theme}
         >
           <FaDatabase /> {t('admin.backup')}
         </NavButton>
         <NavButton 
           active={activeTab === 'activity'} 
           onClick={() => setActiveTab('activity')}
-          theme={theme}
         >
           <FaHistory /> {t('admin.activity')}
         </NavButton>
         <NavButton 
           active={activeTab === 'notifications'} 
           onClick={() => setActiveTab('notifications')}
-          theme={theme}
         >
           <FaBell /> {t('admin.notifications')}
           {notifications.filter(n => !n.read).length > 0 && (
@@ -443,18 +432,18 @@ function AdminPage() {
       </AdminNavigation>
 
       <AdminPanel>
-        {activeTab === 'dashboard' && <Dashboard stats={stats} theme={theme} t={t} />}
-        {activeTab === 'notifications' && <Notifications notifications={notifications} theme={theme} t={t} />}
-        {activeTab === 'users' && <UsersManagement theme={theme} />}
-        {activeTab === 'anime' && <AnimeManagement theme={theme} t={t} />}
-        {activeTab === 'manga' && <PlaceholderTab title={t('admin.manga')} icon={<FaBook />} theme={theme} t={t} />}
-        {activeTab === 'reports' && <PlaceholderTab title={t('admin.reports')} icon={<FaExclamationTriangle />} theme={theme} t={t} />}
-        {activeTab === 'moderation' && <PlaceholderTab title={t('admin.moderation')} icon={<FaUserShield />} theme={theme} t={t} />}
-        {activeTab === 'stats' && <PlaceholderTab title={t('admin.statistics')} icon={<FaChartLine />} theme={theme} t={t} />}
-        {activeTab === 'taxonomy' && <PlaceholderTab title={t('admin.taxonomy')} icon={<FaTags />} theme={theme} t={t} />}
-        {activeTab === 'settings' && <SystemSettings theme={theme} t={t} />}
-        {activeTab === 'backup' && <PlaceholderTab title={t('admin.backup')} icon={<FaDatabase />} theme={theme} t={t} />}
-        {activeTab === 'activity' && <PlaceholderTab title={t('admin.activity')} icon={<FaHistory />} theme={theme} t={t} />}
+        {activeTab === 'dashboard' && <Dashboard stats={stats} t={t} />}
+        {activeTab === 'notifications' && <Notifications notifications={notifications} t={t} />}
+        {activeTab === 'users' && <UsersManagement />}
+        {activeTab === 'anime' && <AnimeManagement t={t} />}
+        {activeTab === 'manga' && <PlaceholderTab title={t('admin.manga')} icon={<FaBook />} t={t} />}
+        {activeTab === 'reports' && <PlaceholderTab title={t('admin.reports')} icon={<FaExclamationTriangle />} t={t} />}
+        {activeTab === 'moderation' && <PlaceholderTab title={t('admin.moderation')} icon={<FaUserShield />} t={t} />}
+        {activeTab === 'stats' && <PlaceholderTab title={t('admin.statistics')} icon={<FaChartLine />} t={t} />}
+        {activeTab === 'taxonomy' && <PlaceholderTab title={t('admin.taxonomy')} icon={<FaTags />} t={t} />}
+        {activeTab === 'settings' && <SystemSettings t={t} />}
+        {activeTab === 'backup' && <PlaceholderTab title={t('admin.backup')} icon={<FaDatabase />} t={t} />}
+        {activeTab === 'activity' && <PlaceholderTab title={t('admin.activity')} icon={<FaHistory />} t={t} />}
       </AdminPanel>
     </AdminContainer>
   );

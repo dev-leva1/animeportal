@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 2rem;
   font-size: 2rem;
 `;
@@ -20,13 +20,13 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 1rem;
   font-size: 1.5rem;
 `;
 
 const Paragraph = styled.p`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
 `;
@@ -45,16 +45,16 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   font-weight: 500;
 `;
 
 const Input = styled.input`
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   
   &:focus {
     outline: none;
@@ -65,9 +65,9 @@ const Input = styled.input`
 const TextArea = styled.textarea`
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f5f5f5'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   min-height: 150px;
   resize: vertical;
   
@@ -116,11 +116,11 @@ const ContactItem = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
 `;
 
 function ContactsPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -150,59 +150,55 @@ function ContactsPage() {
   
   return (
     <Container>
-      <Title theme={theme}>{t('footer.contacts')}</Title>
+      <Title>{t('footer.contacts')}</Title>
       
       <Section>
-        <SectionTitle theme={theme}>{t('contacts.get_in_touch')}</SectionTitle>
-        <Paragraph theme={theme}>{t('contacts.get_in_touch_text')}</Paragraph>
+        <SectionTitle>{t('contacts.get_in_touch')}</SectionTitle>
+        <Paragraph>{t('contacts.get_in_touch_text')}</Paragraph>
         
         <FormContainer>
           <ContactForm onSubmit={handleSubmit}>
             <FormGroup>
-              <Label theme={theme}>{t('contacts.name')}</Label>
+              <Label>{t('contacts.name')}</Label>
               <Input 
                 type="text" 
                 name="name" 
                 value={formData.name}
                 onChange={handleChange}
                 required 
-                theme={theme} 
               />
             </FormGroup>
             
             <FormGroup>
-              <Label theme={theme}>{t('contacts.email')}</Label>
+              <Label>{t('contacts.email')}</Label>
               <Input 
                 type="email" 
                 name="email" 
                 value={formData.email}
                 onChange={handleChange}
                 required 
-                theme={theme} 
               />
             </FormGroup>
             
             <FormGroup>
-              <Label theme={theme}>{t('contacts.subject')}</Label>
+              <Label>{t('contacts.subject')}</Label>
               <Input 
                 type="text" 
                 name="subject" 
                 value={formData.subject}
                 onChange={handleChange}
                 required 
-                theme={theme} 
               />
             </FormGroup>
             
             <FormGroup>
-              <Label theme={theme}>{t('contacts.message')}</Label>
+              <Label>{t('contacts.message')}</Label>
               <TextArea 
                 name="message" 
                 rows={5} 
                 value={formData.message}
                 onChange={handleChange}
                 required 
-                theme={theme} 
               />
             </FormGroup>
             
@@ -213,19 +209,19 @@ function ContactsPage() {
           </ContactForm>
           
           <ContactInfo>
-            <SectionTitle theme={theme}>{t('contacts.contact_info')}</SectionTitle>
+            <SectionTitle>{t('contacts.contact_info')}</SectionTitle>
             
-            <ContactItem theme={theme}>
+            <ContactItem>
               <FaEnvelope />
               <span>info@animeportal.com</span>
             </ContactItem>
             
-            <ContactItem theme={theme}>
+            <ContactItem>
               <FaPhone />
               <span>+7 (123) 456-7890</span>
             </ContactItem>
             
-            <ContactItem theme={theme}>
+            <ContactItem>
               <FaMapMarkerAlt />
               <span>Москва, Россия</span>
             </ContactItem>

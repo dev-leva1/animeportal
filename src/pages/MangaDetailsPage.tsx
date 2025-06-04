@@ -5,9 +5,9 @@ import { useApp } from '../context/ThemeContext';
 import { mangaService } from '../services/mangaService';
 import { favoritesService } from '../services/favoritesService';
 import { Manga } from '../types/anime';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import { LoadingFallback, ErrorMessage } from '../components';
 import { FaArrowLeft, FaHeart, FaRegHeart, FaBook, FaBookOpen, FaChartLine, FaCalendarAlt, FaLayerGroup, FaUser } from 'react-icons/fa';
+
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ const Container = styled.div`
 const BackLink = styled(Link)`
   display: inline-flex;
   align-items: center;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   text-decoration: none;
   margin-bottom: 1rem;
   font-weight: 500;
@@ -59,13 +59,13 @@ const MangaInfo = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin: 0 0 0.5rem;
   font-size: 2rem;
 `;
 
 const JapaneseTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
   margin: 0 0 1.5rem;
   font-size: 1.2rem;
   font-weight: normal;
@@ -76,19 +76,19 @@ const InfoItem = styled.div`
 `;
 
 const InfoLabel = styled.span`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
   margin-right: 0.5rem;
 `;
 
 const InfoValue = styled.span`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
 `;
 
 const Score = styled.div`
   display: inline-flex;
   align-items: center;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
+  background-color: ${props => props.theme.background.secondary};
   padding: 0.5rem 1rem;
   border-radius: 20px;
   margin: 1rem 0;
@@ -108,19 +108,19 @@ const GenresList = styled.div`
 `;
 
 const GenreTag = styled.span`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.9rem;
 `;
 
-const FavoriteButton = styled.button<{ isFavorite: boolean; theme: string }>`
+const FavoriteButton = styled.button<{ isFavorite: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.isFavorite ? '#ff5f5f' : props.theme === 'dark' ? '#2a2a2a' : '#f0f0f0'};
-  color: ${props => props.isFavorite ? 'white' : props.theme === 'dark' ? '#ffffff' : '#121212'};
+  background-color: ${props => props.isFavorite ? '#ff5f5f' : props.theme.mode === 'dark' ? '#2a2a2a' : '#f0f0f0'};
+  color: ${props => props.isFavorite ? 'white' : props.theme.mode === 'dark' ? '#ffffff' : '#121212'};
   border: none;
   border-radius: 4px;
   padding: 0.75rem 1.5rem;
@@ -131,7 +131,7 @@ const FavoriteButton = styled.button<{ isFavorite: boolean; theme: string }>`
   gap: 0.5rem;
   
   &:hover {
-    background-color: ${props => props.isFavorite ? '#ff4545' : props.theme === 'dark' ? '#333' : '#e0e0e0'};
+    background-color: ${props => props.isFavorite ? '#ff4545' : props.theme.mode === 'dark' ? '#333' : '#e0e0e0'};
   }
 `;
 
@@ -140,22 +140,22 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin: 0 0 1rem;
   font-size: 1.5rem;
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#333' : '#eee'};
+  border-bottom: 1px solid ${props => props.theme.border.primary};
   padding-bottom: 0.5rem;
 `;
 
 const Synopsis = styled.div`
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   white-space: pre-line;
 `;
 
 function MangaDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const [manga, setManga] = useState<Manga | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -264,13 +264,13 @@ function MangaDetailsPage() {
   
   return (
     <Container>
-      <BackLink to="/manga" theme={theme}>
+      <BackLink to="/manga">
         <FaArrowLeft style={{ marginRight: '0.5rem' }} />
         {t('manga.back_to_catalog')}
       </BackLink>
       
-      {loading ? (
-        <Loading />
+          {loading ? (
+      <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error.message} onRetry={handleRetry} />
       ) : manga ? (
@@ -281,49 +281,49 @@ function MangaDetailsPage() {
             </ImageContainer>
             
             <MangaInfo>
-              <Title theme={theme}>{manga.title}</Title>
+              <Title>{manga.title}</Title>
               {manga.title_japanese && (
-                <JapaneseTitle theme={theme}>{manga.title_japanese}</JapaneseTitle>
+                <JapaneseTitle>{manga.title_japanese}</JapaneseTitle>
               )}
               
               {manga.score && (
-                <Score theme={theme}>{manga.score.toFixed(1)}</Score>
+                <Score>{manga.score.toFixed(1)}</Score>
               )}
               
               <InfoItem>
-                <InfoLabel theme={theme}>
+                <InfoLabel>
                   <FaBook style={{ marginRight: '0.5rem' }} />
                   {t('manga.chapters')}:
                 </InfoLabel>
-                <InfoValue theme={theme}>
+                <InfoValue>
                   {manga.chapters > 0 ? manga.chapters : t('manga.unknown')}
                 </InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>
+                <InfoLabel>
                   <FaBookOpen style={{ marginRight: '0.5rem' }} />
                   {t('manga.volumes')}:
                 </InfoLabel>
-                <InfoValue theme={theme}>
+                <InfoValue>
                   {manga.volumes > 0 ? manga.volumes : t('manga.unknown')}
                 </InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>
+                <InfoLabel>
                   <FaChartLine style={{ marginRight: '0.5rem' }} />
                   {t('manga.status')}:
                 </InfoLabel>
-                <InfoValue theme={theme}>{manga.status}</InfoValue>
+                <InfoValue>{manga.status}</InfoValue>
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>
+                <InfoLabel>
                   <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
                   {t('manga.published')}:
                 </InfoLabel>
-                <InfoValue theme={theme}>
+                <InfoValue>
                   {manga.published?.from ? new Date(manga.published.from).toLocaleDateString() : '?'} 
                   {' - '} 
                   {manga.published?.to ? new Date(manga.published.to).toLocaleDateString() : t('manga.ongoing')}
@@ -331,20 +331,20 @@ function MangaDetailsPage() {
               </InfoItem>
               
               <InfoItem>
-                <InfoLabel theme={theme}>
+                <InfoLabel>
                   <FaLayerGroup style={{ marginRight: '0.5rem' }} />
                   {t('manga.type')}:
                 </InfoLabel>
-                <InfoValue theme={theme}>{manga.type}</InfoValue>
+                <InfoValue>{manga.type}</InfoValue>
               </InfoItem>
               
               {manga.authors && manga.authors.length > 0 && (
                 <InfoItem>
-                  <InfoLabel theme={theme}>
+                  <InfoLabel>
                     <FaUser style={{ marginRight: '0.5rem' }} />
                     {t('manga.authors')}:
                   </InfoLabel>
-                  <InfoValue theme={theme}>
+                  <InfoValue>
                     {manga.authors.map(author => author.name).join(', ')}
                   </InfoValue>
                 </InfoItem>
@@ -352,10 +352,10 @@ function MangaDetailsPage() {
               
               {manga.genres && manga.genres.length > 0 && (
                 <InfoItem>
-                  <InfoLabel theme={theme}>{t('manga.genres')}:</InfoLabel>
+                  <InfoLabel>{t('manga.genres')}:</InfoLabel>
                   <GenresList>
                     {manga.genres.map(genre => (
-                      <GenreTag key={genre.id} theme={theme}>
+                      <GenreTag key={genre.id}>
                         {genre.name}
                       </GenreTag>
                     ))}
@@ -365,8 +365,7 @@ function MangaDetailsPage() {
               
               <FavoriteButton 
                 onClick={handleFavoriteToggle} 
-                isFavorite={isFavorite} 
-                theme={theme}
+                isFavorite={isFavorite}
               >
                 {isFavorite ? <FaHeart /> : <FaRegHeart />}
                 {isFavorite ? t('manga.remove_from_favorites') : t('manga.add_to_favorites')}
@@ -375,8 +374,8 @@ function MangaDetailsPage() {
           </MangaHeader>
           
           <Section>
-            <SectionTitle theme={theme}>{t('manga.synopsis')}</SectionTitle>
-            <Synopsis theme={theme}>{manga.synopsis}</Synopsis>
+            <SectionTitle>{t('manga.synopsis')}</SectionTitle>
+            <Synopsis>{manga.synopsis}</Synopsis>
           </Section>
         </>
       ) : null}

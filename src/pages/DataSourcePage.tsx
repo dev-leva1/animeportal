@@ -8,7 +8,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 2rem;
   font-size: 2rem;
 `;
@@ -18,19 +18,19 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 1rem;
   font-size: 1.5rem;
 `;
 
 const Paragraph = styled.p`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
 `;
 
 const Link = styled.a`
-  color: #ff5f5f;
+  color: ${props => props.theme.colors.primary[500]};
   text-decoration: none;
   
   &:hover {
@@ -39,7 +39,7 @@ const Link = styled.a`
 `;
 
 const List = styled.ul`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
+  color: ${props => props.theme.text.secondary};
   line-height: 1.6;
   margin-bottom: 1rem;
   padding-left: 2rem;
@@ -50,18 +50,18 @@ const ListItem = styled.li`
 `;
 
 function DataSourcePage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   
   // Устанавливаем заголовок страницы
   document.title = `${t('footer.data_source')} - ${t('site.name')}`;
   
   return (
     <Container>
-      <Title theme={theme}>{t('footer.data_source')}</Title>
+      <Title>{t('footer.data_source')}</Title>
       
       <Section>
-        <SectionTitle theme={theme}>{t('data_source.api_title')}</SectionTitle>
-        <Paragraph theme={theme}>
+        <SectionTitle>{t('data_source.api_title')}</SectionTitle>
+        <Paragraph>
           {t('data_source.api_text')}
           <Link href="https://jikan.moe/" target="_blank" rel="noopener noreferrer">
             Jikan API
@@ -74,9 +74,9 @@ function DataSourcePage() {
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('data_source.usage_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('data_source.usage_text')}</Paragraph>
-        <List theme={theme}>
+        <SectionTitle>{t('data_source.usage_title')}</SectionTitle>
+        <Paragraph>{t('data_source.usage_text')}</Paragraph>
+        <List>
           <ListItem>{t('data_source.usage_item1')}</ListItem>
           <ListItem>{t('data_source.usage_item2')}</ListItem>
           <ListItem>{t('data_source.usage_item3')}</ListItem>
@@ -84,9 +84,9 @@ function DataSourcePage() {
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('data_source.limitations_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('data_source.limitations_text')}</Paragraph>
-        <List theme={theme}>
+        <SectionTitle>{t('data_source.limitations_title')}</SectionTitle>
+        <Paragraph>{t('data_source.limitations_text')}</Paragraph>
+        <List>
           <ListItem>{t('data_source.limitations_item1')}</ListItem>
           <ListItem>{t('data_source.limitations_item2')}</ListItem>
           <ListItem>{t('data_source.limitations_item3')}</ListItem>
@@ -94,13 +94,13 @@ function DataSourcePage() {
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('data_source.attribution_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('data_source.attribution_text')}</Paragraph>
+        <SectionTitle>{t('data_source.attribution_title')}</SectionTitle>
+        <Paragraph>{t('data_source.attribution_text')}</Paragraph>
       </Section>
       
       <Section>
-        <SectionTitle theme={theme}>{t('data_source.contact_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('data_source.contact_text')}</Paragraph>
+        <SectionTitle>{t('data_source.contact_title')}</SectionTitle>
+        <Paragraph>{t('data_source.contact_text')}</Paragraph>
       </Section>
     </Container>
   );

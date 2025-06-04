@@ -6,10 +6,9 @@ import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { favoritesService } from '../services/favoritesService';
 import { Anime, Character, StaffMember, Review, WatchStatus } from '../types/anime';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
-import AnimePlayer from '../components/AnimePlayer';
+import { LoadingFallback, ErrorMessage, AnimePlayer } from '../components';
 import { FaArrowLeft, FaHeart, FaRegHeart, FaPlay, FaTimes, FaTv, FaFilm, FaChartLine, FaCalendarAlt, FaLeaf, FaClock, FaShieldAlt, FaBuilding, FaChevronUp, FaChevronDown, FaEye, FaCheck, FaPause, FaTimesCircle } from 'react-icons/fa';
+
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +19,7 @@ const Container = styled.div`
 const BackLink = styled(Link)`
   display: inline-flex;
   align-items: center;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   text-decoration: none;
   margin-bottom: 1rem;
   font-weight: 500;
@@ -79,15 +78,15 @@ const FavoriteButton = styled.button<FavoriteButtonProps>`
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   background-color: ${props => props.isFavorite ? '#ff5f5f' : 'transparent'};
-  color: ${props => props.isFavorite ? 'white' : props.theme === 'dark' ? 'white' : '#333'};
-  border: 2px solid ${props => props.isFavorite ? '#ff5f5f' : props.theme === 'dark' ? 'white' : '#333'};
+  color: ${props => props.isFavorite ? 'white' : props.theme.mode === 'dark' ? 'white' : '#333'};
+  border: 2px solid ${props => props.isFavorite ? '#ff5f5f' : props.theme.mode === 'dark' ? 'white' : '#333'};
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: ${props => props.isFavorite ? '#ff4040' : props.theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+    background-color: ${props => props.isFavorite ? '#ff4040' : props.theme.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
   }
 `;
 
@@ -97,8 +96,8 @@ const StatusButton = styled.button`
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   background-color: transparent;
-  color: ${props => props.theme === 'dark' ? 'white' : '#333'};
-  border: 2px solid ${props => props.theme === 'dark' ? 'white' : '#333'};
+  color: ${props => props.theme.mode === 'dark' ? 'white' : '#333'};
+  border: 2px solid ${props => props.theme.text.primary};
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
@@ -106,7 +105,7 @@ const StatusButton = styled.button`
   position: relative;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+    background-color: ${props => props.theme.background.secondary};
   }
 `;
 
@@ -115,7 +114,7 @@ const StatusMenu = styled.div`
   top: 100%;
   left: 0;
   width: 200px;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
@@ -132,12 +131,12 @@ const StatusMenuItem = styled.button`
   text-align: left;
   background-color: transparent;
   border: none;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#333'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#333'};
   cursor: pointer;
   transition: background-color 0.2s ease;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme.background.secondary};
   }
 `;
 
@@ -167,7 +166,7 @@ const WatchButton = styled.button`
   padding: 0.75rem;
   border-radius: 4px;
   border: none;
-  background-color: ${props => props.theme === 'dark' ? '#4a90e2' : '#4a90e2'};
+  background-color: #4a90e2;
   color: white;
   font-weight: 500;
   cursor: pointer;
@@ -178,7 +177,7 @@ const WatchButton = styled.button`
   gap: 0.5rem;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#3a80d2' : '#3a80d2'};
+    background-color: #3a80d2;
   }
 `;
 
@@ -189,11 +188,11 @@ const AnimeInfo = styled.div`
 const Title = styled.h1`
   font-size: 2rem;
   margin: 0 0 0.5rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const EnglishTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
   margin: 0 0 1.5rem;
   font-size: 1.25rem;
   font-weight: normal;
@@ -216,7 +215,7 @@ const Score = styled.div`
 `;
 
 const ScoreLabel = styled.span`
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const InfoGrid = styled.div`
@@ -224,7 +223,7 @@ const InfoGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#f5f5f5'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#2a2a2a' : '#f5f5f5'};
   padding: 1rem;
   border-radius: 8px;
 `;
@@ -235,7 +234,7 @@ const InfoItem = styled.div`
   gap: 0.25rem;
   padding: 0.5rem;
   border-radius: 4px;
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#ffffff'};
+  background-color: ${props => props.theme.background.secondary};
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
@@ -253,12 +252,12 @@ const InfoIcon = styled.span`
 
 const InfoLabel = styled.span`
   font-weight: 600;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
   font-size: 0.875rem;
 `;
 
 const InfoValue = styled.span`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
 `;
 
@@ -270,8 +269,8 @@ const GenreList = styled.div`
 `;
 
 const GenreTag = styled.span`
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.875rem;
@@ -284,12 +283,12 @@ const Synopsis = styled.div`
 const SynopsisTitle = styled.h3`
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const SynopsisText = styled.p`
   line-height: 1.6;
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  color: ${props => props.theme.text.secondary};
 `;
 
 const Section = styled.section`
@@ -299,9 +298,9 @@ const Section = styled.section`
 const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#333' : '#eee'};
+  border-bottom: 1px solid ${props => props.theme.border.primary};
 `;
 
 const CharacterGrid = styled.div`
@@ -312,7 +311,7 @@ const CharacterGrid = styled.div`
 
 const CharacterCard = styled.div`
   display: flex;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -332,12 +331,12 @@ const CharacterInfo = styled.div`
 const CharacterName = styled.div`
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const CharacterRole = styled.div`
   font-size: 0.875rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const StaffGrid = styled.div`
@@ -348,7 +347,7 @@ const StaffGrid = styled.div`
 
 const StaffCard = styled.div`
   display: flex;
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -368,12 +367,12 @@ const StaffInfo = styled.div`
 const StaffName = styled.div`
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const StaffPosition = styled.div`
   font-size: 0.875rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const ReviewList = styled.div`
@@ -383,7 +382,7 @@ const ReviewList = styled.div`
 `;
 
 const ReviewCard = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#1a1a1a' : '#ffffff'};
+  background-color: ${props => props.theme.background.primary};
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -400,12 +399,12 @@ const ReviewerInfo = styled.div``;
 
 const ReviewerName = styled.div`
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
 `;
 
 const ReviewDate = styled.div`
   font-size: 0.75rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const ReviewScore = styled.div`
@@ -419,7 +418,7 @@ const ReviewScore = styled.div`
 
 const ReviewContent = styled.div`
   line-height: 1.6;
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  color: ${props => props.theme.text.secondary};
   margin-bottom: 0.75rem;
 `;
 
@@ -439,16 +438,16 @@ const ExpandButton = styled.button`
 const LoadMoreButton = styled.button`
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  border: 1px solid ${props => props.theme.border.primary};
   background-color: transparent;
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  color: ${props => props.theme.text.primary};
   font-weight: 500;
   cursor: pointer;
   margin-top: 1rem;
   width: 100%;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme.background.secondary};
   }
   
   &:disabled {
@@ -457,10 +456,9 @@ const LoadMoreButton = styled.button`
   }
 `;
 
-
 function AnimeDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { theme, t } = useApp();
+  const { t } = useApp();
 //  const { isAuthenticated } = useAuth();
   const [anime, setAnime] = useState<Anime | null>(null);
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -639,13 +637,13 @@ function AnimeDetailsPage() {
   
   return (
     <Container>
-      <BackLink to="/anime" theme={theme}>
+      <BackLink to="/anime">
         <FaArrowLeft style={{ marginRight: '0.5rem' }} />
         {t('anime.back_to_catalog')}
       </BackLink>
       
-      {isLoading ? (
-        <Loading />
+          {isLoading ? (
+      <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error} onRetry={handleRetry} />
       ) : anime ? (
@@ -660,14 +658,13 @@ function AnimeDetailsPage() {
                 <FavoriteButton 
                   onClick={handleFavoriteClick} 
                   isFavorite={isFavorite}
-                  theme={theme}
                 >
                   {isFavorite ? <FaHeart /> : <FaRegHeart />}
                   {isFavorite ? t('details.remove_from_favorites') : t('details.add_to_favorites')}
                 </FavoriteButton>
                 
                 {isFavorite && watchStatus && (
-                  <StatusBadge status={watchStatus} theme={theme}>
+                  <StatusBadge status={watchStatus}>
                     {getStatusIcon(watchStatus)}
                     {getStatusText(watchStatus)}
                   </StatusBadge>
@@ -675,43 +672,37 @@ function AnimeDetailsPage() {
                 
                 <StatusButton 
                   onClick={handleStatusClick}
-                  theme={theme}
                 >
                   {watchStatus ? getStatusIcon(watchStatus) : null}
                   {getStatusText(watchStatus)}
                   
                   {showStatusMenu && (
-                    <StatusMenu theme={theme}>
+                    <StatusMenu>
                       <StatusMenuItem 
-                        theme={theme} 
                         onClick={() => handleStatusChange('watching')}
                       >
                         <FaEye color="#4caf50" />
                         {t('favorites.status.watching')}
                       </StatusMenuItem>
                       <StatusMenuItem 
-                        theme={theme} 
                         onClick={() => handleStatusChange('planned')}
                       >
                         <FaClock color="#2196f3" />
                         {t('favorites.status.planned')}
                       </StatusMenuItem>
                       <StatusMenuItem 
-                        theme={theme} 
                         onClick={() => handleStatusChange('completed')}
                       >
                         <FaCheck color="#9c27b0" />
                         {t('favorites.status.completed')}
                       </StatusMenuItem>
                       <StatusMenuItem 
-                        theme={theme} 
                         onClick={() => handleStatusChange('on_hold')}
                       >
                         <FaPause color="#ff9800" />
                         {t('favorites.status.on_hold')}
                       </StatusMenuItem>
                       <StatusMenuItem 
-                        theme={theme} 
                         onClick={() => handleStatusChange('dropped')}
                       >
                         <FaTimesCircle color="#f44336" />
@@ -719,7 +710,6 @@ function AnimeDetailsPage() {
                       </StatusMenuItem>
                       {watchStatus && (
                         <StatusMenuItem 
-                          theme={theme} 
                           onClick={() => handleStatusChange(null)}
                         >
                           {t('favorites.no_status')}
@@ -731,7 +721,6 @@ function AnimeDetailsPage() {
                 
                 <WatchButton 
                   onClick={() => setShowPlayer(!showPlayer)}
-                  theme={theme}
                 >
                   {showPlayer ? <FaTimes /> : <FaPlay />}
                   {showPlayer ? t('anime.hide_player') : t('anime.watch_online')}
@@ -740,18 +729,18 @@ function AnimeDetailsPage() {
             </ImageContainer>
             
             <AnimeInfo>
-              <Title theme={theme}>{anime.title}</Title>
+              <Title>{anime.title}</Title>
               {anime.title_english && anime.title_english !== anime.title && (
-                <EnglishTitle theme={theme}>{anime.title_english}</EnglishTitle>
+                <EnglishTitle>{anime.title_english}</EnglishTitle>
               )}
               
               <ScoreContainer>
                 <Score>{anime.score || 'N/A'}</Score>
-                <ScoreLabel theme={theme}>{t('anime.score')}</ScoreLabel>
+                <ScoreLabel>{t('anime.score')}</ScoreLabel>
               </ScoreContainer>
               
-              <InfoGrid theme={theme}>
-                <InfoItem theme={theme}>
+              <InfoGrid>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaTv />
@@ -761,7 +750,7 @@ function AnimeDetailsPage() {
                   <InfoValue>{anime.type}</InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaFilm />
@@ -771,7 +760,7 @@ function AnimeDetailsPage() {
                   <InfoValue>{anime.episodes || t('anime.unknown')}</InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaChartLine />
@@ -781,7 +770,7 @@ function AnimeDetailsPage() {
                   <InfoValue>{anime.status}</InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaCalendarAlt />
@@ -793,7 +782,7 @@ function AnimeDetailsPage() {
                   </InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaLeaf />
@@ -805,7 +794,7 @@ function AnimeDetailsPage() {
                   </InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaClock />
@@ -815,7 +804,7 @@ function AnimeDetailsPage() {
                   <InfoValue>{anime.duration}</InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaShieldAlt />
@@ -825,7 +814,7 @@ function AnimeDetailsPage() {
                   <InfoValue>{anime.rating || t('anime.unknown')}</InfoValue>
                 </InfoItem>
                 
-                <InfoItem theme={theme}>
+                <InfoItem>
                   <InfoLabelContainer>
                     <InfoIcon>
                       <FaBuilding />
@@ -842,13 +831,13 @@ function AnimeDetailsPage() {
               
               <GenreList>
                 {anime.genres.map(genre => (
-                  <GenreTag key={genre.mal_id || genre.name} theme={theme}>
+                  <GenreTag key={genre.mal_id || genre.name}>
                     {genre.name}
                   </GenreTag>
                 ))}
               </GenreList>
               
-              <Synopsis theme={theme}>
+              <Synopsis>
                 <SynopsisTitle>{t('anime.synopsis')}</SynopsisTitle>
                 <SynopsisText>{anime.synopsis || t('anime.no_synopsis')}</SynopsisText>
               </Synopsis>
@@ -857,7 +846,7 @@ function AnimeDetailsPage() {
           
           {showPlayer && (
             <Section>
-              <SectionTitle theme={theme}>{t('anime.watch_online')}</SectionTitle>
+              <SectionTitle>{t('anime.watch_online')}</SectionTitle>
               <AnimePlayer 
                 animeId={anime.mal_id} 
                 title={anime.title} 
@@ -869,7 +858,6 @@ function AnimeDetailsPage() {
           {characters.length > 0 && (
             <Section>
               <SectionTitle 
-                theme={theme} 
                 onClick={() => toggleSection('characters')}
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
@@ -880,11 +868,11 @@ function AnimeDetailsPage() {
               {expandedSections.characters && (
                 <CharacterGrid>
                   {characters.map(character => (
-                    <CharacterCard key={character.character.mal_id} theme={theme}>
+                    <CharacterCard key={character.character.mal_id}>
                       <CharacterImage src={character.character.images?.jpg?.image_url} alt={character.character.name} />
                       <CharacterInfo>
-                        <CharacterName theme={theme}>{character.character.name}</CharacterName>
-                        <CharacterRole theme={theme}>{character.role}</CharacterRole>
+                        <CharacterName>{character.character.name}</CharacterName>
+                        <CharacterRole>{character.role}</CharacterRole>
                       </CharacterInfo>
                     </CharacterCard>
                   ))}
@@ -896,7 +884,6 @@ function AnimeDetailsPage() {
           {staff.length > 0 && (
             <Section>
               <SectionTitle 
-                theme={theme} 
                 onClick={() => toggleSection('staff')}
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
@@ -907,11 +894,11 @@ function AnimeDetailsPage() {
               {expandedSections.staff && (
                 <StaffGrid>
                   {staff.map(person => (
-                    <StaffCard key={person.person.mal_id} theme={theme}>
+                    <StaffCard key={person.person.mal_id}>
                       <StaffImage src={person.person.images?.jpg?.image_url} alt={person.person.name} />
                       <StaffInfo>
-                        <StaffName theme={theme}>{person.person.name}</StaffName>
-                        <StaffPosition theme={theme}>{person.positions.join(', ')}</StaffPosition>
+                        <StaffName>{person.person.name}</StaffName>
+                        <StaffPosition>{person.positions.join(', ')}</StaffPosition>
                       </StaffInfo>
                     </StaffCard>
                   ))}
@@ -923,7 +910,6 @@ function AnimeDetailsPage() {
           {reviews.length > 0 && (
             <Section>
               <SectionTitle 
-                theme={theme} 
                 onClick={() => toggleSection('reviews')}
                 style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               >
@@ -934,21 +920,20 @@ function AnimeDetailsPage() {
               {expandedSections.reviews && (
                 <ReviewList>
                   {reviews.map(review => (
-                    <ReviewCard key={review.mal_id} theme={theme}>
+                    <ReviewCard key={review.mal_id}>
                       <ReviewHeader>
                         <ReviewerInfo>
-                          <ReviewerName theme={theme}>{review.user.username}</ReviewerName>
-                          <ReviewDate theme={theme}>{new Date(review.date).toLocaleDateString()}</ReviewDate>
+                          <ReviewerName>{review.user.username}</ReviewerName>
+                          <ReviewDate>{new Date(review.date).toLocaleDateString()}</ReviewDate>
                         </ReviewerInfo>
-                        <ReviewScore theme={theme}>{review.score} / 10</ReviewScore>
+                        <ReviewScore>{review.score} / 10</ReviewScore>
                       </ReviewHeader>
-                      <ReviewContent theme={theme}>
+                      <ReviewContent>
                         {review.review.length > 300 && !expandedReviews.includes(review.mal_id) ? (
                           <>
                             {review.review.substring(0, 300)}...
                             <ExpandButton 
                               onClick={() => toggleReviewExpansion(review.mal_id)}
-                              theme={theme}
                             >
                               {t('anime.read_more')}
                             </ExpandButton>
@@ -959,7 +944,6 @@ function AnimeDetailsPage() {
                             {review.review.length > 300 && (
                               <ExpandButton 
                                 onClick={() => toggleReviewExpansion(review.mal_id)}
-                                theme={theme}
                               >
                                 {t('anime.show_less')}
                               </ExpandButton>
@@ -973,7 +957,6 @@ function AnimeDetailsPage() {
                   {hasMoreReviews && (
                     <LoadMoreButton 
                       onClick={loadMoreReviews}
-                      theme={theme}
                     >
                       {t('anime.load_more_reviews')}
                     </LoadMoreButton>

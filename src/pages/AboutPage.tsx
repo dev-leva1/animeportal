@@ -1,64 +1,56 @@
-import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
-
-const Container = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-`;
-
-const Title = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  margin-bottom: 2rem;
-  font-size: 2rem;
-`;
-
-const Section = styled.section`
-  margin-bottom: 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-`;
-
-const Paragraph = styled.p`
-  color: ${props => props.theme === 'dark' ? '#cccccc' : '#333333'};
-  line-height: 1.6;
-  margin-bottom: 1rem;
-`;
+import { Container, Typography } from '../components';
 
 function AboutPage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   
   // Устанавливаем заголовок страницы
   document.title = `${t('footer.about')} - ${t('site.name')}`;
   
   return (
-    <Container>
-      <Title theme={theme}>{t('footer.about')}</Title>
+    <Container maxWidth="md" padding="lg" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+      <Typography variant="heading-xl" style={{ marginBottom: '2rem' }}>
+        {t('footer.about')}
+      </Typography>
       
-      <Section>
-        <SectionTitle theme={theme}>{t('about.mission_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('about.mission_text')}</Paragraph>
-      </Section>
+      <section style={{ marginBottom: '2rem' }}>
+        <Typography variant="heading-lg" style={{ marginBottom: '1rem' }}>
+          {t('about.mission_title')}
+        </Typography>
+        <Typography variant="body-lg" color="muted" style={{ lineHeight: 1.6, marginBottom: '1rem' }}>
+          {t('about.mission_text')}
+        </Typography>
+      </section>
       
-      <Section>
-        <SectionTitle theme={theme}>{t('about.what_we_offer_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('about.what_we_offer_text1')}</Paragraph>
-        <Paragraph theme={theme}>{t('about.what_we_offer_text2')}</Paragraph>
-      </Section>
+      <section style={{ marginBottom: '2rem' }}>
+        <Typography variant="heading-lg" style={{ marginBottom: '1rem' }}>
+          {t('about.what_we_offer_title')}
+        </Typography>
+        <Typography variant="body-lg" color="muted" style={{ lineHeight: 1.6, marginBottom: '1rem' }}>
+          {t('about.what_we_offer_text1')}
+        </Typography>
+        <Typography variant="body-lg" color="muted" style={{ lineHeight: 1.6, marginBottom: '1rem' }}>
+          {t('about.what_we_offer_text2')}
+        </Typography>
+      </section>
       
-      <Section>
-        <SectionTitle theme={theme}>{t('about.team_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('about.team_text')}</Paragraph>
-      </Section>
+      <section style={{ marginBottom: '2rem' }}>
+        <Typography variant="heading-lg" style={{ marginBottom: '1rem' }}>
+          {t('about.team_title')}
+        </Typography>
+        <Typography variant="body-lg" color="muted" style={{ lineHeight: 1.6, marginBottom: '1rem' }}>
+          {t('about.team_text')}
+        </Typography>
+      </section>
       
-      <Section>
-        <SectionTitle theme={theme}>{t('about.contact_title')}</SectionTitle>
-        <Paragraph theme={theme}>{t('about.contact_text')}</Paragraph>
-      </Section>
+      <section style={{ marginBottom: '2rem' }}>
+        <Typography variant="heading-lg" style={{ marginBottom: '1rem' }}>
+          {t('about.contact_title')}
+        </Typography>
+        <Typography variant="body-lg" color="muted" style={{ lineHeight: 1.6, marginBottom: '1rem' }}>
+          {t('about.contact_text')}
+        </Typography>
+      </section>
     </Container>
   );
 }

@@ -4,13 +4,10 @@ import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { animeService, AnimeSearchParams } from '../services/animeService';
 import { Anime } from '../types/anime';
-import AnimeCard from '../components/AnimeCard';
-import Pagination from '../components/Pagination';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
+import { AnimeCard, Pagination, LoadingFallback, ErrorMessage } from '../components';
 
 const PageTitle = styled.h1`
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#121212'};
+  color: ${props => props.theme.text.primary};
   margin-bottom: 1.5rem;
   font-size: 2rem;
 `;
@@ -21,7 +18,7 @@ const FiltersContainer = styled.div`
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 1rem;
-  background-color: ${props => props.theme === 'dark' ? '#1e1e1e' : '#f5f5f5'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
   
   @media (max-width: 768px) {
@@ -35,7 +32,7 @@ const AdvancedFiltersContainer = styled.div`
   gap: 1rem;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  border-top: 1px solid ${props => props.theme.border.primary};
   width: 100%;
 `;
 
@@ -47,13 +44,13 @@ const FilterGroup = styled.div`
 
 const FilterLabel = styled.label`
   font-size: 0.9rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
 `;
 
 const ToggleButton = styled.button`
   background-color: transparent;
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
+  color: ${props => props.theme.text.primary};
+  border: 1px solid ${props => props.theme.border.primary};
   border-radius: 4px;
   padding: 0.5rem;
   cursor: pointer;
@@ -63,7 +60,7 @@ const ToggleButton = styled.button`
   justify-content: center;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#333' : '#f0f0f0'};
+    background-color: ${props => props.theme.background.secondary};
   }
 `;
 
@@ -78,16 +75,16 @@ const CheckboxLabel = styled.label`
   align-items: center;
   gap: 0.25rem;
   font-size: 0.9rem;
-  color: ${props => props.theme === 'dark' ? '#ddd' : '#333'};
+  color: ${props => props.theme.text.secondary};
   cursor: pointer;
 `;
 
 const SearchInput = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#ffffff'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   flex: 1;
   min-width: 200px;
   
@@ -100,9 +97,9 @@ const SearchInput = styled.input`
 const SelectFilter = styled.select`
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#ddd'};
-  background-color: ${props => props.theme === 'dark' ? '#333' : '#ffffff'};
-  color: ${props => props.theme === 'dark' ? '#fff' : '#333'};
+  border: 1px solid ${props => props.theme.border.primary};
+  background-color: ${props => props.theme.background.secondary};
+  color: ${props => props.theme.text.primary};
   cursor: pointer;
   
   &:focus {
@@ -140,7 +137,7 @@ const AnimeGrid = styled.div`
 const NoResults = styled.div`
   text-align: center;
   padding: 3rem;
-  color: ${props => props.theme === 'dark' ? '#aaa' : '#666'};
+  color: ${props => props.theme.text.muted};
   font-size: 1.2rem;
 `;
 
@@ -196,7 +193,7 @@ const sortOptions = [
 ];
 
 function AnimePage() {
-  const { theme, t } = useApp();
+  const { t } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -526,22 +523,20 @@ function AnimePage() {
   
   return (
     <div>
-      <PageTitle theme={theme}>{getPageTitle()}</PageTitle>
+      <PageTitle>{getPageTitle()}</PageTitle>
       
-      <FiltersContainer theme={theme}>
+      <FiltersContainer>
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem', width: '100%' }}>
           <SearchInput 
             type="text" 
             placeholder={t('header.search')} 
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            theme={theme}
           />
           <FilterButton type="submit">{t('anime.search')}</FilterButton>
           <ToggleButton 
             type="button" 
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            theme={theme}
           >
             {showAdvancedFilters ? t('anime.hide_filters') : t('anime.show_filters')}
           </ToggleButton>
@@ -549,12 +544,12 @@ function AnimePage() {
         </form>
         
         {showAdvancedFilters && (
-          <AdvancedFiltersContainer theme={theme}>
+          <AdvancedFiltersContainer>
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.genres')}</FilterLabel>
+              <FilterLabel>{t('anime.genres')}</FilterLabel>
               <CheckboxGroup>
                 {genres.map(genre => (
-                  <CheckboxLabel key={genre.id} theme={theme}>
+                  <CheckboxLabel key={genre.id}>
                     <input 
                       type="checkbox" 
                       checked={selectedGenres.includes(genre.id)}
@@ -567,11 +562,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.year')}</FilterLabel>
+              <FilterLabel>{t('anime.year')}</FilterLabel>
               <SelectFilter 
                 value={selectedYear || ''}
                 onChange={(e) => setSelectedYear(e.target.value ? Number(e.target.value) : null)}
-                theme={theme}
               >
                 <option value="">{t('anime.all_years')}</option>
                 {years.map(year => (
@@ -581,11 +575,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.season')}</FilterLabel>
+              <FilterLabel>{t('anime.season')}</FilterLabel>
               <SelectFilter 
                 value={selectedSeason}
                 onChange={(e) => setSelectedSeason(e.target.value)}
-                theme={theme}
               >
                 <option value="">{t('anime.all_seasons')}</option>
                 {animeSeasons.map(season => (
@@ -597,11 +590,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.status')}</FilterLabel>
+              <FilterLabel>{t('anime.status')}</FilterLabel>
               <SelectFilter 
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                theme={theme}
               >
                 <option value="">{t('anime.all_statuses')}</option>
                 {animeStatus.map(status => (
@@ -613,11 +605,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.type')}</FilterLabel>
+              <FilterLabel>{t('anime.type')}</FilterLabel>
               <SelectFilter 
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                theme={theme}
               >
                 <option value="">{t('anime.all_types')}</option>
                 {animeTypes.map(type => (
@@ -629,11 +620,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.rating')}</FilterLabel>
+              <FilterLabel>{t('anime.rating')}</FilterLabel>
               <SelectFilter 
                 value={selectedRating}
                 onChange={(e) => setSelectedRating(e.target.value)}
-                theme={theme}
               >
                 <option value="">{t('anime.all_ratings')}</option>
                 {animeRatings.map(rating => (
@@ -645,11 +635,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.min_score')}</FilterLabel>
+              <FilterLabel>{t('anime.min_score')}</FilterLabel>
               <SelectFilter 
                 value={minScore || ''}
                 onChange={(e) => setMinScore(e.target.value ? Number(e.target.value) : null)}
-                theme={theme}
               >
                 <option value="">{t('anime.any_score')}</option>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(score => (
@@ -659,11 +648,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.max_score')}</FilterLabel>
+              <FilterLabel>{t('anime.max_score')}</FilterLabel>
               <SelectFilter 
                 value={maxScore || ''}
                 onChange={(e) => setMaxScore(e.target.value ? Number(e.target.value) : null)}
-                theme={theme}
               >
                 <option value="">{t('anime.any_score')}</option>
                 {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(score => (
@@ -673,11 +661,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.sort_by')}</FilterLabel>
+              <FilterLabel>{t('anime.sort_by')}</FilterLabel>
               <SelectFilter 
                 value={orderBy}
                 onChange={(e) => setOrderBy(e.target.value)}
-                theme={theme}
               >
                 {sortOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -688,11 +675,10 @@ function AnimePage() {
             </FilterGroup>
             
             <FilterGroup>
-              <FilterLabel theme={theme}>{t('anime.sort_order')}</FilterLabel>
+              <FilterLabel>{t('anime.sort_order')}</FilterLabel>
               <SelectFilter 
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                theme={theme}
               >
                 <option value="desc">{t('anime.descending')}</option>
                 <option value="asc">{t('anime.ascending')}</option>
@@ -702,12 +688,12 @@ function AnimePage() {
         )}
       </FiltersContainer>
       
-      {loading ? (
-        <Loading />
+              {loading ? (
+          <LoadingFallback />
       ) : error ? (
         <ErrorMessage message={error} onRetry={handleRetry} />
       ) : animeList.length === 0 ? (
-        <NoResults theme={theme}>
+        <NoResults>
           {t('anime.no_results')}
         </NoResults>
       ) : (

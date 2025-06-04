@@ -5,7 +5,6 @@ import { SystemSettings as SystemSettingsType } from '../../types/admin';
 import { FaSave, FaUndo, FaPalette, FaCog, FaGlobe, FaKey } from 'react-icons/fa';
 
 interface SystemSettingsProps {
-  theme: string;
   t: (key: string) => string;
 }
 
@@ -23,7 +22,7 @@ const SettingsForm = styled.form`
 `;
 
 const Card = styled.div`
-  background-color: ${props => props.theme === 'dark' ? '#2a2a2a' : '#ffffff'};
+  background-color: ${props => props.theme.background.secondary};
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -35,13 +34,13 @@ const CardHeader = styled.div`
   gap: 0.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
+  border-bottom: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
 `;
 
 const CardTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   margin: 0;
 `;
 
@@ -57,16 +56,16 @@ const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   
   &:focus {
     outline: none;
@@ -78,9 +77,9 @@ const Textarea = styled.textarea`
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 4px;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   min-height: 100px;
   resize: vertical;
   
@@ -112,7 +111,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
     switch(props.variant) {
       case 'primary': return '#ff5f5f';
       case 'danger': return '#d0021b';
-      default: return props.theme === 'dark' ? '#383838' : '#e0e0e0';
+      default: return props.theme.mode === 'dark' ? '#383838' : '#e0e0e0';
     }
   }};
   
@@ -122,7 +121,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
       case 'danger':
         return '#ffffff';
       default:
-        return props.theme === 'dark' ? '#ffffff' : '#1a1a1a';
+        return props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a';
     }
   }};
   
@@ -131,7 +130,7 @@ const Button = styled.button<{variant?: 'primary' | 'danger' | 'default'}>`
       switch(props.variant) {
         case 'primary': return '#ff4545';
         case 'danger': return '#c0020b';
-        default: return props.theme === 'dark' ? '#444' : '#d0d0d0';
+        default: return props.theme.mode === 'dark' ? '#444' : '#d0d0d0';
       }
     }};
   }
@@ -148,7 +147,7 @@ const ColorPreview = styled.div<{color: string}>`
   height: 36px;
   border-radius: 4px;
   background-color: ${props => props.color};
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
 `;
 
 const SwitchContainer = styled.div`
@@ -181,7 +180,7 @@ const Switch = styled.div<{checked: boolean}>`
 
 const SwitchLabel = styled.div`
   font-weight: 500;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   flex: 1;
 `;
 
@@ -197,20 +196,20 @@ const ApiKeyRow = styled.div`
 
 const ApiKeyName = styled.div`
   flex: 1;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
   padding: 0.75rem;
   border-radius: 4px;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
 `;
 
 const ApiKeyValue = styled.div`
   flex: 2;
-  border: 1px solid ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
-  background-color: ${props => props.theme === 'dark' ? '#383838' : '#f8f8f8'};
+  border: 1px solid ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
+  background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f8f8f8'};
   padding: 0.75rem;
   border-radius: 4px;
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -222,17 +221,17 @@ const AddApiKeyButton = styled.button`
   gap: 0.5rem;
   padding: 0.75rem;
   border-radius: 4px;
-  border: 1px dashed ${props => props.theme === 'dark' ? '#444' : '#e0e0e0'};
+  border: 1px dashed ${props => props.theme.mode === 'dark' ? '#444' : '#e0e0e0'};
   background-color: transparent;
   width: 100%;
   cursor: pointer;
-  color: ${props => props.theme === 'dark' ? '#9e9e9e' : '#757575'};
+  color: ${props => props.theme.text.muted};
   transition: all 0.3s ease;
   justify-content: center;
   
   &:hover {
-    background-color: ${props => props.theme === 'dark' ? '#383838' : '#f0f0f0'};
-    color: ${props => props.theme === 'dark' ? '#ffffff' : '#1a1a1a'};
+    background-color: ${props => props.theme.mode === 'dark' ? '#383838' : '#f0f0f0'};
+    color: ${props => props.theme.mode === 'dark' ? '#ffffff' : '#1a1a1a'};
   }
 `;
 
@@ -247,7 +246,7 @@ const SuccessMessage = styled.div`
   gap: 0.5rem;
 `;
 
-const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
+const SystemSettings = ({ t }: SystemSettingsProps) => {
   const [settings, setSettings] = useState<SystemSettingsType>({
     siteName: '',
     siteDescription: '',
@@ -331,33 +330,31 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
           </SuccessMessage>
         )}
 
-        <Card theme={theme}>
+        <Card>
           <CardHeader>
             <FaGlobe />
             <CardTitle>{t('admin.settings.general')}</CardTitle>
           </CardHeader>
 
           <FormGroup>
-            <Label theme={theme}>{t('admin.settings.site_name')}</Label>
+            <Label>{t('admin.settings.site_name')}</Label>
             <Input
               type="text"
               value={settings.siteName}
               onChange={(e) => setSettings(prev => ({ ...prev, siteName: e.target.value }))}
-              theme={theme}
             />
           </FormGroup>
 
           <FormGroup>
-            <Label theme={theme}>{t('admin.settings.site_description')}</Label>
+            <Label>{t('admin.settings.site_description')}</Label>
             <Textarea
               value={settings.siteDescription}
               onChange={(e) => setSettings(prev => ({ ...prev, siteDescription: e.target.value }))}
-              theme={theme}
             />
           </FormGroup>
         </Card>
 
-        <Card theme={theme}>
+        <Card>
           <CardHeader>
             <FaCog />
             <CardTitle>{t('admin.settings.features')}</CardTitle>
@@ -365,27 +362,27 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
 
           <FormGroup>
             <SwitchContainer onClick={() => setSettings(prev => ({ ...prev, maintenanceMode: !prev.maintenanceMode }))}>
-              <SwitchLabel theme={theme}>{t('admin.settings.maintenance_mode')}</SwitchLabel>
+              <SwitchLabel>{t('admin.settings.maintenance_mode')}</SwitchLabel>
               <Switch checked={settings.maintenanceMode} />
             </SwitchContainer>
           </FormGroup>
 
           <FormGroup>
             <SwitchContainer onClick={() => setSettings(prev => ({ ...prev, registrationEnabled: !prev.registrationEnabled }))}>
-              <SwitchLabel theme={theme}>{t('admin.settings.registration_enabled')}</SwitchLabel>
+              <SwitchLabel>{t('admin.settings.registration_enabled')}</SwitchLabel>
               <Switch checked={settings.registrationEnabled} />
             </SwitchContainer>
           </FormGroup>
 
           <FormGroup>
             <SwitchContainer onClick={() => setSettings(prev => ({ ...prev, commentsEnabled: !prev.commentsEnabled }))}>
-              <SwitchLabel theme={theme}>{t('admin.settings.comments_enabled')}</SwitchLabel>
+              <SwitchLabel>{t('admin.settings.comments_enabled')}</SwitchLabel>
               <Switch checked={settings.commentsEnabled} />
             </SwitchContainer>
           </FormGroup>
         </Card>
 
-        <Card theme={theme}>
+        <Card>
           <CardHeader>
             <FaKey />
             <CardTitle>{t('admin.settings.api_keys')}</CardTitle>
@@ -393,28 +390,25 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
 
           {settings.apiKeys.map((key, index) => (
             <ApiKeyRow key={index}>
-              <ApiKeyName theme={theme}>
+              <ApiKeyName>
                 <Input
                   type="text"
                   value={key.name}
                   onChange={(e) => handleApiKeyChange(index, 'name', e.target.value)}
                   placeholder={t('admin.settings.api_key_name')}
-                  theme={theme}
                 />
               </ApiKeyName>
-              <ApiKeyValue theme={theme}>
+              <ApiKeyValue>
                 <Input
                   type="text"
                   value={key.value}
                   onChange={(e) => handleApiKeyChange(index, 'value', e.target.value)}
                   placeholder={t('admin.settings.api_key_value')}
-                  theme={theme}
                 />
                 <Button
                   type="button"
                   variant="danger"
                   onClick={() => handleRemoveApiKey(index)}
-                  theme={theme}
                 >
                   {t('admin.common.delete')}
                 </Button>
@@ -422,21 +416,21 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
             </ApiKeyRow>
           ))}
 
-          <AddApiKeyButton onClick={handleAddApiKey} theme={theme}>
+          <AddApiKeyButton onClick={handleAddApiKey}>
             <FaKey /> {t('admin.settings.add_api_key')}
           </AddApiKeyButton>
         </Card>
 
-        <Card theme={theme}>
+        <Card>
           <CardHeader>
             <FaPalette />
             <CardTitle>{t('admin.settings.theme')}</CardTitle>
           </CardHeader>
 
           <FormGroup>
-            <Label theme={theme}>{t('admin.settings.primary_color')}</Label>
+            <Label>{t('admin.settings.primary_color')}</Label>
             <ColorInput>
-              <ColorPreview color={settings.themeSettings.primaryColor} theme={theme} />
+              <ColorPreview color={settings.themeSettings.primaryColor} />
               <Input
                 type="text"
                 value={settings.themeSettings.primaryColor}
@@ -444,15 +438,14 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
                   ...prev,
                   themeSettings: { ...prev.themeSettings, primaryColor: e.target.value }
                 }))}
-                theme={theme}
               />
             </ColorInput>
           </FormGroup>
 
           <FormGroup>
-            <Label theme={theme}>{t('admin.settings.secondary_color')}</Label>
+            <Label>{t('admin.settings.secondary_color')}</Label>
             <ColorInput>
-              <ColorPreview color={settings.themeSettings.secondaryColor} theme={theme} />
+              <ColorPreview color={settings.themeSettings.secondaryColor} />
               <Input
                 type="text"
                 value={settings.themeSettings.secondaryColor}
@@ -460,15 +453,14 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
                   ...prev,
                   themeSettings: { ...prev.themeSettings, secondaryColor: e.target.value }
                 }))}
-                theme={theme}
               />
             </ColorInput>
           </FormGroup>
 
           <FormGroup>
-            <Label theme={theme}>{t('admin.settings.background_color')}</Label>
+            <Label>{t('admin.settings.background_color')}</Label>
             <ColorInput>
-              <ColorPreview color={settings.themeSettings.backgroundColor} theme={theme} />
+              <ColorPreview color={settings.themeSettings.backgroundColor} />
               <Input
                 type="text"
                 value={settings.themeSettings.backgroundColor}
@@ -476,15 +468,14 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
                   ...prev,
                   themeSettings: { ...prev.themeSettings, backgroundColor: e.target.value }
                 }))}
-                theme={theme}
               />
             </ColorInput>
           </FormGroup>
 
           <FormGroup>
-            <Label theme={theme}>{t('admin.settings.text_color')}</Label>
+            <Label>{t('admin.settings.text_color')}</Label>
             <ColorInput>
-              <ColorPreview color={settings.themeSettings.textColor} theme={theme} />
+              <ColorPreview color={settings.themeSettings.textColor} />
               <Input
                 type="text"
                 value={settings.themeSettings.textColor}
@@ -492,17 +483,16 @@ const SystemSettings = ({ theme, t }: SystemSettingsProps) => {
                   ...prev,
                   themeSettings: { ...prev.themeSettings, textColor: e.target.value }
                 }))}
-                theme={theme}
               />
             </ColorInput>
           </FormGroup>
         </Card>
 
         <ButtonGroup>
-          <Button type="button" variant="default" onClick={handleReset} theme={theme}>
+          <Button type="button" variant="default" onClick={handleReset}>
             <FaUndo /> {t('admin.common.reset')}
           </Button>
-          <Button type="submit" variant="primary" disabled={isLoading} theme={theme}>
+          <Button type="submit" variant="primary" disabled={isLoading}>
             <FaSave /> {t('admin.common.save')}
           </Button>
         </ButtonGroup>
