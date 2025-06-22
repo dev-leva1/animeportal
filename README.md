@@ -1,5 +1,5 @@
 # Anime Portal
-
+ 
 A modern web application for exploring anime and manga, built with React, TypeScript, and Vite.
 
 ![GitHub Release](https://img.shields.io/github/v/release/dev-leva1/animeportal)
