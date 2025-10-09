@@ -1,17 +1,23 @@
-import { User, UserCredentials, RegisterData, AuthResponse, WatchHistory, PasswordChangeData, UserComment, UserStats, UserReply } from '../types/user';
+import { User, UserWithPassword, UserCredentials, RegisterData, AuthResponse, WatchHistory, PasswordChangeData, UserComment, UserStats, UserReply } from '../types/user';
 import { favoritesService } from './favoritesService';
 
-// const API_URL = 'https://api.example.com'; // Замените на реальный URL API
 const TOKEN_KEY = 'auth_token';
-const USER_KEY = 'auth_user';
+const USER_KEY = 'currentUser';
 
-// Имитация базы данных пользователей
-const users: User[] = [
+const hashPassword = (password: string): string => {
+  return btoa(password + 'salt_' + password.length);
+};
+
+const verifyPassword = (password: string, hash: string): boolean => {
+  return hashPassword(password) === hash;
+};
+
+const users: UserWithPassword[] = [
   {
     id: '1',
     username: 'admin',
     email: 'admin@example.com',
-    password: 'password123',
+    password: hashPassword('password123'),
     avatar: 'https://i.pravatar.cc/150?img=1',
     createdAt: '2023-01-01T00:00:00.000Z',
     bio: 'Администратор сайта',
@@ -26,14 +32,17 @@ const users: User[] = [
   }
 ];
 
-// Текущий пользователь
+const sanitizeUser = (user: UserWithPassword): User => {
+  const { password, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+};
+
 let currentUser: User | null = null;
 
-// Получение текущего пользователя
 const getCurrentUser = (): User | null => {
   if (currentUser) return currentUser;
   
-  const userJson = localStorage.getItem('currentUser');
+  const userJson = localStorage.getItem(USER_KEY);
   if (userJson) {
     currentUser = JSON.parse(userJson);
     return currentUser;
@@ -42,30 +51,30 @@ const getCurrentUser = (): User | null => {
   return null;
 };
 
-// Обновление пользователя
 const updateUser = (user: User): void => {
   currentUser = user;
-  localStorage.setItem('currentUser', JSON.stringify(user));
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
   
   const index = users.findIndex(u => u.id === user.id);
   if (index !== -1) {
-    users[index] = user;
+    users[index] = { ...users[index], ...user };
   }
 };
 
-// Вход в систему
 const login = (data: UserCredentials): Promise<AuthResponse> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const user = users.find(
-        u => u.email === data.email && u.password === data.password
+        u => u.email === data.email && verifyPassword(data.password, u.password)
       );
       
       if (user) {
-        currentUser = user;
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        const sanitizedUser = sanitizeUser(user);
+        currentUser = sanitizedUser;
+        localStorage.setItem(USER_KEY, JSON.stringify(sanitizedUser));
         const token = 'mock_jwt_token_' + Math.random().toString(36).substring(2);
-        resolve({ user, token });
+        localStorage.setItem(TOKEN_KEY, token);
+        resolve({ user: sanitizedUser, token });
       } else {
         reject(new Error('Invalid email or password'));
       }
@@ -84,11 +93,11 @@ const register = (data: RegisterData): Promise<AuthResponse> => {
         return;
       }
       
-      const newUser: User = {
+      const newUser: UserWithPassword = {
         id: (users.length + 1).toString(),
         username: data.username,
         email: data.email,
-        password: data.password,
+        password: hashPassword(data.password),
         createdAt: new Date().toISOString(),
         bio: '',
         comments: [],
@@ -102,10 +111,12 @@ const register = (data: RegisterData): Promise<AuthResponse> => {
       };
       
       users.push(newUser);
-      currentUser = newUser;
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
+      const sanitizedUser = sanitizeUser(newUser);
+      currentUser = sanitizedUser;
+      localStorage.setItem(USER_KEY, JSON.stringify(sanitizedUser));
       const token = 'mock_jwt_token_' + Math.random().toString(36).substring(2);
-      resolve({ user: newUser, token });
+      localStorage.setItem(TOKEN_KEY, token);
+      resolve({ user: sanitizedUser, token });
     }, 500);
   });
 };
@@ -118,7 +129,6 @@ const logout = (): void => {
   localStorage.removeItem(USER_KEY);
 };
 
-// Смена пароля
 const changePassword = (data: PasswordChangeData): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -129,13 +139,25 @@ const changePassword = (data: PasswordChangeData): Promise<boolean> => {
         return;
       }
       
-      if (user.password !== data.currentPassword) {
+      const userWithPassword = users.find(u => u.id === user.id);
+      
+      if (!userWithPassword) {
+        reject(new Error('User not found'));
+        return;
+      }
+      
+      if (!verifyPassword(data.currentPassword, userWithPassword.password)) {
         reject(new Error('Current password is incorrect'));
         return;
       }
       
-      user.password = data.newPassword;
-      updateUser(user);
+      userWithPassword.password = hashPassword(data.newPassword);
+      
+      const index = users.findIndex(u => u.id === user.id);
+      if (index !== -1) {
+        users[index] = userWithPassword;
+      }
+      
       resolve(true);
     }, 500);
   });
@@ -340,13 +362,11 @@ const deleteReply = (commentId: string, replyId: string): UserComment | null => 
   return comment;
 };
 
-// Для демонстрации
 const getMockUser = (): User => {
   return {
     id: '999',
     username: 'demo_user',
     email: 'demo@example.com',
-    password: 'demo123',
     avatar: 'https://i.pravatar.cc/150?img=2',
     createdAt: '2023-05-15T00:00:00.000Z',
     bio: 'Это демо-пользователь для тестирования функционала',

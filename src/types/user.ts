@@ -2,13 +2,16 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  password: string;
   avatar?: string;
   bio?: string;
   stats?: UserStats;
   comments?: UserComment[];
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface UserWithPassword extends User {
+  password: string;
 }
 
 export interface UserStats {
