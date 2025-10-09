@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { FaSave, FaTimes, FaEdit, FaKey } from 'react-icons/fa';
 import { User, PasswordChangeData } from '../../types/user';
+import { Toast } from '../atoms/Toast/Toast';
 
 const EditProfileForm = styled.form`
   display: flex;
@@ -149,15 +150,53 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
 
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [showToast, setShowToast] = useState<{show: boolean; message: string; variant: 'success' | 'error'}>({
+    show: false,
+    message: '',
+    variant: 'success'
+  });
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditData(prev => ({ ...prev, [name]: value }));
   };
 
+  const validateUrl = (url: string): boolean => {
+    if (!url) return true;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmitEdit(editData);
+    
+    if (editData.avatar && !validateUrl(editData.avatar)) {
+      setShowToast({
+        show: true,
+        message: 'Некорректный URL аватара. Пожалуйста, введите действительный URL',
+        variant: 'error'
+      });
+      return;
+    }
+    
+    try {
+      await onSubmitEdit(editData);
+      setShowToast({
+        show: true,
+        message: 'Профиль успешно обновлен',
+        variant: 'success'
+      });
+    } catch (error) {
+      setShowToast({
+        show: true,
+        message: 'Ошибка при обновлении профиля',
+        variant: 'error'
+      });
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,6 +208,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    setPasswordError('');
+    setPasswordSuccess('');
     
     if (passwordData.newPassword !== passwordData.confirmNewPassword) {
       setPasswordError('Пароли не совпадают');
@@ -184,21 +226,51 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
       const success = await onSubmitPasswordChange(passwordData);
       if (success) {
         setPasswordSuccess('Пароль успешно изменён');
+        setShowToast({
+          show: true,
+          message: 'Пароль успешно изменён',
+          variant: 'success'
+        });
         setPasswordData({
           currentPassword: '',
           newPassword: '',
           confirmNewPassword: ''
         });
+        setTimeout(() => {
+          setPasswordSuccess('');
+        }, 5000);
       } else {
-        setPasswordError('Ошибка при смене пароля');
+        const errorMsg = 'Ошибка при смене пароля';
+        setPasswordError(errorMsg);
+        setShowToast({
+          show: true,
+          message: errorMsg,
+          variant: 'error'
+        });
       }
-    } catch (error) {
-      setPasswordError('Ошибка при смене пароля');
+    } catch (error: any) {
+      console.error('Password change error:', error);
+      const errorMessage = error?.message || 'Ошибка при смене пароля';
+      setPasswordError(errorMessage);
+      setShowToast({
+        show: true,
+        message: errorMessage,
+        variant: 'error'
+      });
     }
   };
 
   return (
     <div className={className}>
+      {showToast.show && (
+        <Toast
+          message={showToast.message}
+          variant={showToast.variant}
+          onClose={() => setShowToast({ ...showToast, show: false })}
+          duration={5000}
+        />
+      )}
+      
       {isEditing ? (
         <EditProfileForm onSubmit={handleEditSubmit}>
           <FormGroup>
@@ -272,6 +344,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
               name="currentPassword"
               value={passwordData.currentPassword}
               onChange={handlePasswordChange}
+              autoComplete="current-password"
+              required
             />
           </FormGroup>
           
@@ -282,6 +356,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
               name="newPassword"
               value={passwordData.newPassword}
               onChange={handlePasswordChange}
+              autoComplete="new-password"
+              required
+              minLength={6}
             />
           </FormGroup>
           
@@ -292,6 +369,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user,
               name="confirmNewPassword"
               value={passwordData.confirmNewPassword}
               onChange={handlePasswordChange}
+              autoComplete="new-password"
+              required
+              minLength={6}
             />
           </FormGroup>
           

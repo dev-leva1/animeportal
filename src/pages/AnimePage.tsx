@@ -350,7 +350,8 @@ function AnimePage() {
     setCurrentPage(1);
   };
   
-  const handleGenreToggle = (genreId: number) => {
+  const handleGenreToggle = (e: React.ChangeEvent<HTMLInputElement>, genreId: number) => {
+    e.stopPropagation();
     setSelectedGenres(prev => {
       if (prev.includes(genreId)) {
         return prev.filter(id => id !== genreId);
@@ -358,6 +359,7 @@ function AnimePage() {
         return [...prev, genreId];
       }
     });
+    setCurrentPage(1);
   };
   
   const handlePageChange = (page: number) => {
@@ -549,11 +551,12 @@ function AnimePage() {
               <FilterLabel>{t('anime.genres')}</FilterLabel>
               <CheckboxGroup>
                 {genres.map(genre => (
-                  <CheckboxLabel key={genre.id}>
+                  <CheckboxLabel key={genre.id} onClick={(e) => e.stopPropagation()}>
                     <input 
                       type="checkbox" 
                       checked={selectedGenres.includes(genre.id)}
-                      onChange={() => handleGenreToggle(genre.id)}
+                      onChange={(e) => handleGenreToggle(e, genre.id)}
+                      onClick={(e) => e.stopPropagation()}
                     />
                     {t(genre.name)}
                   </CheckboxLabel>

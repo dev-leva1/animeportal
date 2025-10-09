@@ -37,10 +37,12 @@ const SearchInput = styled.input`
 interface SearchBoxProps {
   placeholder: string;
   className?: string;
+  onSearch?: (query: string) => void;
 }
 
 export const SearchBox: React.FC<SearchBoxProps> = ({ placeholder, 
-  className 
+  className,
+  onSearch
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
@@ -48,7 +50,11 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ placeholder,
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/anime?search=${encodeURIComponent(searchQuery)}`);
+      if (onSearch) {
+        onSearch(searchQuery.trim());
+      } else {
+        navigate(`/anime?search=${encodeURIComponent(searchQuery)}`);
+      }
     }
   };
 

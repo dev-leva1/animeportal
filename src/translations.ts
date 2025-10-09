@@ -310,6 +310,10 @@ export const translations: Translations = {
     ru: 'Подтвердите новый пароль',
     en: 'Confirm New Password'
   },
+  'profile.confirm_password': {
+    ru: 'Подтвердите пароль',
+    en: 'Confirm Password'
+  },
   'profile.passwords_not_match': {
     ru: 'Пароли не совпадают',
     en: 'Passwords do not match'
@@ -341,6 +345,10 @@ export const translations: Translations = {
   'profile.no_history': {
     ru: 'История просмотров пуста',
     en: 'Watch history is empty'
+  },
+  'profile.no_watch_history': {
+    ru: 'История просмотров пуста',
+    en: 'No watch history'
   },
   'profile.stats': {
     ru: 'Статистика',
@@ -405,6 +413,14 @@ export const translations: Translations = {
   'profile.no_comments': {
     ru: 'Нет комментариев',
     en: 'No comments'
+  },
+  'profile.favorites': {
+    ru: 'Избранное',
+    en: 'Favorites'
+  },
+  'profile.no_favorites': {
+    ru: 'Нет избранного',
+    en: 'No favorites'
   },
   'profile.updated_at': {
     ru: 'обновлено',

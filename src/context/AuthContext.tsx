@@ -77,10 +77,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(updatedUser);
   };
   
-  const changePassword = async (data: PasswordChangeData) => {
+  const changePassword = async (data: PasswordChangeData): Promise<boolean> => {
     setIsLoading(true);
     try {
-      return await authService.changePassword(data);
+      const success = await authService.changePassword(data);
+      return success;
+    } catch (error: any) {
+      console.error('Error in changePassword:', error);
+      throw new Error(error?.message || 'Не удалось изменить пароль');
     } finally {
       setIsLoading(false);
     }

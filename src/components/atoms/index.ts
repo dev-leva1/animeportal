@@ -15,4 +15,5 @@ export * from './Badge';
 export * from './Icon';
 export * from './Spinner';
 export * from './Grid';
-export * from './Container'; 
+export * from './Container';
+export * from './Toast'; 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useApp } from '../context/ThemeContext';
 import { animeService } from '../services/animeService';
 import { Anime } from '../types/anime';
-import { AnimeCard, LoadingFallback, ErrorMessage } from '../components';
+import { AnimeCard, LoadingFallback, ErrorMessage, SearchBox } from '../components';
 import React from 'react';
 
 const HeroSection = styled.section`
@@ -34,6 +34,28 @@ const HeroSubtitle = styled.p`
   
   @media (max-width: 768px) {
     font-size: 1rem;
+  }
+`;
+
+const SearchBoxWrapper = styled.div`
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  width: 100%;
+  padding: 0 1rem;
+  
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+  
+  form {
+    width: 100%;
+    
+    > div {
+      max-width: 100%;
+      margin: 0;
+      flex: none;
+    }
   }
 `;
 
@@ -159,6 +181,7 @@ const ViewAllLink = styled(Link)`
 
 function HomePage() {
   const { t } = useApp();
+  const navigate = useNavigate();
   const [topAnime, setTopAnime] = useState<Anime[]>([]);
   const [seasonalAnime, setSeasonalAnime] = useState<Anime[]>([]);
   const [recommendedAnime, setRecommendedAnime] = useState<Anime[]>([]);
@@ -294,6 +317,10 @@ function HomePage() {
     }
   };
   
+  const handleSearch = (query: string) => {
+    navigate(`/anime?search=${encodeURIComponent(query)}`);
+  };
+
   return (
     <div>
       <HeroSection>
@@ -301,6 +328,9 @@ function HomePage() {
         <HeroSubtitle>
           {t('home.subtitle')}
         </HeroSubtitle>
+        <SearchBoxWrapper>
+          <SearchBox onSearch={handleSearch} placeholder={t('header.search')} />
+        </SearchBoxWrapper>
         <HeroButton to="/anime">{t('home.go_to_catalog')}</HeroButton>
       </HeroSection>
       
