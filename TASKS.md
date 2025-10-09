@@ -47,6 +47,7 @@
 - [x] Реализовано кеширование API запросов (LRU cache с TTL 5 минут)
 - [x] Оптимизированы Google Fonts с font-display: swap
 
+
 #### Результаты:
 - LCP улучшен с 805ms до 707ms (-12%)
 - Load delay уменьшен с 713ms до 7ms (-99%)
