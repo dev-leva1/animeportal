@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AnimeResponse, AnimeDetailsResponse, Anime, CharactersResponse, StaffResponse, ReviewsResponse, Character, StaffMember, Review } from '../types/anime';
+import { apiCache } from '../utils/cache';
 
 const API_BASE_URL = 'https://api.jikan.moe/v4';
 
@@ -227,8 +228,15 @@ export const animeService = {
   },
 
   async getTopAnime(page: number = 1): Promise<AnimeResponse> {
+    const cacheKey = `top-anime-${page}`;
+    
+    const cached = apiCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    
     try {
-      return await retryWithBackoff(async () => {
+      const result = await retryWithBackoff(async () => {
         const response = await axios.get(`${API_BASE_URL}/top/anime`, {
           params: {
             page,
@@ -241,6 +249,9 @@ export const animeService = {
           pagination: response.data.pagination
         };
       });
+      
+      apiCache.set(cacheKey, result);
+      return result;
     } catch (error) {
       console.error('Error fetching top anime:', error);
       throw error;
@@ -272,23 +283,30 @@ export const animeService = {
   },
 
   async getSeasonalAnime(page: number = 1): Promise<AnimeResponse> {
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    
+    let season = 'winter';
+    if (month >= 3 && month <= 5) {
+      season = 'spring';
+    } else if (month >= 6 && month <= 8) {
+      season = 'summer';
+    } else if (month >= 9 && month <= 11) {
+      season = 'fall';
+    }
+    
+    const cacheKey = `seasonal-anime-${year}-${season}-${page}`;
+    
+    const cached = apiCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    
     try {
-      const date = new Date();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      
-      let season = 'winter';
-      if (month >= 3 && month <= 5) {
-        season = 'spring';
-      } else if (month >= 6 && month <= 8) {
-        season = 'summer';
-      } else if (month >= 9 && month <= 11) {
-        season = 'fall';
-      }
-      
       await delay(1000);
       
-      return await retryWithBackoff(async () => {
+      const result = await retryWithBackoff(async () => {
         const response = await axios.get(`${API_BASE_URL}/seasons/${year}/${season}`, {
           params: {
             page,
@@ -301,6 +319,9 @@ export const animeService = {
           pagination: response.data.pagination
         };
       });
+      
+      apiCache.set(cacheKey, result);
+      return result;
     } catch (error) {
       console.error('Error fetching seasonal anime:', error);
       throw error;
@@ -308,10 +329,17 @@ export const animeService = {
   },
 
   async getRecommendedAnime(page: number = 1): Promise<AnimeResponse> {
+    const cacheKey = `recommended-anime-${page}`;
+    
+    const cached = apiCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    
     try {
       await delay(2000);
       
-      return await retryWithBackoff(async () => {
+      const result = await retryWithBackoff(async () => {
         const response = await axios.get(`${API_BASE_URL}/anime`, {
           params: {
             page,
@@ -327,6 +355,9 @@ export const animeService = {
           pagination: response.data.pagination
         };
       });
+      
+      apiCache.set(cacheKey, result);
+      return result;
     } catch (error) {
       console.error('Error fetching recommended anime:', error);
       throw error;

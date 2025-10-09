@@ -216,50 +216,48 @@ function HomePage() {
   
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        setLoading(prev => ({ ...prev, top: true }));
-        const topResponse = await animeService.getTopAnime();
-        setTopAnime(topResponse.data.slice(0, 8));
+      setLoading({ top: true, seasonal: true, recommended: true });
+      
+      const results = await Promise.allSettled([
+        animeService.getTopAnime(),
+        animeService.getSeasonalAnime(),
+        animeService.getRecommendedAnime()
+      ]);
+      
+      if (results[0].status === 'fulfilled') {
+        setTopAnime(results[0].value.data.slice(0, 8));
         setError(prev => ({ ...prev, top: null }));
-      } catch (err) {
-        console.error('Error fetching top anime:', err);
+      } else {
+        console.error('Error fetching top anime:', results[0].reason);
         setError(prev => ({ 
           ...prev, 
           top: 'Не удалось загрузить список популярных аниме. API имеет ограничение на количество запросов. Пожалуйста, попробуйте позже.' 
         }));
-      } finally {
-        setLoading(prev => ({ ...prev, top: false }));
       }
-
-      try {
-        setLoading(prev => ({ ...prev, seasonal: true }));
-        const seasonalResponse = await animeService.getSeasonalAnime();
-        setSeasonalAnime(seasonalResponse.data.slice(0, 8));
+      
+      if (results[1].status === 'fulfilled') {
+        setSeasonalAnime(results[1].value.data.slice(0, 8));
         setError(prev => ({ ...prev, seasonal: null }));
-      } catch (err) {
-        console.error('Error fetching seasonal anime:', err);
+      } else {
+        console.error('Error fetching seasonal anime:', results[1].reason);
         setError(prev => ({ 
           ...prev, 
           seasonal: 'Не удалось загрузить список сезонного аниме. API имеет ограничение на количество запросов. Пожалуйста, попробуйте позже.' 
         }));
-      } finally {
-        setLoading(prev => ({ ...prev, seasonal: false }));
       }
-
-      try {
-        setLoading(prev => ({ ...prev, recommended: true }));
-        const recommendedResponse = await animeService.getRecommendedAnime();
-        setRecommendedAnime(recommendedResponse.data.slice(0, 8));
+      
+      if (results[2].status === 'fulfilled') {
+        setRecommendedAnime(results[2].value.data.slice(0, 8));
         setError(prev => ({ ...prev, recommended: null }));
-      } catch (err) {
-        console.error('Error fetching recommended anime:', err);
+      } else {
+        console.error('Error fetching recommended anime:', results[2].reason);
         setError(prev => ({ 
           ...prev, 
           recommended: 'Не удалось загрузить список рекомендованного аниме. API имеет ограничение на количество запросов. Пожалуйста, попробуйте позже.' 
         }));
-      } finally {
-        setLoading(prev => ({ ...prev, recommended: false }));
       }
+      
+      setLoading({ top: false, seasonal: false, recommended: false });
     };
     
     fetchData();
